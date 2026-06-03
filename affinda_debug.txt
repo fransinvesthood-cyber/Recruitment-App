@@ -1,0 +1,1 @@
+Upload failed with HTTP 403: {"type":"client_error","errors":[{"code":"no_parsing_credits","detail":"Your credits have expired. Please contact sales@affinda.com","attr":null}]}

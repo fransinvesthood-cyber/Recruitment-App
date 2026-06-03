@@ -1,0 +1,652 @@
+{
+    "data": {
+        "certifications": [
+            "Software Development offering a strong foundation in both software development and IT",
+            "National Diploma Information Technology Software Development",
+            "National Senior Certificate Grade 12"
+        ],
+        "dateOfBirth": "1996-08-11",
+        "education": [
+            {
+                "id": 92965136,
+                "organization": "Tshwane University of Technology",
+                "accreditation": {
+                    "education": "National Diploma: Information Technology (Software Development)",
+                    "educationLevel": null,
+                    "inputStr": "National Diploma: Information Technology (Software Development)",
+                    "matchStr": ""
+                },
+                "grade": null,
+                "location": null,
+                "dates": {
+                    "startDate": null,
+                    "completionDate": "2024-01-01",
+                    "isCurrent": false,
+                    "rawText": "2024"
+                }
+            },
+            {
+                "id": 92965137,
+                "organization": "Mpumelelo SecondarySchool",
+                "accreditation": {
+                    "education": "National Certificate of Educational Achievement",
+                    "educationLevel": "school",
+                    "inputStr": "National Senior Certificate (Grade 12)",
+                    "matchStr": ""
+                },
+                "grade": null,
+                "location": null,
+                "dates": {
+                    "startDate": null,
+                    "completionDate": "2016-01-01",
+                    "isCurrent": false,
+                    "rawText": "2016"
+                }
+            }
+        ],
+        "emails": [
+            "mangenab1030@gmail.com"
+        ],
+        "location": {
+            "formatted": "Bronkhorstspruit, South Africa",
+            "streetNumber": null,
+            "street": null,
+            "apartmentNumber": null,
+            "city": "Bronkhorstspruit",
+            "postalCode": null,
+            "state": "Gauteng",
+            "stateCode": "GP",
+            "country": "South Africa",
+            "rawInput": "Gauteng, Bronkhorstspruit",
+            "countryCode": "ZA",
+            "latitude": -25.8048502,
+            "longitude": 28.7524051,
+            "poBox": null
+        },
+        "name": {
+            "raw": "BAFANA MANGENA",
+            "last": "Mangena",
+            "first": "Bafana",
+            "title": "",
+            "middle": ""
+        },
+        "objective": "",
+        "phoneNumbers": [
+            "+27794065577"
+        ],
+        "phoneNumberDetails": [
+            {
+                "rawText": "+27794065577",
+                "formattedNumber": "+27 79 406 5577",
+                "countryCode": "ZA",
+                "internationalCountryCode": 27,
+                "nationalNumber": "079 406 5577"
+            }
+        ],
+        "publications": [],
+        "referees": [
+            {
+                "name": "Mr. Jerome Dhlamini",
+                "text": "Mr. Jerome Dhlamini \u2013 Founder & Managing Director, Investhood IT \ud83d\udcde 068 246 0562",
+                "email": null,
+                "number": "068 246 0562",
+                "position": "Founder & Managing Director,"
+            },
+            {
+                "name": "Mr. Nkosinathi Tibane",
+                "text": "Mr. Nkosinathi Tibane \u2013 Founder, Hope of Knowledge Internet Cafe \ud83d\udcde 076 469 8038",
+                "email": null,
+                "number": "076 469 8038",
+                "position": "Founder,"
+            }
+        ],
+        "sections": [
+            {
+                "sectionType": "PersonalDetails",
+                "pageIndex": 0,
+                "text": "BAFANA MANGENA \n\nSoftware Developer \n\n\ud83d\udcde 079 406 5577 \u2709 mangenab1030@gmail.com \ud83c\udfe0 Gauteng, Bronkhorstspruit ",
+                "bbox": [
+                    90.366234,
+                    79.90802,
+                    477.26105,
+                    167.29572
+                ]
+            },
+            {
+                "sectionType": "Summary",
+                "pageIndex": 0,
+                "text": "PROFESSIONAL SUMMARY \nA self - motivated and enthusiastic IT professional with a diploma in Information Technology (Software Development), offering a strong foundation in both software development and IT support. Proficient in technologies such as HTML \/ CSS, basic JavaScript, C ++ , PHP, and SQL, with hands - on experience developing web - based applications, databases, and software solutions through academic and internship projects. Skilled in troubleshooting hardware and software issues, configuring operating systems, and providing effective technical assistance to end - users. Passionate about learning new technologies and committed to delivering reliable and user - friendly solutions. ",
+                "bbox": [
+                    90.05711,
+                    196.19226,
+                    519.93787,
+                    328.12567
+                ]
+            },
+            {
+                "sectionType": "PersonalDetails",
+                "pageIndex": 0,
+                "text": "PERSONAL INFORMATION \nFull Name: Bafana Mangena Gender: Male \nDate of Birth: 11 August 1996 \nNationality: South African ",
+                "bbox": [
+                    90.653275,
+                    358.46228,
+                    241.01013,
+                    461.06152
+                ]
+            },
+            {
+                "sectionType": "Skills\/Interests\/Languages",
+                "pageIndex": 0,
+                "text": "LANGUAGES \nEnglish, isiZulu, Sepedi \n\nSKILLS \n\nTechnical Skills \n\u2022 HTML \/ CSS, PHP, SQL, C++ \n\u2022 Microsoft Office Suite \n\u2022 Operating Systems (Windows, Linux basics) \n\u2022 Hardware & Software Support \nSoft Skills \n\u2022 Effective Communication \n\u2022 Problem Solving ",
+                "bbox": [
+                    90.10175,
+                    491.4423,
+                    312.9003,
+                    712.4117
+                ]
+            },
+            {
+                "sectionType": "Skills\/Interests\/Languages",
+                "pageIndex": 1,
+                "text": "\n\u2022 Team Player \n\u2022 Eager to Learn \n\u2022 Detail - Oriented ",
+                "bbox": [
+                    90.598076,
+                    75.34302,
+                    180.704,
+                    113.977295
+                ]
+            },
+            {
+                "sectionType": "Education",
+                "pageIndex": 1,
+                "text": "EDUCATION \nNational Diploma: Information Technology (Software Development) Tshwane University of Technology, 2024 \nNational Senior Certificate (Grade 12) Mpumelelo Secondary School, 2016 ",
+                "bbox": [
+                    90.37727,
+                    146.63232,
+                    408.73593,
+                    229.2915
+                ]
+            },
+            {
+                "sectionType": "WorkExperience",
+                "pageIndex": 1,
+                "text": "WORK EXPERIENCE \n\nSoftware Developer Intern \u2013 Investhood IT (Jan 2024 \u2013 Present) \n\u2022 Developing dynamic web - based applications using HTML \/ CSS, JavaScript, PHP, and MySQL. \n\u2022 Testing, debugging applications in local development environments to ensure functionality and performance. \n\u2022 Designing and managing databases to support web applications, ensuring seamless integration with front - end components for dynamic content rendering. \n\u2022 Performing project - related duties as assigned. ",
+                "bbox": [
+                    90.31883,
+                    259.70227,
+                    497.6252,
+                    407.4457
+                ]
+            },
+            {
+                "sectionType": "Referees",
+                "pageIndex": 1,
+                "text": "REFERENCES \nMr. Jerome Dhlamini \u2013 Founder & Managing Director, Investhood IT \n\ud83d\udcde 068 246 0562 \nMr. Nkosinathi Tibane \u2013 Founder, Hope of Knowledge Internet Cafe \n\ud83d\udcde 076 469 8038 ",
+                "bbox": [
+                    90.653275,
+                    437.80228,
+                    407.5556,
+                    542.0855
+                ]
+            }
+        ],
+        "skills": [
+            {
+                "id": 1076426984,
+                "emsiId": "KS122VW78Q67XR4C3ZDW",
+                "name": "Operating Systems",
+                "lastUsed": null,
+                "numberOfMonths": null,
+                "type": "specialized_skill",
+                "sources": [
+                    {
+                        "section": "Skills\/Interests\/Languages",
+                        "position": null,
+                        "workExperienceId": null
+                    },
+                    {
+                        "section": "Summary",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076426985,
+                "emsiId": "KS1200578T5QCYT0Z98G",
+                "name": "HyperText Markup Language (HTML)",
+                "lastUsed": "2025-05-31",
+                "numberOfMonths": 17,
+                "type": "specialized_skill",
+                "sources": [
+                    {
+                        "section": "Skills\/Interests\/Languages",
+                        "position": null,
+                        "workExperienceId": null
+                    },
+                    {
+                        "section": "WorkExperience",
+                        "position": 0,
+                        "workExperienceId": 188113191
+                    },
+                    {
+                        "section": "Summary",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076426987,
+                "emsiId": "KS122556LMQ829GZCCRV",
+                "name": "Communication",
+                "lastUsed": null,
+                "numberOfMonths": null,
+                "type": "common_skill",
+                "sources": [
+                    {
+                        "section": "Skills\/Interests\/Languages",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076426989,
+                "emsiId": "KS441K2756CXYXBG990G",
+                "name": "Troubleshooting (Problem Solving)",
+                "lastUsed": null,
+                "numberOfMonths": null,
+                "type": "common_skill",
+                "sources": [
+                    {
+                        "section": "Summary",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076426990,
+                "emsiId": "KS120L96KMYTDJ48NRSH",
+                "name": "Software Development",
+                "lastUsed": null,
+                "numberOfMonths": null,
+                "type": "specialized_skill",
+                "sources": [
+                    {
+                        "section": "Summary",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076426991,
+                "emsiId": "KS126HY6YLTB9R7XJC4Z",
+                "name": "Microsoft Office",
+                "lastUsed": null,
+                "numberOfMonths": null,
+                "type": "common_skill",
+                "sources": [
+                    {
+                        "section": "Skills\/Interests\/Languages",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076426992,
+                "emsiId": "KS122VT6S2JJ5C5D80NF",
+                "name": "Linux",
+                "lastUsed": null,
+                "numberOfMonths": null,
+                "type": "specialized_skill",
+                "sources": [
+                    {
+                        "section": "Skills\/Interests\/Languages",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076426993,
+                "emsiId": "KS125F678LV2KB3Z5XW0",
+                "name": "Problem Solving",
+                "lastUsed": null,
+                "numberOfMonths": null,
+                "type": "common_skill",
+                "sources": [
+                    {
+                        "section": "Skills\/Interests\/Languages",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076426994,
+                "emsiId": "KS1200C5XQWW78VQ5ZYL",
+                "name": "PHP (Scripting Language)",
+                "lastUsed": "2025-05-31",
+                "numberOfMonths": 17,
+                "type": "specialized_skill",
+                "sources": [
+                    {
+                        "section": "Skills\/Interests\/Languages",
+                        "position": null,
+                        "workExperienceId": null
+                    },
+                    {
+                        "section": "WorkExperience",
+                        "position": 0,
+                        "workExperienceId": 188113191
+                    },
+                    {
+                        "section": "Summary",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076426996,
+                "emsiId": "KS1200771D9CR9LB4MWW",
+                "name": "JavaScript (Programming Language)",
+                "lastUsed": "2025-05-31",
+                "numberOfMonths": 17,
+                "type": "specialized_skill",
+                "sources": [
+                    {
+                        "section": "WorkExperience",
+                        "position": 0,
+                        "workExperienceId": 188113191
+                    },
+                    {
+                        "section": "Summary",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076426997,
+                "emsiId": "KS121F45VPV8C9W3QFYH",
+                "name": "Cascading Style Sheets (CSS)",
+                "lastUsed": "2025-05-31",
+                "numberOfMonths": 17,
+                "type": "specialized_skill",
+                "sources": [
+                    {
+                        "section": "Skills\/Interests\/Languages",
+                        "position": null,
+                        "workExperienceId": null
+                    },
+                    {
+                        "section": "WorkExperience",
+                        "position": 0,
+                        "workExperienceId": 188113191
+                    },
+                    {
+                        "section": "Summary",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076426998,
+                "emsiId": "KS120265WKHSMJ6HYX8P",
+                "name": "Microsoft Windows",
+                "lastUsed": null,
+                "numberOfMonths": null,
+                "type": "common_skill",
+                "sources": [
+                    {
+                        "section": "Skills\/Interests\/Languages",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076427000,
+                "emsiId": "KS1200364C9C1LK3V5Q1",
+                "name": "C (Programming Language)",
+                "lastUsed": "2025-05-31",
+                "numberOfMonths": 17,
+                "type": "specialized_skill",
+                "sources": [
+                    {
+                        "section": "WorkExperience",
+                        "position": 0,
+                        "workExperienceId": 188113191
+                    },
+                    {
+                        "section": "Skills\/Interests\/Languages",
+                        "position": null,
+                        "workExperienceId": null
+                    },
+                    {
+                        "section": "PersonalDetails",
+                        "position": null,
+                        "workExperienceId": null
+                    },
+                    {
+                        "section": "Summary",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076427001,
+                "emsiId": "ESB38820A543FA4E3969",
+                "name": "Effective Communication",
+                "lastUsed": null,
+                "numberOfMonths": null,
+                "type": "specialized_skill",
+                "sources": [
+                    {
+                        "section": "Skills\/Interests\/Languages",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076426981,
+                "emsiId": "KS440W865GC4VRBW6LJP",
+                "name": "SQL (Programming Language)",
+                "lastUsed": "2025-05-31",
+                "numberOfMonths": 17,
+                "type": "specialized_skill",
+                "sources": [
+                    {
+                        "section": "Skills\/Interests\/Languages",
+                        "position": null,
+                        "workExperienceId": null
+                    },
+                    {
+                        "section": "WorkExperience",
+                        "position": 0,
+                        "workExperienceId": 188113191
+                    },
+                    {
+                        "section": "Summary",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076426982,
+                "emsiId": "KSOVEQPKEQJ5T2X9R89J",
+                "name": "Dynamic Content",
+                "lastUsed": "2025-05-31",
+                "numberOfMonths": 17,
+                "type": "specialized_skill",
+                "sources": [
+                    {
+                        "section": "WorkExperience",
+                        "position": 0,
+                        "workExperienceId": 188113191
+                    }
+                ]
+            },
+            {
+                "id": 1076426983,
+                "emsiId": "KS441ZY6P0PDB5DWTRB8",
+                "name": "Web Applications",
+                "lastUsed": "2025-05-31",
+                "numberOfMonths": 17,
+                "type": "specialized_skill",
+                "sources": [
+                    {
+                        "section": "WorkExperience",
+                        "position": 0,
+                        "workExperienceId": 188113191
+                    }
+                ]
+            },
+            {
+                "id": 1076426986,
+                "emsiId": "KS122SG5Y0Q5YQM7V8KT",
+                "name": "Debugging",
+                "lastUsed": "2025-05-31",
+                "numberOfMonths": 17,
+                "type": "specialized_skill",
+                "sources": [
+                    {
+                        "section": "WorkExperience",
+                        "position": 0,
+                        "workExperienceId": 188113191
+                    }
+                ]
+            },
+            {
+                "id": 1076426988,
+                "emsiId": "KS1227V6WBR3BH3SJYSZ",
+                "name": "Information Technology",
+                "lastUsed": null,
+                "numberOfMonths": null,
+                "type": "common_skill",
+                "sources": [
+                    {
+                        "section": "Summary",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            },
+            {
+                "id": 1076426999,
+                "emsiId": "KS4418D6RW4837XPT884",
+                "name": "Technical Assistance",
+                "lastUsed": null,
+                "numberOfMonths": null,
+                "type": "specialized_skill",
+                "sources": [
+                    {
+                        "section": "Summary",
+                        "position": null,
+                        "workExperienceId": null
+                    }
+                ]
+            }
+        ],
+        "languages": [
+            "English"
+        ],
+        "summary": "A self - motivated and enthusiastic IT professional with a diploma in Information Technology (Software Development), offering a strong foundation in both software development and IT support. Proficient in technologies such as HTML \/ CSS, basic JavaScript, C ++ , PHP, and SQL, with hands - on experience developing web - based applications, databases, and software solutions through academic and internship projects. Skilled in troubleshooting hardware and software issues, configuring operating systems, and providing effective technical assistance to end - users. Passionate about learning new technologies and committed to delivering reliable and user - friendly solutions.",
+        "websites": [],
+        "linkedin": null,
+        "totalYearsExperience": 1,
+        "profession": "Software Developer Intern",
+        "workExperience": [
+            {
+                "id": 188113191,
+                "jobTitle": "Software Developer Intern",
+                "organization": "Investhood IT",
+                "location": null,
+                "dates": {
+                    "startDate": "2024-01-01",
+                    "endDate": "2025-05-31",
+                    "monthsInPosition": 17,
+                    "isCurrent": true,
+                    "rawText": "(Jan 2024 \u2013 Present)"
+                },
+                "jobDescription": "\u2022 Developing dynamic web - based applications using HTML \/ CSS, JavaScript, PHP, and MySQL. \n\u2022 Testing, debugging applications in local development environments to ensure functionality and performance. \n\u2022 Designing and managing databases to support web applications, ensuring seamless integration with front - end components for dynamic content rendering. \n\u2022 Performing project - related duties as assigned. ",
+                "occupation": {
+                    "jobTitle": "Software Developer Intern",
+                    "jobTitleNormalized": "Software Developer",
+                    "classification": {
+                        "socCode": 2134,
+                        "title": "Programmers and software development professionals ",
+                        "minorGroup": "Information Technology Professionals",
+                        "subMajorGroup": "SCIENCE, RESEARCH, ENGINEERING AND TECHNOLOGY PROFESSIONALS",
+                        "majorGroup": "PROFESSIONAL OCCUPATIONS",
+                        "minorGroupCode": 213,
+                        "subMajorGroupCode": 21,
+                        "majorGroupCode": 2
+                    },
+                    "managementLevel": "Low",
+                    "emsiId": "ETE2AD3A1C11B4EC9B"
+                }
+            }
+        ],
+        "headShot": null,
+        "isResumeProbability": null,
+        "rawText": "BAFANA MANGENA \n\nSoftware Developer \n\n\ud83d\udcde 079 406 5577 \u2709 mangenab1030@gmail.com \ud83c\udfe0 Gauteng, Bronkhorstspruit \nPROFESSIONAL SUMMARY \nA self - motivated and enthusiastic IT professional with a diploma in Information Technology (Software Development), offering a strong foundation in both software development and IT support. Proficient in technologies such as HTML \/ CSS, basic JavaScript, C ++ , PHP, and SQL, with hands - on experience developing web - based applications, databases, and software solutions through academic and internship projects. Skilled in troubleshooting hardware and software issues, configuring operating systems, and providing effective technical assistance to end - users. Passionate about learning new technologies and committed to delivering reliable and user - friendly solutions. \nPERSONAL INFORMATION \nFull Name: Bafana Mangena Gender: Male \nDate of Birth: 11 August 1996 \nNationality: South African \nLANGUAGES \nEnglish, isiZulu, Sepedi \n\nSKILLS \n\nTechnical Skills \n\u2022 HTML \/ CSS, PHP, SQL, C++ \n\u2022 Microsoft Office Suite \n\u2022 Operating Systems (Windows, Linux basics) \n\u2022 Hardware & Software Support \nSoft Skills \n\u2022 Effective Communication \n\u2022 Problem Solving \n\n\u2022 Team Player \n\u2022 Eager to Learn \n\u2022 Detail - Oriented \nEDUCATION \nNational Diploma: Information Technology (Software Development) Tshwane University of Technology, 2024 \nNational Senior Certificate (Grade 12) Mpumelelo Secondary School, 2016 \nWORK EXPERIENCE \n\nSoftware Developer Intern \u2013 Investhood IT (Jan 2024 \u2013 Present) \n\u2022 Developing dynamic web - based applications using HTML \/ CSS, JavaScript, PHP, and MySQL. \n\u2022 Testing, debugging applications in local development environments to ensure functionality and performance. \n\u2022 Designing and managing databases to support web applications, ensuring seamless integration with front - end components for dynamic content rendering. \n\u2022 Performing project - related duties as assigned. \nREFERENCES \nMr. Jerome Dhlamini \u2013 Founder & Managing Director, Investhood IT \n\ud83d\udcde 068 246 0562 \nMr. Nkosinathi Tibane \u2013 Founder, Hope of Knowledge Internet Cafe \n\ud83d\udcde 076 469 8038 ",
+        "redactedText": "****** ******* Software Developer \ud83d\udcde *** *** **** \u2709 ********************** \ud83c\udfe0 ******** ****************\nPROFESSIONAL SUMMARY A self - motivated and enthusiastic IT professional with a diploma in Information Technology (Software Development), offering a strong foundation in both software development and IT support. Proficient in technologies such as HTML \/ CSS, basic JavaScript, C ++ , PHP, and SQL, with hands - on experience developing web - based applications, databases, and software solutions through academic and internship projects. Skilled in troubleshooting hardware and software issues, configuring operating systems, and providing effective technical assistance to end - users. Passionate about learning new technologies and committed to delivering reliable and user - friendly solutions.\nPERSONAL INFORMATION Full Name: ****** ******* Gender: **** Date of Birth* ** ****** **** Nationality: South African\nLANGUAGES English, isiZulu, Sepedi SKILLS Technical Skills \u2022 HTML \/ CSS, PHP, SQL, C++ \u2022 Microsoft Office Suite \u2022 Operating Systems (Windows, Linux basics) \u2022 Hardware & Software Support Soft Skills \u2022 Effective Communication \u2022 Problem Solving\n\u2022 Team Player \u2022 Eager to Learn \u2022 Detail - Oriented\nEDUCATION National Diploma: Information Technology (Software Development) Tshwane University of Technology* **** National Senior Certificate (Grade 12) Mpumelelo Secondary School, 2016\nWORK EXPERIENCE Software Developer Intern \u2013 Investhood IT (*** **** \u2013 Present) \u2022 Developing dynamic web - based applications using HTML \/ CSS, JavaScript, PHP, and MySQL. \u2022 Testing, debugging applications in local development environments to ensure functionality and performance. \u2022 Designing and managing databases to support web applications, ensuring seamless integration with front - end components for dynamic content rendering. \u2022 Performing project - related duties as assigned.\n********** *** ****** ******** * ******* * ******** ********* ********** ** * *** *** **** *** ********** ****** * ******** **** ** ********* ******** **** * *** *** ****"
+    },
+    "meta": {
+        "identifier": "BRhkzIwO",
+        "customIdentifier": null,
+        "ready": true,
+        "failed": false,
+        "readyDt": "2025-05-31T06:56:33.277796Z",
+        "fileName": "php4AF3.tmp",
+        "expiryTime": null,
+        "language": "en",
+        "pdf": "https:\/\/affinda-api-data-prod-ap1.s3.amazonaws.com\/media\/documents\/php4AF3_p7Q7WZM_5hnYttv.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAU4IX6YWNJJCC27MI%2F20250531%2Fap-southeast-2%2Fs3%2Faws4_request&X-Amz-Date=20250531T065633Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEO%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDmFwLXNvdXRoZWFzdC0yIkYwRAIgBngvogYw6f7yFGjumNtgKu9TXFjyVA1Deop4%2Fo81cUkCIBaaCroIa61YtrSDoVtvjBeEH07L5APHIIKm7jrQAsxnKpIFCLj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQAxoMMzM1NTk0NTcxMTYyIgz%2FhCc%2FLB9TyA7xa1wq5gRt9r6GO%2BoKcmkLpBBNpXj1UQHRyO3NY%2BHWJs6WmkcMgyZOCnGWKouH4XOtzzd9kyJt0pygnZSJ3tZXj44rdNQuxJp4WhwygXo4TXyQpA%2F3sRfUQPOzLp0PbNBy4XfnjB5eP7bl5kc8qdWCnWE8snJh1jXO3HHyyQ9CWsLHwBORzhfV3SoXoUD7dsoQykT24ujcEZUwADSelX%2BPNxHoJgiA5rjxnr0xSIceX2GL7CSLN8KxtfkzPLUsZv8f7JdfVqXWtXOupGz0Jccz6hcmPUTY4TXz95BeHI0COGiSYsP1Iw07pBGgzHWMES%2FTrBbR68HU%2BRFGV4ZJGxDKxBvVCms12qsQzMrZ5o4cUxHDWLstn%2FUS%2F7eHnC7KicOlmEaUkaFmX%2BbAU6OyDNT5CI%2BmyQAUQJsQCgWtpPh%2Fk9lPMA6ydu8S400y6eO8tjPVzojE33CAATtOkr4c4yEJM5am13lKLS8mx%2FSLSFX9l6esH%2FkYl5RHLLocNhK8A9RzBkgchzdO5ncrPftOWsJitktBlaL2A9rA4uk1%2FsXKHJ3vmneqv4fbjf29UiLJxE4mmDOnf2TbVQT6EWz0eAI3H5dUf8wdbguq4Y0Q%2FUAtZsIRsVpixisVL37pRo7e%2FSMitB8kREOYLLFX1Z6%2BeTkIdWbOrs0g9Tc8yTg20WVd8WSlpeygQOvTBQ5PHQJgz%2FRj2y7LomAFZ2nGGNx%2BHZpSO%2F6YA6zH5ormkpuGlhjXCK59NdG%2FYXwNGCU70gXD9IPJv9ixWCSPZV8yB24LckHDcn4Hgr5uQx0H0z%2BB3EIH2MYh47vPwEl3J23jRzDlw%2BrBBjqbAezPfrZcVNZNd2W15%2BZbh4D0K%2F2rAzAwBzrNTk2qzMN6vbgrxtwVH2BrHOkDz9MSH59WQT3nFIuM%2B6lZd0kkTXmIanKygg889cG3kSl9%2FCGgZX9oZlG9JL1jO9wY2f94e%2F%2Bw%2BLjHwwNlEyY02JaUQI%2FCaChgvMUXvF6RaJMzwLSZKMVtZKzqEdY6zdQWlAnCpm57TPGou4qildcy&X-Amz-Signature=4b111795e465b9e9f7f1adc459c6cc1fbc05150a68a49de31ce93ad8e2b6f8c7",
+        "parentDocument": null,
+        "childDocuments": [],
+        "pages": [
+            {
+                "id": 125913473,
+                "pageIndex": 0,
+                "image": "https:\/\/affinda-api-data-prod-ap1.s3.amazonaws.com\/media\/pages\/125913473_J1HqsCP.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAU4IX6YWNJJCC27MI%2F20250531%2Fap-southeast-2%2Fs3%2Faws4_request&X-Amz-Date=20250531T065633Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEO%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDmFwLXNvdXRoZWFzdC0yIkYwRAIgBngvogYw6f7yFGjumNtgKu9TXFjyVA1Deop4%2Fo81cUkCIBaaCroIa61YtrSDoVtvjBeEH07L5APHIIKm7jrQAsxnKpIFCLj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQAxoMMzM1NTk0NTcxMTYyIgz%2FhCc%2FLB9TyA7xa1wq5gRt9r6GO%2BoKcmkLpBBNpXj1UQHRyO3NY%2BHWJs6WmkcMgyZOCnGWKouH4XOtzzd9kyJt0pygnZSJ3tZXj44rdNQuxJp4WhwygXo4TXyQpA%2F3sRfUQPOzLp0PbNBy4XfnjB5eP7bl5kc8qdWCnWE8snJh1jXO3HHyyQ9CWsLHwBORzhfV3SoXoUD7dsoQykT24ujcEZUwADSelX%2BPNxHoJgiA5rjxnr0xSIceX2GL7CSLN8KxtfkzPLUsZv8f7JdfVqXWtXOupGz0Jccz6hcmPUTY4TXz95BeHI0COGiSYsP1Iw07pBGgzHWMES%2FTrBbR68HU%2BRFGV4ZJGxDKxBvVCms12qsQzMrZ5o4cUxHDWLstn%2FUS%2F7eHnC7KicOlmEaUkaFmX%2BbAU6OyDNT5CI%2BmyQAUQJsQCgWtpPh%2Fk9lPMA6ydu8S400y6eO8tjPVzojE33CAATtOkr4c4yEJM5am13lKLS8mx%2FSLSFX9l6esH%2FkYl5RHLLocNhK8A9RzBkgchzdO5ncrPftOWsJitktBlaL2A9rA4uk1%2FsXKHJ3vmneqv4fbjf29UiLJxE4mmDOnf2TbVQT6EWz0eAI3H5dUf8wdbguq4Y0Q%2FUAtZsIRsVpixisVL37pRo7e%2FSMitB8kREOYLLFX1Z6%2BeTkIdWbOrs0g9Tc8yTg20WVd8WSlpeygQOvTBQ5PHQJgz%2FRj2y7LomAFZ2nGGNx%2BHZpSO%2F6YA6zH5ormkpuGlhjXCK59NdG%2FYXwNGCU70gXD9IPJv9ixWCSPZV8yB24LckHDcn4Hgr5uQx0H0z%2BB3EIH2MYh47vPwEl3J23jRzDlw%2BrBBjqbAezPfrZcVNZNd2W15%2BZbh4D0K%2F2rAzAwBzrNTk2qzMN6vbgrxtwVH2BrHOkDz9MSH59WQT3nFIuM%2B6lZd0kkTXmIanKygg889cG3kSl9%2FCGgZX9oZlG9JL1jO9wY2f94e%2F%2Bw%2BLjHwwNlEyY02JaUQI%2FCaChgvMUXvF6RaJMzwLSZKMVtZKzqEdY6zdQWlAnCpm57TPGou4qildcy&X-Amz-Signature=23d88930f3774961541a9b5546b4892b29fc9c4b880c1bdd9d2cf0c2d90237d6",
+                "height": 792,
+                "width": 612,
+                "rotation": 0
+            },
+            {
+                "id": 125913474,
+                "pageIndex": 1,
+                "image": "https:\/\/affinda-api-data-prod-ap1.s3.amazonaws.com\/media\/pages\/125913474_ekVg9o9.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAU4IX6YWNJJCC27MI%2F20250531%2Fap-southeast-2%2Fs3%2Faws4_request&X-Amz-Date=20250531T065633Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEO%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDmFwLXNvdXRoZWFzdC0yIkYwRAIgBngvogYw6f7yFGjumNtgKu9TXFjyVA1Deop4%2Fo81cUkCIBaaCroIa61YtrSDoVtvjBeEH07L5APHIIKm7jrQAsxnKpIFCLj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQAxoMMzM1NTk0NTcxMTYyIgz%2FhCc%2FLB9TyA7xa1wq5gRt9r6GO%2BoKcmkLpBBNpXj1UQHRyO3NY%2BHWJs6WmkcMgyZOCnGWKouH4XOtzzd9kyJt0pygnZSJ3tZXj44rdNQuxJp4WhwygXo4TXyQpA%2F3sRfUQPOzLp0PbNBy4XfnjB5eP7bl5kc8qdWCnWE8snJh1jXO3HHyyQ9CWsLHwBORzhfV3SoXoUD7dsoQykT24ujcEZUwADSelX%2BPNxHoJgiA5rjxnr0xSIceX2GL7CSLN8KxtfkzPLUsZv8f7JdfVqXWtXOupGz0Jccz6hcmPUTY4TXz95BeHI0COGiSYsP1Iw07pBGgzHWMES%2FTrBbR68HU%2BRFGV4ZJGxDKxBvVCms12qsQzMrZ5o4cUxHDWLstn%2FUS%2F7eHnC7KicOlmEaUkaFmX%2BbAU6OyDNT5CI%2BmyQAUQJsQCgWtpPh%2Fk9lPMA6ydu8S400y6eO8tjPVzojE33CAATtOkr4c4yEJM5am13lKLS8mx%2FSLSFX9l6esH%2FkYl5RHLLocNhK8A9RzBkgchzdO5ncrPftOWsJitktBlaL2A9rA4uk1%2FsXKHJ3vmneqv4fbjf29UiLJxE4mmDOnf2TbVQT6EWz0eAI3H5dUf8wdbguq4Y0Q%2FUAtZsIRsVpixisVL37pRo7e%2FSMitB8kREOYLLFX1Z6%2BeTkIdWbOrs0g9Tc8yTg20WVd8WSlpeygQOvTBQ5PHQJgz%2FRj2y7LomAFZ2nGGNx%2BHZpSO%2F6YA6zH5ormkpuGlhjXCK59NdG%2FYXwNGCU70gXD9IPJv9ixWCSPZV8yB24LckHDcn4Hgr5uQx0H0z%2BB3EIH2MYh47vPwEl3J23jRzDlw%2BrBBjqbAezPfrZcVNZNd2W15%2BZbh4D0K%2F2rAzAwBzrNTk2qzMN6vbgrxtwVH2BrHOkDz9MSH59WQT3nFIuM%2B6lZd0kkTXmIanKygg889cG3kSl9%2FCGgZX9oZlG9JL1jO9wY2f94e%2F%2Bw%2BLjHwwNlEyY02JaUQI%2FCaChgvMUXvF6RaJMzwLSZKMVtZKzqEdY6zdQWlAnCpm57TPGou4qildcy&X-Amz-Signature=ceb35d1daf83e1eee99743d5847cbcb2988e7a03423d922ae0159d36340dbe63",
+                "height": 792,
+                "width": 612,
+                "rotation": 0
+            }
+        ],
+        "ocrConfidence": null,
+        "reviewUrl": null,
+        "validatedDt": null,
+        "isVerified": false,
+        "exportedDt": null,
+        "isExported": false,
+        "createdDt": "2025-05-31T06:56:30.857232Z",
+        "errorDetail": null,
+        "documentType": "resume",
+        "file": "https:\/\/affinda-api-data-prod-ap1.s3.amazonaws.com\/media\/documents\/php4AF3_p7Q7WZM_5hnYttv.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAU4IX6YWNJJCC27MI%2F20250531%2Fap-southeast-2%2Fs3%2Faws4_request&X-Amz-Date=20250531T065633Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEO%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDmFwLXNvdXRoZWFzdC0yIkYwRAIgBngvogYw6f7yFGjumNtgKu9TXFjyVA1Deop4%2Fo81cUkCIBaaCroIa61YtrSDoVtvjBeEH07L5APHIIKm7jrQAsxnKpIFCLj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQAxoMMzM1NTk0NTcxMTYyIgz%2FhCc%2FLB9TyA7xa1wq5gRt9r6GO%2BoKcmkLpBBNpXj1UQHRyO3NY%2BHWJs6WmkcMgyZOCnGWKouH4XOtzzd9kyJt0pygnZSJ3tZXj44rdNQuxJp4WhwygXo4TXyQpA%2F3sRfUQPOzLp0PbNBy4XfnjB5eP7bl5kc8qdWCnWE8snJh1jXO3HHyyQ9CWsLHwBORzhfV3SoXoUD7dsoQykT24ujcEZUwADSelX%2BPNxHoJgiA5rjxnr0xSIceX2GL7CSLN8KxtfkzPLUsZv8f7JdfVqXWtXOupGz0Jccz6hcmPUTY4TXz95BeHI0COGiSYsP1Iw07pBGgzHWMES%2FTrBbR68HU%2BRFGV4ZJGxDKxBvVCms12qsQzMrZ5o4cUxHDWLstn%2FUS%2F7eHnC7KicOlmEaUkaFmX%2BbAU6OyDNT5CI%2BmyQAUQJsQCgWtpPh%2Fk9lPMA6ydu8S400y6eO8tjPVzojE33CAATtOkr4c4yEJM5am13lKLS8mx%2FSLSFX9l6esH%2FkYl5RHLLocNhK8A9RzBkgchzdO5ncrPftOWsJitktBlaL2A9rA4uk1%2FsXKHJ3vmneqv4fbjf29UiLJxE4mmDOnf2TbVQT6EWz0eAI3H5dUf8wdbguq4Y0Q%2FUAtZsIRsVpixisVL37pRo7e%2FSMitB8kREOYLLFX1Z6%2BeTkIdWbOrs0g9Tc8yTg20WVd8WSlpeygQOvTBQ5PHQJgz%2FRj2y7LomAFZ2nGGNx%2BHZpSO%2F6YA6zH5ormkpuGlhjXCK59NdG%2FYXwNGCU70gXD9IPJv9ixWCSPZV8yB24LckHDcn4Hgr5uQx0H0z%2BB3EIH2MYh47vPwEl3J23jRzDlw%2BrBBjqbAezPfrZcVNZNd2W15%2BZbh4D0K%2F2rAzAwBzrNTk2qzMN6vbgrxtwVH2BrHOkDz9MSH59WQT3nFIuM%2B6lZd0kkTXmIanKygg889cG3kSl9%2FCGgZX9oZlG9JL1jO9wY2f94e%2F%2Bw%2BLjHwwNlEyY02JaUQI%2FCaChgvMUXvF6RaJMzwLSZKMVtZKzqEdY6zdQWlAnCpm57TPGou4qildcy&X-Amz-Signature=4b111795e465b9e9f7f1adc459c6cc1fbc05150a68a49de31ce93ad8e2b6f8c7",
+        "regionBias": null,
+        "isOcrd": false
+    },
+    "error": {
+        "errorCode": null,
+        "errorDetail": null
+    }
+}

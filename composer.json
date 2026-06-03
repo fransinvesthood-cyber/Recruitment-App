@@ -1,0 +1,10 @@
+{
+    "require": {
+        "phpmailer/phpmailer": "^6.9",
+        "google/apiclient": "^2.18",
+        "ralouphie/getallheaders": "^3.0",
+        "smalot/pdfparser": "^2.12",
+        "tecnickcom/tcpdf": "^6.10",
+        "dompdf/dompdf": "^3.1"
+    }
+}
