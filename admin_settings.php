@@ -978,6 +978,11 @@ if (!empty($_SESSION['message'])) {
             font-size: 18px;
         }
 
+        body.dark-mode .toggle-visibility {
+            color: #e4e6eb;
+        }
+
+
         .input-box input {
             flex: 1;
             border: none;
@@ -986,6 +991,24 @@ if (!empty($_SESSION['message'])) {
             font-size: 16px;
             color: var(--dark);
         }
+
+        .toggle-visibility {
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .toggle-visibility:hover {
+            color: var(--primary-dark);
+        }
+
 
         body.dark-mode .input-box input {
             color: #e4e6eb;
@@ -1503,12 +1526,19 @@ if (!empty($_SESSION['message'])) {
                     <div class="input-box">
                         <i class="fa fa-lock"></i>
                         <input type="password" id="current_password" name="current_password" placeholder="Current Password" required>
+                        <button type="button" class="toggle-visibility" onclick="toggleInputVisibility('current_password', this)" aria-label="Toggle current password visibility" title="Show/Hide">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </button>
                     </div>
                     <div class="input-box" id="passwordBox">
                         <i class="fa fa-lock"></i>
                         <input type="password" name="new_password" id="new_password" placeholder="Enter new password" required onkeyup="validatePassword()" oninput="validatePassword()" onfocus="validatePassword()">
+                        <button type="button" class="toggle-visibility" onclick="toggleInputVisibility('new_password', this)" aria-label="Toggle new password visibility" title="Show/Hide">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </button>
                     </div>
                     <div class="validation-feedback" id="passwordFeedback"></div>
+
 
                     <div class="password-requirements">
                         <div class="requirements-title">Password Requirements:</div>
@@ -1542,16 +1572,15 @@ if (!empty($_SESSION['message'])) {
                     <div class="input-box" id="confirmBox">
                         <i class="fa fa-lock"></i>
                         <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm password" required oninput="validateConfirmPassword()" onfocus="validateConfirmPassword()">
+                        <button type="button" class="toggle-visibility" onclick="toggleInputVisibility('confirm_password', this)" aria-label="Toggle confirm password visibility" title="Show/Hide">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </button>
                         <div class="match-indicator" id="matchIndicator">
                             <i class="fa fa-check"></i>
                         </div>
                     </div>
-                    <div class="validation-feedback" id="confirmFeedback"></div>
 
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="show_password">
-                        <label for="show_password">Show Passwords</label>
-                    </div>
+                    <div class="validation-feedback" id="confirmFeedback"></div>
 
                     <div class="button input-box">
                         <button type="submit" name="change_password">Change Password</button>
@@ -2145,6 +2174,30 @@ if (!empty($_SESSION['message'])) {
             confirmPassword.type = type;
             document.getElementById('current_password').type = type;
         }
+
+        // Toggle visibility for a specific input by id (used by per-field eye icons)
+        function toggleInputVisibility(inputId, btn) {
+            const inputEl = document.getElementById(inputId);
+            if (!inputEl) return;
+
+            const isPassword = inputEl.type === 'password';
+            inputEl.type = isPassword ? 'text' : 'password';
+
+            // Update eye icon
+            if (btn) {
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('fa-eye', !isPassword);
+                    icon.classList.toggle('fa-eye-slash', isPassword);
+                    icon.classList.toggle('fa-eye', isPassword);
+                    icon.classList.toggle('fa-eye-slash', !isPassword);
+
+                    // Fallback: set explicit classes
+                    icon.className = (isPassword ? 'fa fa-eye-slash' : 'fa fa-eye');
+                }
+            }
+        }
+
 
         // Event listeners
         newPassword.addEventListener('input', validatePassword);
