@@ -575,7 +575,7 @@ $renderSummaryCard = $isSummaryFilled;
                                     <a class="btn btn-primary" href="<?= h($stage['action']) ?>">Complete this step</a>
                                 <?php endif; ?>
 
-<?php if (!$done && in_array($stage['key'], ['complete_profile','add_qualifications','add_skills','add_language_proficiency','add_computer_skills'], true)): ?>
+                                <?php if (!$done && in_array($stage['key'], ['complete_profile','add_qualifications','add_skills','add_language_proficiency','add_computer_skills'], true)): ?>
                                     <button type="button" class="btn btn-outline-danger" onclick="jumpToWarning('<?= h($stage['key']) ?>')">Why it matters</button>
                                 <?php endif; ?>
 
@@ -637,4 +637,3 @@ const profileReasons = {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
