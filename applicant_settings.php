@@ -1141,13 +1141,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
         <div class="modal-body">
             <form action="" method="post" id="passwordForm">
                 <div class="input-boxes">
-                    <div class="input-box">
+                    <div class="input-box" data-password-eye>
                         <i class="fa fa-lock"></i>
                         <input type="password" id="current_password" name="current_password" placeholder="Current Password" required>
+                        <i class="fa fa-eye password-toggle" aria-hidden="true" title="Show password"></i>
                     </div>
-                    <div class="input-box" id="passwordBox">
+                    <div class="input-box" id="passwordBox" data-password-eye>
                         <i class="fa fa-lock"></i>
                         <input type="password" name="new_password" id="new_password" placeholder="Enter new password" required>
+                        <i class="fa fa-eye password-toggle" aria-hidden="true" title="Show password"></i>
                     </div>
                     <div class="validation-feedback" id="passwordFeedback"></div>
 
@@ -1179,19 +1181,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
                         </div>
                     </div>
 
-                    <div class="input-box" id="confirmBox">
+                    <div class="input-box" id="confirmBox" data-password-eye>
                         <i class="fa fa-lock"></i>
                         <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm password" required>
+                        <i class="fa fa-eye password-toggle" aria-hidden="true" title="Show password"></i>
                         <div class="match-indicator" id="matchIndicator">
                             <i class="fa fa-check"></i>
                         </div>
                     </div>
                     <div class="validation-feedback" id="confirmFeedback"></div>
-
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="show_password">
-                        <label for="show_password">Show Passwords</label>
-                    </div>
 
                     <div class="button input-box">
                         <button type="submit" id="submitBtn" name="change_password">Change Password</button>
@@ -1618,12 +1616,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
             }
         }
 
-        function togglePassword() {
-            const type = newPassword.type === 'password' ? 'text' : 'password';
+        function setPasswordVisibility(isVisible) {
+            const type = isVisible ? 'text' : 'password';
             newPassword.type = type;
             confirmPassword.type = type;
             document.getElementById('current_password').type = type;
+
+            // Sync checkbox UI
+            showPasswordCheckbox.checked = isVisible;
+
+            // Sync eye icons
+            document.querySelectorAll('#passwordModal .password-toggle').forEach(icon => {
+                icon.classList.toggle('fa-eye', isVisible);
+                icon.classList.toggle('fa-eye-slash', !isVisible);
+            });
         }
+
+        function togglePassword() {
+            // Checkbox indicates visibility: checked => show passwords
+            setPasswordVisibility(showPasswordCheckbox.checked);
+        }
+
+        // Ensure eye icon clicks set visibility correctly
+        // (fa-eye => show, fa-eye-slash => hide)
+        document.querySelectorAll('#passwordModal .password-toggle').forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const isCurrentlyEye = icon.classList.contains('fa-eye');
+                // If it currently shows 'eye', clicking should reveal => isVisible=true
+                // If it currently shows 'eye-slash', clicking should hide => isVisible=false
+                setPasswordVisibility(isCurrentlyEye);
+            });
+        });
+
+
+
+        // Attach handlers for eye icons (current/new/confirm)
+        // (Use capturing + stopImmediatePropagation to prevent other listeners from interfering)
+        document.querySelectorAll('#passwordModal .password-toggle').forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+
+                const isCurrentlyVisible = icon.classList.contains('fa-eye');
+                // If currently showing (fa-eye), clicking should hide; otherwise show
+                setPasswordVisibility(!isCurrentlyVisible);
+            }, true);
+        });
+
+
 
         // Event listeners
         newPassword.addEventListener('input', validatePassword);
