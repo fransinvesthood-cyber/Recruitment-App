@@ -2933,12 +2933,13 @@ function markAllAsRead() {
         </div>
 
         <div class="nav-links">
-            <a href="my_profile.php">Profile</a>
+            <a href="my_profile.php">My Profile</a>
             <a href="my_applications.php">Applied Jobs</a>
             <a href="my_interviews.php">My Interviews</a>
             <!--<a href="assessments.php">Assessments</a>-->
             <a href="interview_prep.php">Interview Prep</a>
             <a href="applicant_settings.php">Settings</a>
+            <a href="applicant_access_guide.php">Applicant Guide</a>
         </div>
         
         <!-- Header Actions: Theme Toggle, Search, and Notifications grouped together -->

@@ -43,7 +43,7 @@ $candidates_results = $conn->query($sql_candidates);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <title>Manage Candidates</title>
+    <title>Candidates</title>
     <style>
         /* ===========================
            GLOBAL RESET & VARIABLES — IDENTICAL TO dashboard
@@ -655,7 +655,7 @@ $candidates_results = $conn->query($sql_candidates);
 
         <main>
             <div class="welcome-section">
-                <h1> Manage Candidates</h1>
+                <h1>Candidates</h1>
                 <p>View and manage candidate profiles while tracking their progress throughout the recruitment process.</p>
             </div>
 

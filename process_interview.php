@@ -167,14 +167,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 $mail->send();
 
-                // Insert notification for the admin
-                $notification_message = "New interview scheduled for " . htmlspecialchars($applicant['fullname']) . " - " . htmlspecialchars($applicant['position']);
-                $notification_stmt = $conn->prepare("INSERT INTO notifications (user_id, message, type, reference_id, is_read, created_at) VALUES (?, ?, 'interview', NULL, 0, NOW())");
-                $notification_stmt->bind_param("is", $_SESSION['user_id'], $notification_message);
-                $notification_stmt->execute();
-                $notification_stmt->close();
+                // Insert notifications for BOTH admin and candidate so the bell updates
+                $notification_message_admin = "New interview scheduled for " . htmlspecialchars($applicant['fullname']) . " - " . htmlspecialchars($applicant['position']);
+                $notification_message_candidate = "Your interview is scheduled for " . htmlspecialchars($applicant['position']) . " - " . htmlspecialchars($formatted_date);
+
+                // notifications.reference_id has a FK to job_applications.application_id.
+                // So do NOT use $interview_id here; instead fetch the application_id for this candidate+job.
+                $application_id = null;
+                $appStmt = $conn->prepare("SELECT application_id FROM job_applications WHERE user_id = ? AND job_id = ? LIMIT 1");
+                if ($appStmt) {
+                    $appStmt->bind_param("ii", $user_id, $job_id);
+                    $appStmt->execute();
+                    $appResult = $appStmt->get_result();
+                    $appRow = $appResult ? $appResult->fetch_assoc() : null;
+                    if ($appRow && isset($appRow['application_id'])) {
+                        $application_id = (int)$appRow['application_id'];
+                    }
+                    $appStmt->close();
+                }
+
+                $notification_reference_id = $application_id;
+
+                // Insert admin notification
+
+
+                $notification_stmt_admin = $conn->prepare("INSERT INTO notifications (user_id, message, type, reference_id, is_read, created_at) VALUES (?, ?, 'interview', ?, 0, NOW())");
+                if ($notification_stmt_admin) {
+                    $notification_stmt_admin->bind_param("isi", $_SESSION['user_id'], $notification_message_admin, $notification_reference_id);
+                    $notification_stmt_admin->execute();
+                    $notification_stmt_admin->close();
+                }
+
+                // Insert candidate notification
+                $notification_stmt_candidate = $conn->prepare("INSERT INTO notifications (user_id, message, type, reference_id, is_read, created_at) VALUES (?, ?, 'interview', ?, 0, NOW())");
+                if ($notification_stmt_candidate) {
+                    $notification_stmt_candidate->bind_param("isi", $user_id, $notification_message_candidate, $notification_reference_id);
+                    $notification_stmt_candidate->execute();
+                    $notification_stmt_candidate->close();
+                }
 
                 echo "<script>alert('Interview scheduled and email sent successfully.'); window.location.href = 'schedule_interview.php';</script>";
+
             } catch (Exception $e) {
                 echo "<script>alert('Interview scheduled, but email could not be sent. Error: " . addslashes($mail->ErrorInfo) . "'); window.location.href = 'scheduled_interviews.php';</script>";
             }
