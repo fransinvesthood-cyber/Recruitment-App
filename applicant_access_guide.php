@@ -491,7 +491,29 @@ body.dark-mode .progress-shell{ background: rgba(255,255,255,.10); border-color:
             </div>
         </div>
 
-<?php if ($firstIncomplete && in_array($firstIncomplete['key'], ['complete_profile','add_qualifications','add_skills','add_computer_skills'], true)) : ?>
+<?php
+// --------------------
+// Professional Summary (shown right after Personal Information section)
+// --------------------
+$professionalSummary = null;
+try {
+    $sumStmt = $conn->prepare("SELECT professional_summary FROM users WHERE user_id=? LIMIT 1");
+    if ($sumStmt) {
+        $sumStmt->bind_param("i", $user_id);
+        $sumStmt->execute();
+        $sumRes = $sumStmt->get_result();
+        $sumRow = $sumRes ? $sumRes->fetch_assoc() : null;
+        $sumStmt->close();
+        $professionalSummary = $sumRow['professional_summary'] ?? null;
+    }
+} catch (Throwable $e) {
+    $professionalSummary = null;
+}
+
+$isSummaryFilled = isFilled($professionalSummary) || (is_string($professionalSummary) && trim(strip_tags($professionalSummary)) !== '');
+?>
+
+<?php if ($firstIncomplete && in_array($firstIncomplete['key'], ['complete_profile','add_qualifications','add_skills','add_computer_skills','personal_information'], true)) : ?>
             <div class="warning-box" role="alert">
                 <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
                     <div>
@@ -523,7 +545,13 @@ body.dark-mode .progress-shell{ background: rgba(255,255,255,.10); border-color:
         <?php endif; ?>
 
         <div class="timeline">
-            <?php foreach ($stages as $stage): ?>
+<?php
+// Render Professional Summary card right after Personal Information stage
+// (even if Personal Information is incomplete, as long as the summary has content)
+$renderSummaryCard = $isSummaryFilled;
+?>
+<?php foreach ($stages as $stage): ?>
+
                 <?php
                     $done = !empty($stage['done']);
                     $class = $done ? 'stage-card completed' : 'stage-card pending';

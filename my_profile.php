@@ -2625,6 +2625,18 @@ loadSupportingDocsBlock();
                 return true;
             }
 
+            // Special-case mappings for full section keys used by the access guide
+            if (section === 'computer_skills' || section === 'computer_skill' || section === 'computer literacy') {
+                openByTitle('computer literacy'); // matches header text
+            } else if (section === 'languages' || section === 'language_proficiency') {
+                openByTitle('language proficiency');
+            } else if (section === 'work_experience') {
+                openByTitle('work experience');
+            } else if (section === 'skills') {
+                openByTitle('skills');
+            }
+
+
             const idx = indexMap[section];
             if (typeof idx === 'number' && idx >= 0 && idx < items.length) {
                 const targetItem = items[idx];
