@@ -24,7 +24,7 @@ if (isset($_POST['email'])) {
         $stmt->bind_param("sss", $email, $token, $expires);
         $stmt->execute();
 
-        $resetLink = "http://localhost/recruitment-project-phps/reset_password.php?token=$token";
+        $resetLink = "https://investhoodit.com/recruitment-project-phps/reset_password.php?token=$token";
 
         $mail = new PHPMailer(true);
         try {

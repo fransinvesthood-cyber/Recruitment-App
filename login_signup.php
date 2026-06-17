@@ -832,7 +832,9 @@ body {
             transition: opacity 0.5s ease-in-out;
         }
 
-        .input-box i#toggle-password {
+        .input-box i#toggle-password,
+        .input-box i#toggle-signup-password,
+        .input-box i#toggle-confirm-password {
           position: absolute;
           right: 12px;
           left: auto;
@@ -844,9 +846,12 @@ body {
           transition: color 0.3s ease;
         }
 
-        .input-box i#toggle-password:hover {
+        .input-box i#toggle-password:hover,
+        .input-box i#toggle-signup-password:hover,
+        .input-box i#toggle-confirm-password:hover {
           color: #007bff;
         }
+
 
         /* Enhanced Custom Dropdown Styles */
         .custom-select {
@@ -1120,7 +1125,7 @@ body {
         </div>
       </div>
       <div class="back">
-        <img class="backImg" src="img/bg101.jpg" alt="">
+        <img class="backImg" src="img/back1.jpg" alt="Recruitment background">
         <div class="text">
           <span class="text-1"></span>
           <span class="text-2"></span>
@@ -1248,15 +1253,20 @@ body {
                 <div class="input-box">
                   <i class="fa fa-lock" aria-hidden="true"></i>
                   <input type="password" name="password" id="signup-password" placeholder="Enter your password" required>
+                  <i class="fas" id="toggle-signup-password"></i>
                 </div>
+
                 <div class="password-requirements" style="margin-top: 5px; font-size: 12px; color: #666;">Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.</div>
 
                 <!-- Enhanced Password Confirmation with Live Validation -->
                 <div class="input-box password-confirm">
                   <i class="fa fa-lock" aria-hidden="true"></i>
                   <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm your password" required>
+                  <i class="fas" id="toggle-confirm-password" style="pointer-events: auto;"></i>
                   <span class="password-match-indicator" id="password-match-indicator"></span>
                 </div>
+
+
                 <div class="password-feedback" id="password-feedback"></div>
                 
                 <div class="button input-box">
@@ -1265,11 +1275,11 @@ body {
                 <div class="text sign-up-text" style="margin-left: -45px;">Already have an account? <label for="flip">Login now</label></div>
                 <br>
                 <!-- Google Sign Up Button for Signup Form -->
-                <div class="google-signup" style="text-align: center; margin: 20px 0;">
+                <!--<div class="google-signup" style="text-align: center; margin: 20px 0;">
                     <a href="<?= htmlspecialchars($google_login_url) ?>" style="display: inline-block; padding: 12px 24px; background: #4285f4; color: white; text-decoration: none; border-radius: 8px; font-size: 16px; transition: background 0.3s ease;">
                         <i class="fab fa-google" style="margin-right: 10px;"></i>Sign up with Google
                     </a>
-                </div>
+                </div>-->
             </div>
         </form>
     </div>
@@ -1279,23 +1289,56 @@ body {
   </div>
 
   <script>
+      // Login password toggle
       const passwordInput = document.getElementById("password");
       const togglePassword = document.getElementById("toggle-password");
 
-      // Start with hidden password and eye-slash icon
-      togglePassword.classList.add("fa-eye-slash");
+      if (passwordInput && togglePassword) {
+        // Start with hidden password and eye-slash icon
+        togglePassword.classList.add("fa-eye-slash");
+        togglePassword.addEventListener("click", function () {
+          const isHidden = passwordInput.type === "password";
 
-      togglePassword.addEventListener("click", function () {
-        const isHidden = passwordInput.type === "password";
+          // Toggle input type
+          passwordInput.type = isHidden ? "text" : "password";
 
-        // Toggle input type
-        passwordInput.type = isHidden ? "text" : "password";
+          // Set correct icon
+          this.classList.toggle("fa-eye-slash", !isHidden);
+          this.classList.toggle("fa-eye", isHidden);
+        });
+      }
 
-        // Set correct icon
-        this.classList.toggle("fa-eye-slash", !isHidden); // show eye-slash when password is hidden
-        this.classList.toggle("fa-eye", isHidden);        // show eye when password is visible
-      });
+      // Signup password toggle (registration)
+      const signupPasswordInput = document.getElementById("signup-password");
+      const toggleSignupPassword = document.getElementById("toggle-signup-password");
+
+      if (signupPasswordInput && toggleSignupPassword) {
+        toggleSignupPassword.classList.add("fa-eye-slash");
+        toggleSignupPassword.addEventListener("click", function () {
+          const isHidden = signupPasswordInput.type === "password";
+          signupPasswordInput.type = isHidden ? "text" : "password";
+
+          this.classList.toggle("fa-eye-slash", !isHidden);
+          this.classList.toggle("fa-eye", isHidden);
+        });
+      }
+
+      // Confirm password toggle (registration)
+      const confirmPasswordInput = document.getElementById("confirm_password");
+      const toggleConfirmPassword = document.getElementById("toggle-confirm-password");
+
+      if (confirmPasswordInput && toggleConfirmPassword) {
+        toggleConfirmPassword.classList.add("fa-eye-slash");
+        toggleConfirmPassword.addEventListener("click", function () {
+          const isHidden = confirmPasswordInput.type === "password";
+          confirmPasswordInput.type = isHidden ? "text" : "password";
+
+          this.classList.toggle("fa-eye-slash", !isHidden);
+          this.classList.toggle("fa-eye", isHidden);
+        });
+      }
   </script>
+
 
   <!-- Live Username and Email Validation Script -->
   <script>

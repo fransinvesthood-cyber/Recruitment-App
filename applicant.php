@@ -3133,12 +3133,12 @@ function markAllAsRead() {
             <div class="header">
                 <h4>Jobs for you</h4>
             </div>
-            <!-- Career Quiz CTA Button (Smaller) -->
-<div style="margin: 20px 0; text-align: center;">
-    <a href="career_quiz.php" class="quiz-cta-btn">
-        <i class='bx bx-poll'></i> Discover Your Ideal Career
-    </a>
-</div>
+            <!-- Career Quiz CTA Button (Smaller)
+            <div style="margin: 20px 0; text-align: center;">
+                <a href="career_quiz.php" class="quiz-cta-btn">
+                    <i class='bx bx-poll'></i> Discover Your Ideal Career
+                </a>
+            </div> -->
 
 <style>
     .quiz-cta-btn {
@@ -3637,9 +3637,9 @@ document.getElementById("profile_picture").addEventListener("change", function()
                 <div class="chatbot-content" id="chatbotContent">
                     <iframe src="https://your-chatbot-url.com" frameborder="0"></iframe>
                 </div><!-- Floating Chatbot Button -->
-                <button id="chatbot-fab" onclick="toggleChatbot()">
+                <!--<button id="chatbot-fab" onclick="toggleChatbot()">
                     🤖
-                </button>
+                </button>-->
     <div id="chatbot-container">
         <div id="chatbot-header">
             <span>💼 Career Advisor</span>

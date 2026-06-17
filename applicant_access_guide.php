@@ -441,17 +441,32 @@ body{
 }
 
 /* Dark mode compatibility if other pages set body.dark-mode */
-body.dark-mode{
-  background: #0d1117;
+body.dark-mode,
+body.dark-mode *{
   color: #f0f0f0;
 }
+body.dark-mode{
+  background: #0d1117;
+}
+
 
 body.dark-mode .guide-header{ color:#fff; }
-body.dark-mode .stage-card .card{ background:#1f1f1f; }
+body.dark-mode .guide-header::after{ opacity:.55; }
+body.dark-mode .stage-card .card{ background:#1f1f1f; border-color: rgba(255,255,255,.06); }
 body.dark-mode .stage-desc{ color:#d0d0d0; }
 body.dark-mode .badge-pending{ background: rgba(255,255,255,.08); color:#e6e6e6; border-color: rgba(255,255,255,.14); }
+body.dark-mode .badge-complete{ background: rgba(25,135,84,.18); color: #1fe18c; border: 1px solid rgba(31,225,140,.25); }
 body.dark-mode .warning-box{ background: rgba(220,53,69,.12); }
 body.dark-mode .progress-shell{ background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.18); }
+body.dark-mode .btn-primary{ background:#3b82f6; border-color:#3b82f6; }
+body.dark-mode .btn-soft{ background: rgba(102,126,234,.18); border-color: rgba(102,126,234,.28); color:#a7b9ff; }
+body.dark-mode .btn-outline-danger{ border-color: rgba(220,53,69,.55); color: #ff6b77; }
+body.dark-mode .timeline::before{ background: linear-gradient(to bottom, rgba(233,236,239,.14), rgba(233,236,239,.55), rgba(233,236,239,.14)); }
+body.dark-mode .stage-card .dot{ background: rgba(233,236,239,.35); border-color: #1f1f1f; }
+body.dark-mode .warning-box strong{ color: #ff6b77; }
+body.dark-mode a{ color: #93c5fd; }
+body.dark-mode a:hover{ color: #bfdbfe; }
+
 </style>
 
 

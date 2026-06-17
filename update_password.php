@@ -48,7 +48,7 @@ if (isset($_POST['token'], $_POST['new_password'])) {
             $mail->setFrom('delanideco69@gmail.com', 'Recruitment System');
             $mail->addAddress($email);
             $mail->Subject = 'Password Reset Successful';
-            $mail->Body = "Password reset was successful.\n\nHere is your new password: $rawPassword\n\nYou can now log in.";
+            $mail->Body = "Password reset was successful.\n\nYou can now log in.";
 
             $mail->send();
             $_SESSION['message'] = "Password reset successful. Please check your email.";

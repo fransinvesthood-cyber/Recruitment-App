@@ -510,7 +510,7 @@ $token = $_GET['token'] ?? '';
                             <?= htmlspecialchars($message) ?>
                         </div>
                     <?php endif; ?>
-                    <form action="#" method="post" id="resetForm">
+                    <form action="update_password.php" method="post" id="resetForm">
                         <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
                         <div class="input-boxes">
                             <div class="input-box" id="passwordBox">
