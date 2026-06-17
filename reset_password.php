@@ -19,6 +19,22 @@ $token = $_GET['token'] ?? '';
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 
+        :root {
+            --primary: #7C3AED;
+            --primary-glow: rgba(124, 58, 237, 0.5);
+            --dark: #09090B;
+            --white: #FFFFFF;
+            --gray-50: #FAFAFA;
+            --gray-100: #F4F4F5;
+            --gray-200: #E4E4E7;
+            --gray-400: #A1A1AA;
+            --gray-600: #52525B;
+            --gray-700: #404040;
+            --gray-800: #18181B;
+            --grid-main: rgba(124, 58, 237, 0.15);
+            --grid-sub: rgba(124, 58, 237, 0.05);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -31,26 +47,65 @@ $token = $_GET['token'] ?? '';
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            /*background-image: url(./img/bg101.jpg);*/
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-attachment: fixed;
+            background: var(--white);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- Index-style background (grid + glow) --- */
+        .bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: var(--white);
+            background-image:
+                linear-gradient(var(--grid-main) 1.5px, transparent 1.5px),
+                linear-gradient(90deg, var(--grid-main) 1.5px, transparent 1.5px),
+                linear-gradient(var(--grid-sub) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-sub) 1px, transparent 1px);
+            background-size: 80px 80px, 80px 80px, 20px 20px, 20px 20px;
+            animation: gridMove 30s linear infinite;
+        }
+
+        .bg-glow {
+            position: absolute;
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120vw;
+            height: 100vh;
+            background: radial-gradient(circle at 50% 30%, var(--primary-glow) 0%, transparent 60%);
+            z-index: -1;
+            filter: blur(60px);
+            opacity: 0.7;
+        }
+
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 80px 80px; }
         }
 
         .container {
             position: relative;
             max-width: 850px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(250, 250, 250, 0.85);
             backdrop-filter: blur(10px);
             padding: 50px 40px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.1);
             perspective: 2700px;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--gray-200);
             animation: fadeInUp 1s ease-out;
         }
+
+
+        /* Keep the rest of the original layout rules */
+
 
         .container .cover {
             position: absolute;
@@ -147,7 +202,8 @@ $token = $_GET['token'] ?? '';
             bottom: -5px;
             height: 4px;
             width: 50px;
-            background: linear-gradient(90deg, #e74c3c 0%, #3498db 100%);
+            background: linear-gradient(90deg, var(--primary) 0%, #6B21A8 100%);
+
             transform: translateX(-50%);
             border-radius: 2px;
         }
@@ -172,9 +228,10 @@ $token = $_GET['token'] ?? '';
         }
 
         .forms .form-content .input-box:focus-within {
-            border-color: #e74c3c;
-            background: #fef2f2;
+            border-color: var(--primary);
+            background: rgba(124, 58, 237, 0.08);
         }
+
 
         .form-content .input-box input {
             flex: 1;
@@ -191,8 +248,9 @@ $token = $_GET['token'] ?? '';
         }
 
         .form-content .input-box input:focus {
-            border-color: #e74c3c;
+            border-color: var(--primary);
         }
+
 
         .form-content .input-box input::placeholder {
             color: #9ca3af;
@@ -202,7 +260,7 @@ $token = $_GET['token'] ?? '';
         .form-content .input-box i {
             position: absolute;
             left: 12px;
-            color: #e74c3c;
+            color: var(--primary);
             font-size: 16px;
             z-index: 1;
             display: flex;
@@ -210,6 +268,7 @@ $token = $_GET['token'] ?? '';
             justify-content: center;
             height: 100%;
         }
+
 
         .forms .form-content .text {
             font-size: 14px;
@@ -238,7 +297,8 @@ $token = $_GET['token'] ?? '';
 
         .forms .form-content .button input {
             color: #fff;
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, #6B21A8 100%);
+
             border: none;
             border-radius: 25px;
             padding: 15px 30px;
@@ -254,9 +314,10 @@ $token = $_GET['token'] ?? '';
 
         .forms .form-content .button input:hover {
             transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
-            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.35);
+            background: linear-gradient(135deg, #6B21A8 0%, var(--primary) 100%);
         }
+
 
         .forms .form-content .button input:disabled {
             opacity: 0.6;
@@ -265,15 +326,17 @@ $token = $_GET['token'] ?? '';
         }
 
         .forms .form-content .button input.enabled {
-            background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+            background: linear-gradient(135deg, #6B21A8 0%, var(--primary) 100%);
             cursor: pointer;
         }
 
+
         .forms .form-content .button input.enabled:hover {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            box-shadow: 0 4px 16px rgba(231, 76, 60, 0.13);
+            background: linear-gradient(135deg, var(--primary) 0%, #6B21A8 100%);
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.13);
             transform: translateY(-1px);
         }
+
 
         .alert {
             width: 100%;
@@ -288,16 +351,18 @@ $token = $_GET['token'] ?? '';
         }
 
         .alert-success {
-            background-color: #e6f4ea;
-            color: #188038;
-            border-left: 4px solid #188038;
+            background-color: rgba(124, 58, 237, 0.08);
+            color: #2E1065;
+            border-left: 4px solid var(--primary);
         }
 
+
         .alert-danger {
-            background-color: #fdecea;
-            color: #d93025;
-            border-left: 4px solid #d93025;
+            background-color: rgba(109, 40, 217, 0.09);
+            color: #4C1D95;
+            border-left: 4px solid var(--accent-dark, #6D28D9);
         }
+
 
 
         .validation-feedback {
@@ -491,7 +556,10 @@ $token = $_GET['token'] ?? '';
     </style>
 </head>
 <body>
+    <div class="bg-canvas"></div>
+    <div class="bg-glow"></div>
     <div class="container">
+
         <div class="cover">
             <div class="front">
                 <img src="img/frontImg.jpg" alt="">
@@ -578,6 +646,7 @@ $token = $_GET['token'] ?? '';
     <script>
         // Get DOM elements
         const newPassword = document.getElementById('new_password');
+
         const confirmPassword = document.getElementById('confirm_password');
         const passwordBox = document.getElementById('passwordBox');
         const confirmBox = document.getElementById('confirmBox');
