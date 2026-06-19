@@ -55,7 +55,8 @@ $messageType = "";
 $role = $username = $fullname = $gender = $dob = $email = $phone = $address = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-signup'])) {
-    $role = $_POST['role'];
+    // Public registration is Applicant-only. Ignore any submitted role value.
+    $role = 'Applicant';
     $username = $_POST['username'];
     $fullname = $_POST['fullname'];
     $gender = $_POST['gender'];
@@ -146,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-login'])) {
       $messageType = "error";
   } else {
       // Proceed with login
-      $stmt = $conn->prepare("SELECT user_id, password, role, email_verified FROM users WHERE username = ?");
+      $stmt = $conn->prepare("SELECT user_id, password, role, email_verified, account_status FROM users WHERE username = ?");
       $stmt->bind_param("s", $username);
       $stmt->execute();
       $stmt->store_result();
@@ -157,10 +158,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-login'])) {
           $_SESSION['login_attempts'][$username] = ($_SESSION['login_attempts'][$username] ?? 0) + 1;
           $_SESSION['last_attempt_time'][$username] = $currentTime;
       } else {
-          $stmt->bind_result($user_id, $hashedPassword, $role, $email_verified);
+          $stmt->bind_result($user_id, $hashedPassword, $role, $email_verified, $account_status);
           $stmt->fetch();
 
-          if (!password_verify($password, $hashedPassword)) {
+          if ($account_status === 'Inactive') {
+              $message = "Your account is inactive. Please contact support.";
+              $messageType = "error";
+              $_SESSION['login_attempts'][$username] = ($_SESSION['login_attempts'][$username] ?? 0) + 1;
+              $_SESSION['last_attempt_time'][$username] = $currentTime;
+          } elseif (!password_verify($password, $hashedPassword)) {
               $message = "Incorrect password.";
               $messageType = "error";
               $_SESSION['login_attempts'][$username] = ($_SESSION['login_attempts'][$username] ?? 0) + 1;
@@ -169,17 +175,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-login'])) {
               $message = "Please verify your email address before logging in. Check your email for the verification link.";
               $messageType = "error";
           } else {
-              // Successful login
+              // Successful login (account must be Active at this point)
               $_SESSION['username'] = $username;
               $_SESSION['role'] = $role;
               $_SESSION['user_id'] = $user_id;
 
+
               // Set success message to display on next page
               $_SESSION['message'] = "You have successfully logged in.";
-              $_SESSION['messageClass'] = "success";
+                $_SESSION['messageClass'] = "success";
 
               // Reset login attempts for this user
               $_SESSION['login_attempts'][$username] = 0;
+
+              // (Optional) remember last successful login timestamp if column exists
+              try {
+                  $upd = $conn->prepare("UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE user_id = ?");
+                  if ($upd) {
+                      $upd->bind_param('i', $user_id);
+                      $upd->execute();
+                      $upd->close();
+                  }
+              } catch (Throwable $e) {}
+
 
               // Redirect based on role
               if ($role === 'Admin') {
@@ -1188,19 +1206,18 @@ body {
         <div class="title">Fill out the registration form to create an account</div>
         <form action="#" method="post" id="signup-form">
             
-            <!-- Enhanced Role Selection -->
+            <!-- Role is NOT user-selectable: public signup always creates Applicant accounts -->
             <div class="role-select">
                 <label for="role">Choose your role:</label>
                 <div class="custom-select">
                     <i class="fas fa-user-tie"></i>
-                    <select id="role" name="role" required>
-                        <option value="" disabled selected>Select your role</option>
-                        <option value="Applicant" <?= ($role === 'Applicant') ? 'selected' : '' ?>>Job Applicant</option>
-                        <option value="Admin" <?= ($role === 'Admin') ? 'selected' : '' ?>>Administrator</option>
-                        <option value="Consultant" <?= ($role === 'Consultant') ? 'selected' : '' ?>>Consultant</option>
+                    <select id="role" name="role" required disabled>
+                        <option value="Applicant" selected>Applicant (Job Seeker)</option>
                     </select>
                 </div>
+                <input type="hidden" name="role" value="Applicant">
             </div>
+            
             
             <div class="input-boxes">
                 <!-- Username Field with Live Validation -->

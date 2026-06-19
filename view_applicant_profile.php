@@ -1747,7 +1747,7 @@ unset($we);
             <li class="section-header"><span>Candidates</span></li>
             <li><a href="manage_jobs.php"><i class='bx bx-spreadsheet'></i><span>Jobs</span></a></li>
             <li><a href="manage_applications.php"><i class='bx bx-file'></i><span>Applications</span></a></li>
-            <li><a href="manage_candidates.php"><i class='bx bx-user'></i><span>Candidates</span></a></li>
+            <li><a href="admin_user_management.php"><i class='bx bx-user'></i><span>Users</span></a></li>
             <li><a href="schedule_interview.php"><i class='bx bx-group'></i><span>Interviews</span></a></li>
             <li><a href="calendar.php"><i class='bx bx-calendar'></i><span>Calendar</span></a></li>
             <li class="section-header"><span>Consultants</span></li>
