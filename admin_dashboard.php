@@ -2038,17 +2038,40 @@ if (!empty($_SESSION['message'])) {
                                         </div>
                                         <div class="notification-time">
                                             <?php echo date('M d, H:i', strtotime($notification['created_at'])); ?>
+<div style="display:flex; align-items:center; gap:8px; justify-content:flex-end;">
+                                            <button class="delete-notification-btn" data-id="<?php echo $notification['notification_id']; ?>" title="Delete notification" aria-label="Delete notification">
+                                                <i class='bx bx-trash'></i>
+                                            </button>
                                             <button class="mark-read-btn" data-id="<?php echo $notification['notification_id']; ?>" title="Mark as read">
                                                 <i class='bx bx-check'></i>
                                             </button>
+                                        </div>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </div>
-                        <div class="notification-footer">
-                            <a href="all_notifications.php" id="viewAllNotificationsBtn">View all notifications</a>
+                            <div class="notification-footer">
+                            <a href="#" id="viewAllNotificationsBtn" style="display:inline-flex; gap:6px; align-items:center;">View all notifications</a>
                         </div>
+
+                        <!-- Notifications modal (loaded on demand) -->
+                        <div id="notificationsModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:2000; align-items:center; justify-content:center;">
+                            <div style="width:92vw; max-width:980px; background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 18px 60px rgba(0,0,0,0.35); margin:auto;">
+
+                                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 18px; background:rgba(102,126,234,0.08); border-bottom:1px solid #eef2f7;">
+                                    <div style="font-weight:900; color:#667eea;">All Notifications</div>
+                                    <div style="display:flex; gap:10px; align-items:center;">
+                                        <button type="button" id="closeNotificationsModalBtn" style="border:none; cursor:pointer; background:#e9ecef; color:#333; border-radius:10px; padding:8px 12px; font-weight:800;">Close</button>
+                                    </div>
+                                </div>
+                                <div id="notificationsModalContent" style="min-height:200px;">
+                                    <!-- ajax content -->
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
                 <div class="calendar-bell" id="calendarBell">
@@ -2887,6 +2910,50 @@ if (!empty($_SESSION['message'])) {
                 .catch(error => console.error('Error:', error));
             });
 
+            // Handle delete notifications
+            document.querySelectorAll('.delete-notification-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const notificationId = this.getAttribute('data-id');
+                    const notificationItem = this.closest('.notification-item');
+
+                    if (!confirm('Delete this notification?')) return;
+
+                    fetch('delete_notifications.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'notification_id=' + encodeURIComponent(notificationId)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.success) {
+                            // If item was unread, decrement badge
+                            if (notificationItem && notificationItem.classList.contains('unread')) {
+                                notificationItem.classList.remove('unread');
+                                const dot = notificationItem.querySelector('.unread-dot');
+                                if (dot) dot.remove();
+
+                                const currentCount = parseInt(notificationBadge.textContent) || 0;
+                                if (currentCount > 1) {
+                                    notificationBadge.textContent = currentCount - 1;
+                                } else {
+                                    notificationBadge.style.display = 'none';
+                                }
+                            }
+                            if (notificationItem) notificationItem.remove();
+                        } else {
+                            alert((data && data.message) ? data.message : 'Failed to delete notification');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to delete notification');
+                    });
+                });
+            });
+
             // Handle individual mark as read buttons
             document.querySelectorAll('.mark-read-btn').forEach(btn => {
                 btn.addEventListener('click', function(e) {
@@ -2922,9 +2989,59 @@ if (!empty($_SESSION['message'])) {
                 });
             });
 
+
+            // Open all-notifications modal
+            const viewAllNotificationsBtn2 = document.getElementById('viewAllNotificationsBtn');
+            const notificationsModal = document.getElementById('notificationsModal');
+            const notificationsModalContent = document.getElementById('notificationsModalContent');
+            const closeNotificationsModalBtn = document.getElementById('closeNotificationsModalBtn');
+
+            let currentModalPage = 1;
+
+            function loadModalPage(pageNum) {
+                currentModalPage = pageNum;
+                if (!notificationsModalContent) return;
+                notificationsModalContent.innerHTML = "<div style='padding:24px; color:#6c757d; text-align:center;'><i class='bx bx-loader bx-spin' style='font-size:28px;'></i> Loading...</div>";
+
+                const url = 'notifications_modal.php?page=' + encodeURIComponent(pageNum) + '&per_page=20';
+                fetch(url)
+                    .then(r => r.text())
+                    .then(html => {
+                        notificationsModalContent.innerHTML = html;
+                        // re-attach modal pager handler
+                        // (modal content script handles buttons itself on insert)
+                    })
+                    .catch(() => {
+                        notificationsModalContent.innerHTML = "<div style='padding:24px; color:#dc3545;'>Failed to load notifications.</div>";
+                    });
+            }
+
+            if (viewAllNotificationsBtn2 && notificationsModal && notificationsModalContent) {
+                viewAllNotificationsBtn2.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    notificationsModal.style.display = 'flex';
+                    loadModalPage(1);
+                });
+            }
+
+            if (closeNotificationsModalBtn && notificationsModal) {
+                closeNotificationsModalBtn.addEventListener('click', function() {
+                    notificationsModal.style.display = 'none';
+                });
+            }
+
+            if (notificationsModal) {
+                notificationsModal.addEventListener('click', function(e) {
+                    if (e.target === notificationsModal) {
+                        notificationsModal.style.display = 'none';
+                    }
+                });
+            }
+
             // Handle notification item clicks for navigation
             document.querySelectorAll('.notification-item').forEach(item => {
                 item.addEventListener('click', function() {
+
                     const notificationType = this.getAttribute('data-type');
                     const referenceId = this.getAttribute('data-reference');
 

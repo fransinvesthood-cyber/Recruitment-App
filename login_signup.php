@@ -162,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-login'])) {
           $stmt->fetch();
 
           if ($account_status === 'Inactive') {
-              $message = "Your account is inactive. Please contact support.";
+              $message = "Your account is inactive. Please contact the support team.";
               $messageType = "error";
               $_SESSION['login_attempts'][$username] = ($_SESSION['login_attempts'][$username] ?? 0) + 1;
               $_SESSION['last_attempt_time'][$username] = $currentTime;

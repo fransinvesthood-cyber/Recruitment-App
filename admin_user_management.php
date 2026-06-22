@@ -142,6 +142,40 @@ if ($counts_res) {
 
 $admin_ip = $_SERVER['REMOTE_ADDR'] ?? null;
 
+// Admin notifications (optional): if the system has a notifications table,
+// we can create a notification for the affected user after activation/deactivation/deletion.
+// This is intentionally non-fatal if the notifications table/columns do not exist.
+function add_notification_safe(mysqli $conn, int $target_user_id, string $message, string $type = 'general', $reference_id = null): void {
+    $ref = $reference_id === null ? null : (string)$reference_id;
+
+    // Best-effort insert. If schema mismatches, it should fail silently.
+    // Use bind_param types that match the placeholder count:
+    // (1) i: target_user_id
+    // (2) s: message
+    // (3) s: type
+    // (4) s: reference_id (nullable)
+    $sql = "INSERT INTO notifications (user_id, message, is_read, created_at, type, reference_id)
+            VALUES (?, ?, 0, NOW(), ?, ?)";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        return;
+    }
+
+    $stmt->bind_param('isss', $target_user_id, $message, $type, $ref);
+
+    try {
+        $stmt->execute();
+    } catch (Throwable $e) {
+        // ignore
+    }
+
+
+    $stmt->close();
+}
+
+
+
 // ---- Handle actions ----
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 
@@ -213,6 +247,23 @@ if ($action === 'create_user') {
 
                         $message = 'User created successfully.';
                         $messageClass = 'success';
+
+                        // Notify admin + affected user (best-effort)
+                        add_notification_safe(
+                            $conn,
+                            $admin_user_id,
+                            "A new user was created: {$username}.",
+                            'general',
+                            $target_user_id
+                        );
+
+                        add_notification_safe(
+                            $conn,
+                            $target_user_id,
+                            "Your account has been created by an administrator.",
+                            'general',
+                            $target_user_id
+                        );
                     } else {
                         $message = 'Error creating user: ' . $conn->error;
                         $messageClass = 'error';
@@ -350,14 +401,37 @@ if ($action === 'set_activation') {
 
         $up = $conn->prepare("UPDATE users SET account_status = ? WHERE user_id = ?");
         $up->bind_param('si', $new_status, $user_id);
-        if ($up->execute()) {
+if ($up->execute()) {
             $audit_type = ($new_status === 'Active') ? 'activation' : 'deactivation';
             add_audit_log($conn, $admin_user_id, $admin_username, $audit_type, $user_id, $target_username ?? 'unknown', $admin_ip, [
                 'account_status' => $new_status,
             ]);
+
+            // Notify affected user (best-effort)
+            $actionText = ($new_status === 'Active') ? 'activated' : 'deactivated';
+
+            // 1) Notify the affected user
+            add_notification_safe(
+                $conn,
+                $user_id,
+                "Your account has been {$actionText} by an administrator.",
+                'general',
+                null
+            );
+
+            // 2) Notify the admin who performed the action
+            add_notification_safe(
+                $conn,
+                $admin_user_id,
+                "You {$actionText} the account of {$target_username}.",
+                'general',
+                $user_id
+            );
+
             $message = 'Account status updated.';
             $messageClass = 'success';
         } else {
+
             $message = 'Error updating account status: ' . $conn->error;
             $messageClass = 'error';
         }
@@ -390,6 +464,23 @@ if ($action === 'delete_user') {
             if ($del->execute()) {
                 $message = 'User deleted successfully.';
                 $messageClass = 'success';
+
+                // Notify admin + (best-effort) affected user before deletion
+                add_notification_safe(
+                    $conn,
+                    $admin_user_id,
+                    "User was deleted: {$uname}.",
+                    'general',
+                    (int)$user_id
+                );
+
+                add_notification_safe(
+                    $conn,
+                    (int)$user_id,
+                    "Your account was deleted by an administrator.",
+                    'general',
+                    (int)$user_id
+                );
             } else {
                 $message = 'Error deleting user: ' . $conn->error;
                 $messageClass = 'error';
@@ -430,12 +521,35 @@ if ($role_filter !== 'all') {
 
 if ($status_filter !== 'all') {
     if ($status_filter === 'Active' || $status_filter === 'Inactive') {
-        $conn->query("ALTER TABLE users ADD COLUMN account_status ENUM('Active','Inactive') NOT NULL DEFAULT 'Active'");
+        // Ensure account_status exists before filtering (avoid fatal error if column already exists)
+        $ensure_account_status = function(string $col) use ($conn): bool {
+            $ensure_sql_local = "
+                SELECT COLUMN_NAME
+                FROM information_schema.columns
+                WHERE table_schema = DATABASE()
+                  AND table_name = 'users'
+                  AND column_name = ?
+            ";
+            $st = $conn->prepare($ensure_sql_local);
+            if (!$st) return false;
+            $st->bind_param('s', $col);
+            $st->execute();
+            $st->store_result();
+            $exists = $st->num_rows > 0;
+            $st->close();
+            return $exists;
+        };
+
+        if (!$ensure_account_status('account_status')) {
+            $conn->query("ALTER TABLE users ADD COLUMN account_status ENUM('Active','Inactive') NOT NULL DEFAULT 'Active'");
+        }
+
         $where[] = "account_status = ?";
         $params[] = $status_filter;
         $types .= 's';
     }
 }
+
 
 $where_sql = $where ? ('WHERE ' . implode(' AND ', $where)) : '';
 
@@ -521,7 +635,29 @@ if (($_GET['get_user'] ?? '') === '1') {
     $uid = (int)($_GET['user_id'] ?? 0);
     $out = ['ok' => false];
     if ($uid > 0) {
-        $conn->query("ALTER TABLE users ADD COLUMN account_status ENUM('Active','Inactive') NOT NULL DEFAULT 'Active'");
+        // Ensure account_status exists before selecting it (avoid fatal error)
+        $ensure_account_status = function(string $col) use ($conn): bool {
+            $ensure_sql_local = "
+                SELECT COLUMN_NAME
+                FROM information_schema.columns
+                WHERE table_schema = DATABASE()
+                  AND table_name = 'users'
+                  AND column_name = ?
+            ";
+            $st = $conn->prepare($ensure_sql_local);
+            if (!$st) return false;
+            $st->bind_param('s', $col);
+            $st->execute();
+            $st->store_result();
+            $exists = $st->num_rows > 0;
+            $st->close();
+            return $exists;
+        };
+
+        if (!$ensure_account_status('account_status')) {
+            $conn->query("ALTER TABLE users ADD COLUMN account_status ENUM('Active','Inactive') NOT NULL DEFAULT 'Active'");
+        }
+
         $st = $conn->prepare("SELECT user_id, fullname, username, email, role, account_status FROM users WHERE user_id = ?");
         $st->bind_param('i', $uid);
         $st->execute();
@@ -535,6 +671,7 @@ if (($_GET['get_user'] ?? '') === '1') {
     echo json_encode($out);
     exit();
 }
+
 
 // ---- Applicants count (needed for dashboard card #3) ----
 $total_applicants = 0;
@@ -755,12 +892,22 @@ include('includes/admin_user_management_header.php');
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Password</label>
-                                <input type="password" name="password" id="createPassword" class="form-control" required>
+                                <div class="input-group">
+                                    <input type="password" name="password" id="createPassword" class="form-control" required>
+                                    <button class="btn btn-outline-secondary" type="button" id="toggleCreatePassword" aria-label="Show/Hide password">
+                                        <i class='bx bx-hide'></i>
+                                    </button>
+                                </div>
                                 <div class="form-text">Must be strong (uppercase, lowercase, number, special, min 8).</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Confirm Password</label>
-                                <input type="password" name="confirm_password" id="createConfirmPassword" class="form-control" required>
+                                <div class="input-group">
+                                    <input type="password" name="confirm_password" id="createConfirmPassword" class="form-control" required>
+                                    <button class="btn btn-outline-secondary" type="button" id="toggleCreateConfirmPassword" aria-label="Show/Hide confirm password">
+                                        <i class='bx bx-hide'></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Role</label>
@@ -845,6 +992,7 @@ include('includes/admin_user_management_header.php');
     </div>
 
     <script>
+        // Password mismatch validation
         document.getElementById('createUserForm')?.addEventListener('submit', (e) => {
             const p = document.getElementById('createPassword');
             const c = document.getElementById('createConfirmPassword');
@@ -853,6 +1001,28 @@ include('includes/admin_user_management_header.php');
                 alert('Passwords do not match.');
             }
         });
+
+        // Show/Hide password toggles (eye icon)
+        const togglePassword = (toggleBtnId, inputId) => {
+            const btn = document.getElementById(toggleBtnId);
+            const input = document.getElementById(inputId);
+            if (!btn || !input) return;
+
+            btn.addEventListener('click', () => {
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('bx-hide', !isPassword);
+                    icon.classList.toggle('bx-show', isPassword);
+                }
+            });
+        };
+
+        // Default icons are bx-hide; clicking swaps to bx-show and back.
+        // (If your icon set doesn't include bx-show, you can change bx-show to bx-show-alt.)
+        togglePassword('toggleCreatePassword', 'createPassword');
+        togglePassword('toggleCreateConfirmPassword', 'createConfirmPassword');
     </script>
 </body>
 </html>
