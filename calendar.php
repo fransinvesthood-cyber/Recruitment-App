@@ -19,7 +19,7 @@ $stmt->bind_result($fullname);
 $stmt->fetch();
 $stmt->close();
 
-// 🔹 Fetch Interviews
+// ðŸ”¹ Fetch Interviews
 $interview_sql = "
     SELECT 
         i.interview_id,
@@ -34,11 +34,11 @@ $interview_sql = "
 $interview_result = $conn->query($interview_sql);
 $total_interviews = $interview_result ? $interview_result->num_rows : 0;
 
-// 🔹 Fetch Approved Leaves
+// ðŸ”¹ Fetch Approved Leaves
 $leave_sql = "SELECT COUNT(*) as count FROM consultant_leaves WHERE status = 'Approved'";
 $leave_count = $conn->query($leave_sql)->fetch_assoc()['count'];
 
-// 🔹 Fetch Simulated Job Deadlines (30 days after posting)
+// ðŸ”¹ Fetch Simulated Job Deadlines (30 days after posting)
 $deadline_sql = "
     SELECT COUNT(*) as count 
     FROM job_postings 
@@ -95,6 +95,47 @@ if ($deadline_result) {
             'title' => "Deadline: {$row['position']}",
             'start' => $row['closing_date'],
             'className' => 'event-deadline'
+        ];
+    }
+}
+
+// Add created calendar events (from calendar_events table)
+$custom_events_sql = "
+    SELECT event_id, title, description, event_type, event_date, start_time, end_time
+    FROM calendar_events
+    ORDER BY event_date ASC, start_time ASC, event_id ASC
+";
+$custom_events_result = $conn->query($custom_events_sql);
+if ($custom_events_result) {
+    while ($row = $custom_events_result->fetch_assoc()) {
+        $start = $row['event_date'];
+        $end = $row['event_date'];
+        $allDay = empty($row['start_time']);
+
+        if (!empty($row['start_time'])) {
+            $start = $row['event_date'] . 'T' . $row['start_time'];
+        }
+        if (!empty($row['end_time'])) {
+            $end = $row['event_date'] . 'T' . $row['end_time'];
+        } else {
+            $end = null;
+        }
+
+        // Use extendedProps to show description on click if needed
+        $events[] = [
+            'id' => (int)$row['event_id'],
+            'title' => $row['title'],
+            'start' => $start,
+            'end' => $end,
+            'allDay' => $allDay,
+            'className' => 'event-' . strtolower($row['event_type']),
+            'extendedProps' => [
+                'description' => $row['description'],
+                'event_type' => $row['event_type'],
+                'event_date' => $row['event_date'],
+                'start_time' => $row['start_time'],
+                'end_time' => $row['end_time']
+            ]
         ];
     }
 }
@@ -456,6 +497,119 @@ if ($deadline_result) {
             display: block;
         }
 
+        /* MODAL (Create Event) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            width: 100%;
+            max-width: 680px;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+        }
+        body.dark-mode .modal {
+            background: #242526;
+            color: #e4e6eb;
+        }
+        .modal-header {
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+        .modal-close {
+            background: rgba(0,0,0,0.2);
+            border: none;
+            color: var(--white);
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        .modal-body {
+            padding: 18px;
+        }
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        @media (max-width: 700px) {
+            .modal-grid { grid-template-columns: 1fr; }
+        }
+        .field label {
+            display:block;
+            font-size: 13px;
+            color: var(--gray);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        body.dark-mode .field label { color: #adb5bd; }
+        .field input, .field select, .field textarea {
+            width: 100%;
+            background: var(--light-gray);
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 14px;
+            outline: none;
+            color: inherit;
+        }
+        body.dark-mode .field input, body.dark-mode .field select, body.dark-mode .field textarea {
+            background: #3a3b3c;
+            border-color: #3a3b3c;
+            color: #e4e6eb;
+        }
+        .field textarea { min-height: 100px; resize: vertical; }
+        .modal-footer {
+            padding: 16px 18px;
+            display:flex;
+            justify-content:flex-end;
+            gap: 12px;
+            border-top: 1px solid rgba(0,0,0,0.06);
+        }
+        body.dark-mode .modal-footer { border-top-color: rgba(255,255,255,0.08); }
+        .btn {
+            border: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .btn-secondary { background: var(--light-gray); color: var(--dark); }
+        body.dark-mode .btn-secondary { background: #3a3b3c; color:#e4e6eb; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:disabled { opacity: 0.7; cursor:not-allowed; }
+        .form-error {
+            margin-top: 10px;
+            color: var(--danger);
+            font-weight: 700;
+            display: none;
+        }
+
+
         /* ===========================
            MOBILE NAV LINKS BAR (like dashboard)
         ============================ */
@@ -658,11 +812,14 @@ if ($deadline_result) {
             </ul>
 
             <!-- Calendar Title -->
-            <div style="text-align: center; margin-bottom: 20px;">
-                <h2 style="font-size: 24px; font-weight: 600; color: var(--dark);">
-                    <i class='bx bx-calendar'></i> Calendar Overview
-                </h2>
+            <div style="text-align: center; margin-bottom: 20px; display:flex; align-items:center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+
+                <button id="createEventBtn" type="button" class="fc-button fc-button-primary" style="border-radius: 8px; padding: 10px 16px; display:inline-flex; align-items:center; gap:8px;">
+                    <i class='bx bx-plus-medical'></i>
+                    Create Event
+                </button>
             </div>
+
 
             <!-- Calendar Container -->
             <div id="calendar">
@@ -674,6 +831,65 @@ if ($deadline_result) {
             </div>
         </main>
     </div>
+
+    <!-- Create Event Modal -->
+    <div class="modal-overlay" id="createEventModalOverlay" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="createEventModalTitle">
+            <div class="modal-header">
+                <div class="modal-title" id="createEventModalTitle"><i class='bx bx-plus-medical'></i> Create Event</div>
+                <button type="button" class="modal-close" id="createEventModalClose" aria-label="Close">✕</button>
+            </div>
+            <form id="createEventForm" method="POST">
+                <div class="modal-body">
+                    <div class="modal-grid">
+                        <div class="field">
+                            <label for="title">Title *</label>
+                            <input type="text" id="title" name="title" maxlength="255" required />
+                        </div>
+
+                        <div class="field">
+                            <label for="event_type">Event Type</label>
+                            <select id="event_type" name="event_type">
+                                <option value="Interview">Interview</option>
+                                <option value="Training">Training</option>
+                                <option value="Meeting">Meeting</option>
+                                <option value="Reminder">Reminder</option>
+                                <option value="Other" selected>Other</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="event_date">Event Date *</label>
+                            <input type="date" id="event_date" name="event_date" required />
+                        </div>
+
+                        <div class="field">
+                            <label for="start_time">Start Time</label>
+                            <input type="time" id="start_time" name="start_time" />
+                        </div>
+
+                        <div class="field">
+                            <label for="end_time">End Time</label>
+                            <input type="time" id="end_time" name="end_time" />
+                        </div>
+
+                        <div class="field" style="grid-column: 1 / -1;">
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description" maxlength="1000" placeholder="Optional notes..."></textarea>
+                        </div>
+                    </div>
+
+                    <div id="createEventError" class="form-error"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="createEventCancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="createEventSubmitBtn">Save Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <!-- FullCalendar JS -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
@@ -826,6 +1042,133 @@ if ($deadline_result) {
         function confirmLogout() {
             return confirm('Are you sure you want to logout?');
         }
+
+        // ----------------------------
+        // Create Event Modal (Calendar)
+        // ----------------------------
+        function openCreateEventModal(prefillDate) {
+            const overlay = document.getElementById('createEventModalOverlay');
+            if (!overlay) return;
+
+            const form = document.getElementById('createEventForm');
+            const eventDateInput = document.getElementById('event_date');
+            const startTimeInput = document.getElementById('start_time');
+            const endTimeInput = document.getElementById('end_time');
+            const titleInput = document.getElementById('title');
+            const typeSelect = document.getElementById('event_type');
+            const descInput = document.getElementById('description');
+            const errorDiv = document.getElementById('createEventError');
+
+            errorDiv && (errorDiv.style.display = 'none');
+            errorDiv && (errorDiv.textContent = '');
+
+            form.reset();
+
+            if (prefillDate) {
+                eventDateInput.value = prefillDate;
+            } else {
+                // default to today
+                const d = new Date();
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                eventDateInput.value = `${yyyy}-${mm}-${dd}`;
+            }
+
+            // make time empty by default
+            startTimeInput.value = '';
+            endTimeInput.value = '';
+
+            // default type
+            if (typeSelect) typeSelect.value = 'Other';
+            if (titleInput) titleInput.value = '';
+            if (descInput) descInput.value = '';
+
+            overlay.classList.add('active');
+
+            // focus title for accessibility
+            setTimeout(() => titleInput && titleInput.focus(), 50);
+        }
+
+        function closeCreateEventModal() {
+            const overlay = document.getElementById('createEventModalOverlay');
+            if (!overlay) return;
+            overlay.classList.remove('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const createBtn = document.getElementById('createEventBtn');
+            if (createBtn) {
+                createBtn.addEventListener('click', function() {
+                    openCreateEventModal();
+                });
+            }
+
+            const overlay = document.getElementById('createEventModalOverlay');
+            if (overlay) {
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay) closeCreateEventModal();
+                });
+            }
+
+            const closeBtn = document.getElementById('createEventModalClose');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeCreateEventModal);
+            }
+
+            const cancelBtn = document.getElementById('createEventCancelBtn');
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', closeCreateEventModal);
+            }
+
+
+            const form = document.getElementById('createEventForm');
+            if (form) {
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+
+                    const errorDiv = document.getElementById('createEventError');
+                    const submitBtn = document.getElementById('createEventSubmitBtn');
+                    if (submitBtn) submitBtn.disabled = true;
+                    errorDiv && (errorDiv.style.display = 'none');
+                    errorDiv && (errorDiv.textContent = '');
+
+                    const fd = new FormData(form);
+
+                    try {
+                        const res = await fetch('save_event.php', {
+                            method: 'POST',
+                            body: fd
+                        });
+
+                        const data = await res.json();
+                        if (!data || !data.success) {
+                            const msg = (data && data.error) ? data.error : 'Failed to save event';
+                            if (errorDiv) {
+                                errorDiv.textContent = msg;
+                                errorDiv.style.display = 'block';
+                            }
+                            if (submitBtn) submitBtn.disabled = false;
+                            return;
+                        }
+
+                        closeCreateEventModal();
+                        // hard refresh so PHP-generated events + calendar render are in sync
+                        window.location.reload();
+                    } catch (err) {
+                        const msg = err && err.message ? err.message : 'Network error';
+                        if (errorDiv) {
+                            errorDiv.textContent = msg;
+                            errorDiv.style.display = 'block';
+                        }
+                        if (submitBtn) submitBtn.disabled = false;
+                    }
+                });
+            }
+
+            // Optional: click on empty date (FullCalendar select isn't enabled here)
+        });
+
     </script>
 </body>
 </html>

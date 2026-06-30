@@ -5,6 +5,12 @@
 include('config.php');
 session_start();
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require_once 'vendor/autoload.php';
+
+
 // --- RBAC check (hard requirement) ---
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
     header('Location: login_signup.php');
@@ -221,23 +227,63 @@ if ($action === 'create_user') {
                 $hashed = password_hash($password, PASSWORD_DEFAULT);
 
                 $insert_sql = "INSERT INTO users (fullname, username, email, password, role, account_status, email_verified, verification_token, failed_attempts, last_failed_login)
-                                VALUES (?, ?, ?, ?, ?, ?, 1, NULL, 0, 0)";
+                                VALUES (?, ?, ?, ?, ?, ?, 0, ?, 0, 0)";
 
                 $stmt = $conn->prepare($insert_sql);
                 if (!$stmt) {
                     $message = 'Database error (prepare failed).';
                     $messageClass = 'error';
                 } else {
+                        // For admin-created users, also send email verification
+                    $verificationToken = bin2hex(random_bytes(32));
+
                     if ($stmt->bind_param(
-                        "ssssss",
+                        "sssssss",
                         $full_name,
                         $username,
                         $email,
                         $hashed,
                         $role_norm,
-                        $account_status
+                        $account_status,
+                        $verificationToken
                     ) && $stmt->execute()) {
                         $target_user_id = (int)$stmt->insert_id;
+
+                        // Ensure verification state for admin-created accounts
+                        try {
+                            $upd = $conn->prepare("UPDATE users SET email_verified = 0, verification_token = ? WHERE user_id = ? LIMIT 1");
+                            if ($upd) {
+                                $upd->bind_param('si', $verificationToken, $target_user_id);
+                                $upd->execute();
+                                $upd->close();
+                            }
+                        } catch (Throwable $e) {}
+
+                        // Best-effort send email verification to the created user
+                        try {
+                            $verificationLink = "http://localhost/Recruitment-App/verify_email.php?token={$verificationToken}";
+                            // If this app is hosted under a different base URL/path, also provide a relative URL fallback.
+                            // (Some environments might not have /recruitment-project-phps configured as expected.)
+                            $verificationLinkRelative = "verify_email.php?token={$verificationToken}";
+
+
+                            $mail = new PHPMailer(true);
+                            $mail->isSMTP();
+                            $mail->Host = 'smtp.gmail.com';
+                            $mail->SMTPAuth = true;
+                            $mail->Username = 'delanideco69@gmail.com';
+                            $mail->Password = 'kyuqrccxdsqkkosb';
+                            $mail->SMTPSecure = 'tls';
+                            $mail->Port = 587;
+
+                            $mail->setFrom('delanideco69@gmail.com', 'Recruitment Team');
+                            $mail->addAddress($email);
+                            $mail->Subject = 'Verify Your Email Address';
+                            $mail->Body = "Welcome to our platform!\n\nPlease click the following link to verify your email address:\n{$verificationLink}\n\nIf you did not create this account, please ignore this email.";
+
+                            $mail->send();
+                        } catch (Throwable $e) {}
+
                         add_audit_log($conn, $admin_user_id, $admin_username, 'create', $target_user_id, $username, $admin_ip, [
                             'fullname' => $full_name,
                             'role' => $role_norm,
@@ -246,6 +292,7 @@ if ($action === 'create_user') {
                         ]);
 
                         $message = 'User created successfully.';
+
                         $messageClass = 'success';
 
                         // Notify admin + affected user (best-effort)
