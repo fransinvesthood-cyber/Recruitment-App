@@ -1003,7 +1003,21 @@ include('includes/admin_user_management_header.php');
     </div>
 
     <script>
-        // No password fields are required in this flow because the user will set a password after email verification.
+        document.addEventListener('DOMContentLoaded', function () {
+            const applyTheme = (theme) => {
+                document.body.classList.toggle('dark-mode', theme === 'dark');
+            };
+
+            const syncTheme = () => {
+                const savedTheme = localStorage.getItem('theme');
+                applyTheme(savedTheme === 'dark' ? 'dark' : 'light');
+            };
+
+            syncTheme();
+            window.addEventListener('storage', syncTheme);
+            window.addEventListener('focus', syncTheme);
+            window.addEventListener('pageshow', syncTheme);
+        });
     </script>
 </body>
 </html>

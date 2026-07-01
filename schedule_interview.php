@@ -57,6 +57,7 @@
         #theme-toggle:checked+.theme-toggle::before{transform:translateX(26px);background:var(--primary);}
         main{padding:20px;}
         .welcome-section{background:linear-gradient(135deg,var(--primary) 0%,var(--secondary) 100%);color:var(--white);padding:20px;border-radius:var(--border-radius);margin-bottom:20px;box-shadow:var(--box-shadow);}
+        body.dark-mode .welcome-section{background:linear-gradient(135deg,#1f2937 0%,#111827 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,0.06),0 10px 24px rgba(0,0,0,0.28);}
         .welcome-section h1{font-size:24px;margin-bottom:6px;}
         .welcome-section p{opacity:0.9;font-size:16px;}
         .header-section{display:flex;justify-content:flex-end;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;}

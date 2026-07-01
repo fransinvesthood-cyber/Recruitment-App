@@ -2883,37 +2883,54 @@ if (!empty($_SESSION['message'])) {
                     datasets: [{
                         data: pieData,
                         backgroundColor: [
-                            colors.success,
-                            colors.danger,
-                            colors.indigo,
-                            colors.warning
+                            'rgba(16, 185, 129, 0.9)',
+                            'rgba(239, 68, 68, 0.9)',
+                            'rgba(99, 102, 241, 0.9)',
+                            'rgba(245, 158, 11, 0.9)'
                         ],
-                        borderColor: '#ffffff',
-                        borderWidth: 2
+                        hoverBackgroundColor: [
+                            'rgba(5, 150, 105, 0.95)',
+                            'rgba(220, 38, 38, 0.95)',
+                            'rgba(79, 70, 229, 0.95)',
+                            'rgba(217, 119, 6, 0.95)'
+                        ],
+                        borderColor: 'rgba(255,255,255,0.95)',
+                        borderWidth: 2,
+                        hoverOffset: 8
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: {
-                        duration: 1200,
-                        easing: 'easeOutCubic'
+                        duration: 1400,
+                        easing: 'easeOutQuart'
+                    },
+                    layout: {
+                        padding: 8
                     },
                     plugins: {
                         legend: {
                             position: 'bottom',
                             labels: {
                                 color: textColor,
-                                padding: 20,
-                                usePointStyle: true
+                                padding: 16,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                font: {
+                                    family: 'Inter, Segoe UI, sans-serif',
+                                    size: 12,
+                                    weight: '600'
+                                }
                             }
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            backgroundColor: 'rgba(15, 23, 42, 0.92)',
                             titleColor: '#fff',
                             bodyColor: '#fff',
                             padding: 12,
-                            cornerRadius: 8,
+                            cornerRadius: 10,
+                            displayColors: true,
                             callbacks: {
                                 label: function(context) {
                                     const total = context.dataset.data.reduce((a, b) => a + b, 0);
