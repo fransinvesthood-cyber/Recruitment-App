@@ -4,27 +4,29 @@ include('config.php');
 
 $message = "";
 $messageType = "";
+$user_id = null;
+$token = null;
+$showPasswordForm = false;
 
 if (isset($_GET['token'])) {
-    $token = $_GET['token'];
+    $token = trim($_GET['token']);
 
-    // Check if token exists and is valid
-    $stmt = $conn->prepare("SELECT user_id FROM users WHERE verification_token = ? AND email_verified = 0");
+    $stmt = $conn->prepare("SELECT user_id FROM users WHERE verification_token = ? LIMIT 1");
     $stmt->bind_param("s", $token);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows === 1) {
-        // Token is valid, verify the email
         $stmt->bind_result($user_id);
         $stmt->fetch();
 
-        // Update email_verified to 1 and clear the token
-        $updateStmt = $conn->prepare("UPDATE users SET email_verified = 1, verification_token = NULL WHERE user_id = ?");
+        $updateStmt = $conn->prepare("UPDATE users SET email_verified = 1 WHERE user_id = ? LIMIT 1");
         $updateStmt->bind_param("i", $user_id);
 
         if ($updateStmt->execute()) {
-            $message = "Your email has been successfully verified! You can now log in.";
+            $_SESSION['pending_password_user_id'] = $user_id;
+            $showPasswordForm = true;
+            $message = "Your email has been verified. Please create a password to finish setting up your account.";
             $messageType = "success";
         } else {
             $message = "Error verifying email. Please try again.";
@@ -41,6 +43,46 @@ if (isset($_GET['token'])) {
 } else {
     $message = "No verification token provided.";
     $messageType = "error";
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($user_id === null && isset($_SESSION['pending_password_user_id'])) {
+        $user_id = (int)$_SESSION['pending_password_user_id'];
+    }
+
+    if ($showPasswordForm || $user_id !== null) {
+        $newPassword = $_POST['new_password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+
+        if ($newPassword === '' || $confirmPassword === '') {
+            $message = 'Please enter and confirm your new password.';
+            $messageType = 'error';
+        } elseif ($newPassword !== $confirmPassword) {
+            $message = 'Passwords do not match.';
+            $messageType = 'error';
+        } elseif (strlen($newPassword) < 8 || !preg_match('/[A-Z]/', $newPassword) || !preg_match('/[a-z]/', $newPassword) || !preg_match('/\d/', $newPassword) || !preg_match('/[\W_]/', $newPassword)) {
+            $message = 'Password must be at least 8 characters long and include uppercase, lowercase, a number, and a special character.';
+            $messageType = 'error';
+        } elseif ($user_id !== null) {
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+            $setPasswordStmt = $conn->prepare("UPDATE users SET password = ?, verification_token = NULL, email_verified = 1 WHERE user_id = ? LIMIT 1");
+            $setPasswordStmt->bind_param('si', $hashedPassword, $user_id);
+
+            if ($setPasswordStmt->execute()) {
+                unset($_SESSION['pending_password_user_id']);
+                $message = 'Password created successfully. You can now log in.';
+                $messageType = 'success';
+                $showPasswordForm = false;
+            } else {
+                $message = 'Failed to save your password. Please try again.';
+                $messageType = 'error';
+            }
+            $setPasswordStmt->close();
+        } else {
+            $message = 'Unable to identify your account. Please use the verification link again.';
+            $messageType = 'error';
+        }
+    }
 }
 
 $conn->close();
@@ -379,11 +421,38 @@ $conn->close();
                     <?php endif; ?>
 
                     <div class="verification-body">
-                        <?php if ($messageType === 'success'): ?>
+                        <?php if ($messageType === 'success' && $showPasswordForm): ?>
                             <div class="verification-icon success"><i class="fas fa-check-circle"></i></div>
-                            <h1 class="verification-title">Email Verified!</h1>
+                            <h1 class="verification-title">Create Your Password</h1>
                             <p class="verification-message">
-                                Your email address has been successfully verified. You can now log in to your account and start using our platform.
+                                Your email address has been verified. Set a password below to complete your account setup.
+                            </p>
+                            <form method="post" action="verify_email.php?token=<?= htmlspecialchars($token ?? '') ?>" style="max-width: 360px; margin: 0 auto; text-align: left;">
+                                <div style="margin-bottom: 14px;">
+                                    <label for="new_password" style="display:block; margin-bottom: 6px; font-weight: 600;">New Password</label>
+                                    <div style="position: relative;">
+                                        <input type="password" id="new_password" name="new_password" required style="width:100%; padding: 12px 44px 12px 14px; border: 1px solid #d1d5db; border-radius: 10px;">
+                                        <button type="button" class="password-toggle" data-target="new_password" aria-label="Show password" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:#6b7280; cursor:pointer; font-size:16px;">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 18px;">
+                                    <label for="confirm_password" style="display:block; margin-bottom: 6px; font-weight: 600;">Confirm Password</label>
+                                    <div style="position: relative;">
+                                        <input type="password" id="confirm_password" name="confirm_password" required style="width:100%; padding: 12px 44px 12px 14px; border: 1px solid #d1d5db; border-radius: 10px;">
+                                        <button type="button" class="password-toggle" data-target="confirm_password" aria-label="Show password" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:#6b7280; cursor:pointer; font-size:16px;">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="submit" class="primary-action" style="max-width: 100%;">Create Password</button>
+                            </form>
+                        <?php elseif ($messageType === 'success'): ?>
+                            <div class="verification-icon success"><i class="fas fa-check-circle"></i></div>
+                            <h1 class="verification-title">Password Created!</h1>
+                            <p class="verification-message">
+                                Your password has been created successfully. You can now log in to your account.
                             </p>
                             <div class="button-wrap">
                                 <a href="login_signup.php" class="primary-action">Go to Login</a>
@@ -405,7 +474,7 @@ $conn->close();
     </div>
 
     <script>
-        // Fade out alert (consistent UX with forgot_password.php)
+        // Fade out alert after a short delay so the message can be read.
         setTimeout(function () {
             const alertBox = document.getElementById('alertBox');
             if (alertBox) {
@@ -415,13 +484,21 @@ $conn->close();
             }
         }, 10000);
 
-        // Redirect after success (optional, matches forgot_password.php style)
-        const alertBox = document.getElementById('alertBox');
-        if (alertBox && alertBox.classList.contains('alert-success')) {
-            setTimeout(() => {
-                window.location.href = 'login_signup.php';
-            }, 5000);
-        }
+        document.querySelectorAll('.password-toggle').forEach((button) => {
+            button.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                const icon = this.querySelector('i');
+
+                if (!input || !icon) return;
+
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                icon.classList.toggle('fa-eye', !isPassword);
+                icon.classList.toggle('fa-eye-slash', isPassword);
+                this.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+            });
+        });
     </script>
 </body>
 </html>

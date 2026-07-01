@@ -259,6 +259,34 @@ function h($str) { return htmlspecialchars((string)$str, ENT_QUOTES, 'UTF-8'); }
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Applicant Access Guide</title>
+    <style>
+        .guide-exit-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+            z-index: 2;
+        }
+        .guide-exit-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.04);
+        }
+        body.dark-mode .guide-exit-btn {
+            background: rgba(255,255,255,0.14);
+            border: 1px solid rgba(255,255,255,0.16);
+        }
+    </style>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="applicant.css">
 
@@ -450,8 +478,9 @@ body.dark-mode{
 }
 
 
-body.dark-mode .guide-header{ color:#fff; }
+body.dark-mode .guide-header{ color:#fff; background: linear-gradient(135deg, #1f2937 0%, #111827 100%); border: 1px solid rgba(147, 197, 253, 0.2); box-shadow: 0 16px 40px rgba(0,0,0,.28); }
 body.dark-mode .guide-header::after{ opacity:.55; }
+body.dark-mode .progress-shell{ background: rgba(17,24,39,0.75); border-color: rgba(147, 197, 253, 0.18); }
 body.dark-mode .stage-card .card{ background:#1f1f1f; border-color: rgba(255,255,255,.06); }
 body.dark-mode .stage-desc{ color:#d0d0d0; }
 body.dark-mode .badge-pending{ background: rgba(255,255,255,.08); color:#e6e6e6; border-color: rgba(255,255,255,.14); }
@@ -473,10 +502,26 @@ body.dark-mode a:hover{ color: #bfdbfe; }
 
 </head>
 <body>
+<script>
+(function () {
+    function applyThemeFromStorage() {
+        const theme = localStorage.getItem('theme');
+        const darkMode = localStorage.getItem('darkMode');
+        const shouldUseDark = theme === 'dark' || darkMode === 'enabled';
+        document.body.classList.toggle('dark-mode', shouldUseDark);
+    }
+
+    applyThemeFromStorage();
+    window.addEventListener('storage', applyThemeFromStorage);
+})();
+</script>
 
 <div class="guide-wrap">
     <div class="container container-wide">
         <div class="guide-header">
+            <button type="button" class="guide-exit-btn" onclick="window.location.href='applicant.php'" aria-label="Exit guide">
+                X
+            </button>
 
             <div class="text-center">
                 <h2>Applicant Access Guide</h2>

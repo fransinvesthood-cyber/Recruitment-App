@@ -1336,6 +1336,26 @@ body.dark-mode .inputfield label {
             border: 1px solid rgba(102, 126, 234, 0.3);
         }
 
+        body.dark-mode .acc-panel [style*="background:#f4f9ff"],
+        body.dark-mode .acc-panel [style*="background:#f8fffd"] {
+            background: rgba(35, 38, 58, 0.95) !important;
+            border-color: rgba(165, 180, 252, 0.35) !important;
+        }
+
+        body.dark-mode .acc-panel [style*="color:#0f172a"],
+        body.dark-mode .acc-panel [style*="color:#334155"],
+        body.dark-mode .acc-panel [style*="color:#6b7280"] {
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode .acc-panel [style*="color:#0984e3"] {
+            color: #93c5fd !important;
+        }
+
+        body.dark-mode .acc-panel input[type="range"] {
+            accent-color: #818cf8;
+        }
+
         /* Shared remove button styling (Education/Work/Language) */
         .btn-remove{
             background: #ff6b6b;

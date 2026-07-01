@@ -478,9 +478,33 @@ if ($custom_events_result) {
             border: none !important;
             cursor: pointer;
         }
-        .event-interview { background: #3498db !important; color: white !important; }
-        .event-leave     { background: #9b59b6 !important; color: white !important; }
-        .event-deadline  { background: #e74c3c !important; color: white !important; }
+        .fc-event {
+            border: none !important;
+            border-radius: 10px !important;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+            padding: 2px 4px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .fc-event:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+        }
+        .fc-event-title {
+            font-weight: 700;
+            font-size: 0.86rem;
+            line-height: 1.25;
+        }
+        .fc-event-time {
+            font-size: 0.76rem;
+            opacity: 0.95;
+        }
+        .event-interview { background: linear-gradient(135deg, #3b82f6, #2563eb) !important; color: white !important; }
+        .event-training { background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important; color: white !important; }
+        .event-meeting { background: linear-gradient(135deg, #10b981, #059669) !important; color: white !important; }
+        .event-reminder { background: linear-gradient(135deg, #f59e0b, #d97706) !important; color: white !important; }
+        .event-other { background: linear-gradient(135deg, #64748b, #475569) !important; color: white !important; }
+        .event-leave     { background: linear-gradient(135deg, #ec4899, #be185d) !important; color: white !important; }
+        .event-deadline  { background: linear-gradient(135deg, #ef4444, #dc2626) !important; color: white !important; }
 
         /* MOBILE MENU OVERLAY */
         .mobile-menu-overlay {
@@ -982,6 +1006,36 @@ if ($custom_events_result) {
                         height: 600,
                         nowIndicator: true,
                         eventClick: function(info) {
+                            const isCustomEvent = info.event.extendedProps && info.event.extendedProps.event_type;
+                            if (isCustomEvent) {
+                                const confirmed = confirm('Delete this event?');
+                                if (!confirmed) {
+                                    return false;
+                                }
+
+                                const formData = new FormData();
+                                formData.append('event_id', info.event.id);
+
+                                fetch('delete_event.php', {
+                                    method: 'POST',
+                                    body: formData
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data && data.success) {
+                                        info.event.remove();
+                                        alert('Event deleted successfully.');
+                                    } else {
+                                        alert((data && data.error) ? data.error : 'Failed to delete event.');
+                                    }
+                                })
+                                .catch(() => {
+                                    alert('Failed to delete event.');
+                                });
+
+                                return false;
+                            }
+
                             if (info.event.url) {
                                 window.open(info.event.url, '_self');
                                 return false; // Prevent default behavior

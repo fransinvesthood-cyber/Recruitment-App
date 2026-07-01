@@ -189,8 +189,6 @@ if ($action === 'create_user') {
     $full_name = trim($_POST['fullname'] ?? '');
     $username = trim($_POST['username'] ?? '');
     $email = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
-    $confirm_password = $_POST['confirm_password'] ?? '';
     $role = $_POST['role'] ?? 'Consultant';
     $account_status = $_POST['account_status'] ?? 'Active';
 
@@ -201,122 +199,107 @@ if ($action === 'create_user') {
     } elseif ($account_status !== 'Active' && $account_status !== 'Inactive') {
         $message = 'Invalid account status.';
         $messageClass = 'error';
-    } elseif ($full_name === '' || $username === '' || $email === '' || $password === '' || $confirm_password === '') {
-        $message = 'All fields are required.';
+    } elseif ($full_name === '' || $username === '' || $email === '') {
+        $message = 'Full name, username, and email are required.';
         $messageClass = 'error';
     } elseif (!validate_email_format($email)) {
         $message = 'Please enter a valid email address.';
         $messageClass = 'error';
-    } elseif ($password !== $confirm_password) {
-        $message = 'Passwords do not match.';
-        $messageClass = 'error';
     } else {
-        $pwd_error = '';
-        if (!enforce_strong_password($password, $pwd_error)) {
-            $message = $pwd_error;
+        $dupes = find_user_by_username_or_email($conn, $username, $email, null);
+        if ($dupes['username_taken']) {
+            $message = 'Username is already taken.';
+            $messageClass = 'error';
+        } elseif ($dupes['email_taken']) {
+            $message = 'Email address is already in use.';
             $messageClass = 'error';
         } else {
-            $dupes = find_user_by_username_or_email($conn, $username, $email, null);
-            if ($dupes['username_taken']) {
-                $message = 'Username is already taken.';
-                $messageClass = 'error';
-            } elseif ($dupes['email_taken']) {
-                $message = 'Email address is already in use.';
+            $temporaryPassword = bin2hex(random_bytes(12));
+            $hashed = password_hash($temporaryPassword, PASSWORD_DEFAULT);
+
+            $insert_sql = "INSERT INTO users (fullname, username, email, password, role, account_status, email_verified, verification_token, failed_attempts, last_failed_login)
+                            VALUES (?, ?, ?, ?, ?, ?, 0, ?, 0, 0)";
+
+            $stmt = $conn->prepare($insert_sql);
+            if (!$stmt) {
+                $message = 'Database error (prepare failed).';
                 $messageClass = 'error';
             } else {
-                $hashed = password_hash($password, PASSWORD_DEFAULT);
+                $verificationToken = bin2hex(random_bytes(32));
 
-                $insert_sql = "INSERT INTO users (fullname, username, email, password, role, account_status, email_verified, verification_token, failed_attempts, last_failed_login)
-                                VALUES (?, ?, ?, ?, ?, ?, 0, ?, 0, 0)";
+                if ($stmt->bind_param(
+                    "sssssss",
+                    $full_name,
+                    $username,
+                    $email,
+                    $hashed,
+                    $role_norm,
+                    $account_status,
+                    $verificationToken
+                ) && $stmt->execute()) {
+                    $target_user_id = (int)$stmt->insert_id;
 
-                $stmt = $conn->prepare($insert_sql);
-                if (!$stmt) {
-                    $message = 'Database error (prepare failed).';
-                    $messageClass = 'error';
+                    try {
+                        $upd = $conn->prepare("UPDATE users SET email_verified = 0, verification_token = ? WHERE user_id = ? LIMIT 1");
+                        if ($upd) {
+                            $upd->bind_param('si', $verificationToken, $target_user_id);
+                            $upd->execute();
+                            $upd->close();
+                        }
+                    } catch (Throwable $e) {}
+
+                    try {
+                        $verificationLink = "http://localhost/Recruitment-App/verify_email.php?token={$verificationToken}";
+                        $verificationLinkRelative = "verify_email.php?token={$verificationToken}";
+
+                        $mail = new PHPMailer(true);
+                        $mail->isSMTP();
+                        $mail->Host = 'smtp.gmail.com';
+                        $mail->SMTPAuth = true;
+                        $mail->Username = 'delanideco69@gmail.com';
+                        $mail->Password = 'kyuqrccxdsqkkosb';
+                        $mail->SMTPSecure = 'tls';
+                        $mail->Port = 587;
+
+                        $mail->setFrom('delanideco69@gmail.com', 'Recruitment Team');
+                        $mail->addAddress($email);
+                        $mail->Subject = 'Verify Your Email Address';
+                        $mail->Body = "Hello {$full_name},\n\nYour account has been created successfully.\n\nAccount Details:\n- Full Name: {$full_name}\n- Username: {$username}\n- Email: {$email}\n- Role: {$role_norm}\n- Account Status: {$account_status}\n\nPlease click the following link to verify your email address:\n{$verificationLink}\n\nIf you did not create this account, please ignore this email.";
+
+                        $mail->send();
+                    } catch (Throwable $e) {}
+
+                    add_audit_log($conn, $admin_user_id, $admin_username, 'create', $target_user_id, $username, $admin_ip, [
+                        'fullname' => $full_name,
+                        'role' => $role_norm,
+                        'account_status' => $account_status,
+                        'email' => $email,
+                    ]);
+
+                    $message = 'User created successfully.';
+                    $messageClass = 'success';
+
+                    add_notification_safe(
+                        $conn,
+                        $admin_user_id,
+                        "A new user was created: {$username}.",
+                        'general',
+                        $target_user_id
+                    );
+
+                    add_notification_safe(
+                        $conn,
+                        $target_user_id,
+                        "Your account has been created by an administrator.",
+                        'general',
+                        $target_user_id
+                    );
                 } else {
-                        // For admin-created users, also send email verification
-                    $verificationToken = bin2hex(random_bytes(32));
-
-                    if ($stmt->bind_param(
-                        "sssssss",
-                        $full_name,
-                        $username,
-                        $email,
-                        $hashed,
-                        $role_norm,
-                        $account_status,
-                        $verificationToken
-                    ) && $stmt->execute()) {
-                        $target_user_id = (int)$stmt->insert_id;
-
-                        // Ensure verification state for admin-created accounts
-                        try {
-                            $upd = $conn->prepare("UPDATE users SET email_verified = 0, verification_token = ? WHERE user_id = ? LIMIT 1");
-                            if ($upd) {
-                                $upd->bind_param('si', $verificationToken, $target_user_id);
-                                $upd->execute();
-                                $upd->close();
-                            }
-                        } catch (Throwable $e) {}
-
-                        // Best-effort send email verification to the created user
-                        try {
-                            $verificationLink = "http://localhost/Recruitment-App/verify_email.php?token={$verificationToken}";
-                            // If this app is hosted under a different base URL/path, also provide a relative URL fallback.
-                            // (Some environments might not have /recruitment-project-phps configured as expected.)
-                            $verificationLinkRelative = "verify_email.php?token={$verificationToken}";
-
-
-                            $mail = new PHPMailer(true);
-                            $mail->isSMTP();
-                            $mail->Host = 'smtp.gmail.com';
-                            $mail->SMTPAuth = true;
-                            $mail->Username = 'delanideco69@gmail.com';
-                            $mail->Password = 'kyuqrccxdsqkkosb';
-                            $mail->SMTPSecure = 'tls';
-                            $mail->Port = 587;
-
-                            $mail->setFrom('delanideco69@gmail.com', 'Recruitment Team');
-                            $mail->addAddress($email);
-                            $mail->Subject = 'Verify Your Email Address';
-                            $mail->Body = "Welcome to our platform!\n\nPlease click the following link to verify your email address:\n{$verificationLink}\n\nIf you did not create this account, please ignore this email.";
-
-                            $mail->send();
-                        } catch (Throwable $e) {}
-
-                        add_audit_log($conn, $admin_user_id, $admin_username, 'create', $target_user_id, $username, $admin_ip, [
-                            'fullname' => $full_name,
-                            'role' => $role_norm,
-                            'account_status' => $account_status,
-                            'email' => $email,
-                        ]);
-
-                        $message = 'User created successfully.';
-
-                        $messageClass = 'success';
-
-                        // Notify admin + affected user (best-effort)
-                        add_notification_safe(
-                            $conn,
-                            $admin_user_id,
-                            "A new user was created: {$username}.",
-                            'general',
-                            $target_user_id
-                        );
-
-                        add_notification_safe(
-                            $conn,
-                            $target_user_id,
-                            "Your account has been created by an administrator.",
-                            'general',
-                            $target_user_id
-                        );
-                    } else {
-                        $message = 'Error creating user: ' . $conn->error;
-                        $messageClass = 'error';
-                    }
-                    $stmt->close();
+                    $message = 'Error creating user: ' . $conn->error;
+                    $messageClass = 'error';
                 }
+
+                $stmt->close();
             }
         }
     }
@@ -938,25 +921,6 @@ include('includes/admin_user_management_header.php');
                                 <input type="email" name="email" class="form-control" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Password</label>
-                                <div class="input-group">
-                                    <input type="password" name="password" id="createPassword" class="form-control" required>
-                                    <button class="btn btn-outline-secondary" type="button" id="toggleCreatePassword" aria-label="Show/Hide password">
-                                        <i class='bx bx-hide'></i>
-                                    </button>
-                                </div>
-                                <div class="form-text">Must be strong (uppercase, lowercase, number, special, min 8).</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Confirm Password</label>
-                                <div class="input-group">
-                                    <input type="password" name="confirm_password" id="createConfirmPassword" class="form-control" required>
-                                    <button class="btn btn-outline-secondary" type="button" id="toggleCreateConfirmPassword" aria-label="Show/Hide confirm password">
-                                        <i class='bx bx-hide'></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
                                 <label class="form-label">Role</label>
                                 <select name="role" class="form-select" required>
                                     <option value="Admin">Administrator</option>
@@ -1039,37 +1003,7 @@ include('includes/admin_user_management_header.php');
     </div>
 
     <script>
-        // Password mismatch validation
-        document.getElementById('createUserForm')?.addEventListener('submit', (e) => {
-            const p = document.getElementById('createPassword');
-            const c = document.getElementById('createConfirmPassword');
-            if (p && c && p.value !== c.value) {
-                e.preventDefault();
-                alert('Passwords do not match.');
-            }
-        });
-
-        // Show/Hide password toggles (eye icon)
-        const togglePassword = (toggleBtnId, inputId) => {
-            const btn = document.getElementById(toggleBtnId);
-            const input = document.getElementById(inputId);
-            if (!btn || !input) return;
-
-            btn.addEventListener('click', () => {
-                const isPassword = input.type === 'password';
-                input.type = isPassword ? 'text' : 'password';
-                const icon = btn.querySelector('i');
-                if (icon) {
-                    icon.classList.toggle('bx-hide', !isPassword);
-                    icon.classList.toggle('bx-show', isPassword);
-                }
-            });
-        };
-
-        // Default icons are bx-hide; clicking swaps to bx-show and back.
-        // (If your icon set doesn't include bx-show, you can change bx-show to bx-show-alt.)
-        togglePassword('toggleCreatePassword', 'createPassword');
-        togglePassword('toggleCreateConfirmPassword', 'createConfirmPassword');
+        // No password fields are required in this flow because the user will set a password after email verification.
     </script>
 </body>
 </html>
