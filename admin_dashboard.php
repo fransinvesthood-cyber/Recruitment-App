@@ -1163,6 +1163,129 @@ if (!empty($_SESSION['message'])) {
             gap: 24px;
         }
 
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .analytics-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(248,250,255,0.95));
+            border: 1px solid rgba(102, 126, 234, 0.12);
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08);
+            position: relative;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 42px rgba(15, 23, 42, 0.14);
+        }
+
+        .analytics-card::before {
+            content: '';
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        body.dark-mode .analytics-card {
+            background: linear-gradient(145deg, #2a2b2d, #232527);
+            border-color: rgba(255,255,255,0.06);
+            box-shadow: 0 12px 36px rgba(0,0,0,0.25);
+        }
+
+        .analytics-card .header {
+            padding: 20px 22px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.08);
+        }
+
+        .analytics-card .header i {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(102, 126, 234, 0.12);
+            color: var(--primary);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .analytics-title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .analytics-title-group h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+            color: var(--dark);
+        }
+
+        body.dark-mode .analytics-title-group h3 {
+            color: #e4e6eb;
+        }
+
+        .analytics-subtitle {
+            font-size: 13px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        body.dark-mode .analytics-subtitle {
+            color: #94a3b8;
+        }
+
+        .analytics-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(102,126,234,0.09);
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            border: 1px solid rgba(102,126,234,0.12);
+        }
+
+        .analytics-chart-shell {
+            padding: 18px 20px 22px;
+            height: 385px;
+            background: linear-gradient(180deg, rgba(102,126,234,0.03), rgba(255,255,255,0.4));
+        }
+
+        .analytics-chart-shell canvas {
+            filter: drop-shadow(0 6px 18px rgba(102, 126, 234, 0.08));
+        }
+
+        body.dark-mode .analytics-chart-shell {
+            background: linear-gradient(180deg, rgba(102,126,234,0.1), rgba(255,255,255,0.02));
+        }
+
+        .analytics-summary-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0 22px 16px;
+        }
+
         .orders.full-width {
             grid-column: 1 / -1;
         }
@@ -1201,6 +1324,22 @@ if (!empty($_SESSION['message'])) {
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
+        }
+
+        #applicationsSection .btn-outline-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 18px rgba(102, 126, 234, 0.18);
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 999px;
+        }
+
+        #applicationsSection .btn-outline-primary:hover {
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(102, 126, 234, 0.24);
         }
 
         .orders .header select {
@@ -2253,25 +2392,31 @@ if (!empty($_SESSION['message'])) {
             </ul>
             
             <!-- Charts Row -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+            <div class="analytics-grid">
                 <!-- Application Trends Chart -->
-                <div class="orders">
+                <div class="orders analytics-card">
                     <div class="header">
-                        <i class='bx bx-line-chart'></i>
-                        <h3>Application Trends (Last 30 Days)</h3>
+                        <div class="analytics-title-group">
+                            <h3>Application Trends (Last 30 Days)</h3>
+                            <div class="analytics-subtitle"><i class='bx bx-trending-up'></i> Daily intake overview</div>
+                        </div>
+                        <span class="analytics-pill"><i class='bx bx-line-chart'></i> Live trend</span>
                     </div>
-                    <div style="padding: 20px; height: 400px;">
+                    <div class="analytics-chart-shell">
                         <canvas id="applicationTrendsChart"></canvas>
                     </div>
                 </div>
 
                 <!-- Application Status Distribution Pie Chart -->
-                <div class="orders">
+                <div class="orders analytics-card">
                     <div class="header">
-                        <i class='bx bx-pie-chart-alt-2'></i>
-                        <h3>Application Status Distribution</h3>
+                        <div class="analytics-title-group">
+                            <h3>Application Status Distribution</h3>
+                            <div class="analytics-subtitle"><i class='bx bx-pie-chart-alt-2'></i> Snapshot of pipeline health</div>
+                        </div>
+                        <span class="analytics-pill"><i class='bx bx-pie-chart-alt-2'></i> Status mix</span>
                     </div>
-                    <div style="padding: 20px; height: 400px;">
+                    <div class="analytics-chart-shell">
                         <canvas id="applicationStatusChart"></canvas>
                     </div>
                 </div>
@@ -2388,11 +2533,20 @@ if (!empty($_SESSION['message'])) {
                     </div>
                 </div>
 
-                <div class="orders" id="applicationsSection">
+                <div class="orders analytics-card" id="applicationsSection">
                     <div class="header">
-                        <i class='bx bx-receipt'></i>
-                        <h3>Applications</h3>
-                        <a href="manage_applications.php">view all ></a>
+                        <div class="analytics-title-group">
+                            <h3>Applications</h3>
+                            <div class="analytics-subtitle"><i class='bx bx-receipt'></i> Latest applicant activity</div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                            <span class="analytics-pill"><i class='bx bx-file'></i> <?php echo (int)$total_apps; ?> total</span>
+                            <a href="manage_applications.php" class="btn btn-sm btn-outline-primary">View all</a>
+                        </div>
+                    </div>
+                    <div class="analytics-summary-row">
+                        <span class="analytics-pill"><i class='bx bx-list-check'></i> Shortlisted: <?php echo (int)$shortlisted_count; ?></span>
+                        <span class="analytics-pill"><i class='bx bx-x-circle'></i> Rejected: <?php echo (int)$rejected_count; ?></span>
                     </div>
                     <div class="table-responsive">
                         <?php
@@ -2615,7 +2769,9 @@ if (!empty($_SESSION['message'])) {
                 info: '#06b6d4',
                 purple: '#8b5cf6',
                 pink: '#ec4899',
-                danger: '#dc3545'
+                danger: '#dc3545',
+                teal: '#14b8a6',
+                indigo: '#6366f1'
             };
 
             // Create vibrant gradient background
@@ -2668,6 +2824,10 @@ if (!empty($_SESSION['message'])) {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: {
+                        duration: 1400,
+                        easing: 'easeOutQuart'
+                    },
                     plugins: {
                         legend: {
                             display: false
@@ -2723,10 +2883,10 @@ if (!empty($_SESSION['message'])) {
                     datasets: [{
                         data: pieData,
                         backgroundColor: [
-                            colors.success,    // Shortlisted - green
-                            colors.danger,     // Rejected - red
-                            colors.primary,    // Hired - blue/purple
-                            colors.info        // Submitted - cyan
+                            colors.success,
+                            colors.danger,
+                            colors.indigo,
+                            colors.warning
                         ],
                         borderColor: '#ffffff',
                         borderWidth: 2
@@ -2735,6 +2895,10 @@ if (!empty($_SESSION['message'])) {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: {
+                        duration: 1200,
+                        easing: 'easeOutCubic'
+                    },
                     plugins: {
                         legend: {
                             position: 'bottom',
