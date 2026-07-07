@@ -1037,6 +1037,26 @@ if (!empty($_SESSION['message'])) {
             text-align: center;
         }
 
+        .message-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #17a2b8;
+            color: #fff;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .message-bell.has-new-messages i {
+            animation: bellBounce 2s infinite;
+        }
+
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
@@ -2124,7 +2144,6 @@ if (!empty($_SESSION['message'])) {
             <li><a href="admin_invoices.php"><i class='bx bx-receipt'></i><span>Invoices</span></a></li>
             <li><a href="admin_chat.php"><i class='bx bx-chat'></i><span>Chats</span></a></li>
             <li><a href="admin_settings.php"><i class='bx bx-cog'></i><span>Settings</span></a></li>
-            <li><a href="admin_contact_messages.php"><i class='bx bx-message-dots'></i><span>Contact Messages</span></a></li>
         </ul>
 
 
@@ -2150,6 +2169,7 @@ if (!empty($_SESSION['message'])) {
             </div>
             <div class="nav-icons-group">
                 <div class="notification-bell" id="notificationBell">
+
                     <i class='bx bx-bell'></i>
                     <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
                     <div class="notification-dropdown" id="notificationDropdown">
@@ -2177,7 +2197,7 @@ if (!empty($_SESSION['message'])) {
                                         </div>
                                         <div class="notification-time">
                                             <?php echo date('M d, H:i', strtotime($notification['created_at'])); ?>
-<div style="display:flex; align-items:center; gap:8px; justify-content:flex-end;">
+                                            <div style="display:flex; align-items:center; gap:8px; justify-content:flex-end;">
                                             <button class="delete-notification-btn" data-id="<?php echo $notification['notification_id']; ?>" title="Delete notification" aria-label="Delete notification">
                                                 <i class='bx bx-trash'></i>
                                             </button>
@@ -2213,6 +2233,10 @@ if (!empty($_SESSION['message'])) {
 
                     </div>
                 </div>
+<a href="admin_contact_messages.php" class="notification-bell" style="text-decoration:none;" aria-label="Contact Messages" id="messageBellLink">
+                    <i class='bx bx-message-dots'></i>
+                    <span class="message-badge" id="messageBadge" style="display:none;">0</span>
+                </a>
                 <div class="calendar-bell" id="calendarBell">
                     <i class='bx bx-calendar'></i>
                     <div class="calendar-dropdown" id="calendarDropdown">
@@ -2227,6 +2251,8 @@ if (!empty($_SESSION['message'])) {
                                     <div id="todayEvents">
                                         <?php
                                         $hasEvents = false;
+
+                                        // Interviews today
                                         if ($interviews_today_result->num_rows > 0) {
                                             $hasEvents = true;
                                             while ($row = $interviews_today_result->fetch_assoc()): ?>
@@ -2236,6 +2262,8 @@ if (!empty($_SESSION['message'])) {
                                                 </div>
                                             <?php endwhile;
                                         }
+
+                                        // Leaves today
                                         if ($leaves_today_result->num_rows > 0) {
                                             $hasEvents = true;
                                             while ($row = $leaves_today_result->fetch_assoc()): ?>
@@ -2245,6 +2273,29 @@ if (!empty($_SESSION['message'])) {
                                                 </div>
                                             <?php endwhile;
                                         }
+
+                                        // Calendar events (created via calendar.php) that fall on today
+                                        // Note: we don't rely on fetch_events.php; we query directly for correct date filtering.
+                                        $custom_events_sql = "
+                                            SELECT event_id, title, description, event_type, event_date, start_time, end_time
+                                            FROM calendar_events
+                                            WHERE event_date = CURDATE()
+                                            ORDER BY start_time ASC, event_id ASC
+                                        ";
+                                        $custom_events_result = $conn->query($custom_events_sql);
+                                        if ($custom_events_result && $custom_events_result->num_rows > 0) {
+                                            $hasEvents = true;
+                                            while ($row = $custom_events_result->fetch_assoc()):
+                                                $startTimeLabel = !empty($row['start_time']) ? date('H:i', strtotime($row['start_time'])) : 'All day';
+                                                $typeLabel = htmlspecialchars($row['event_type'] ?: 'Other');
+                                            ?>
+                                                <div class="calendar-item event-<?php echo strtolower(htmlspecialchars($row['event_type'] ?: 'other')); ?>">
+                                                    <div class="calendar-item-title"><?php echo htmlspecialchars($row['title']); ?></div>
+                                                    <div class="calendar-item-time"><?php echo $startTimeLabel; ?> (<?php echo $typeLabel; ?>)</div>
+                                                </div>
+                                            <?php endwhile;
+                                        }
+
                                         if (!$hasEvents): ?>
                                             <div class="calendar-item-empty">No events today</div>
                                         <?php endif; ?>
@@ -2946,6 +2997,38 @@ if (!empty($_SESSION['message'])) {
 
         // Notification bell functionality
         document.addEventListener('DOMContentLoaded', function() {
+            // Contact message badge (unreplied messages)
+            const messageBadge = document.getElementById('messageBadge');
+            const messageBellLink = document.getElementById('messageBellLink');
+            
+            async function refreshMessageBadge() {
+                try {
+                    if (!messageBadge || !messageBellLink) return;
+                    const res = await fetch('get_contact_messages_kpis.php');
+                    const json = await res.json();
+                    const unread = Number(json?.unread ?? 0);
+                    const hasNew = unread > 0;
+
+                    // If server has already marked replies as read, still show badge for any NEW inbound message.
+                    // (For this app, backend treats "unread" as not yet replied.)
+                    messageBadge.textContent = unread;
+                    messageBadge.style.display = hasNew ? 'flex' : 'none';
+
+                    if (hasNew) {
+                        messageBellLink.classList.add('has-new-messages');
+                        messageBellLink.setAttribute('aria-live', 'polite');
+                    } else {
+                        messageBellLink.classList.remove('has-new-messages');
+                        messageBellLink.removeAttribute('aria-live');
+                    }
+                } catch (e) {
+                    // silent fail
+                }
+            }
+
+            refreshMessageBadge();
+            setInterval(refreshMessageBadge, 30000);
+
             const notificationBell = document.getElementById('notificationBell');
             const notificationDropdown = document.getElementById('notificationDropdown');
             const notificationBadge = document.getElementById('notificationBadge');
