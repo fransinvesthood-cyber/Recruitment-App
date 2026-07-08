@@ -26,6 +26,10 @@ $sql_job_count = "SELECT COUNT(*) AS total_jobs FROM job_postings";
 $job_count_results = $conn->query($sql_job_count);
 $total_jobs = ($job_count_results->num_rows > 0) ? $job_count_results->fetch_assoc()['total_jobs'] : 0;
 
+//Show Job Titles
+$sql_job_title = "SELECT position FROM job_postings";
+$job_title_results = $conn->query($sql_job_title);
+
 // Count total number of external jobs
 $sql_external_job_count = "SELECT COUNT(*) AS total_external_jobs FROM external_jobs";
 $external_job_count_results = $conn->query($sql_external_job_count);
@@ -1949,6 +1953,169 @@ if (!empty($_SESSION['message'])) {
         .form-input {
             position: relative;
         }
+   /* Modal Background */
+.modal{
+    display:none;
+    position:fixed;
+    z-index:9999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    overflow:auto;
+    background:rgba(0,0,0,.6);
+}
+
+    /* Light Mode */
+    .modal-content{
+        background:#ffffff;
+        color:#222;
+        width:80%;
+        max-width:1100px;
+        margin:40px auto;
+        border-radius:12px;
+        padding:20px;
+        box-shadow:0 10px 35px rgba(0,0,0,.25);
+        animation:fadeIn .3s;
+    }
+
+    .close{
+        float:right;
+        font-size:28px;
+        cursor:pointer;
+        color:#555;
+        transition:.3s;
+    }
+
+    .close:hover{
+        color:#ff4d4d;
+    }
+
+    /* Table */
+    .table-container{
+        max-height:500px;
+        overflow-y:auto;
+    }
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+    }
+
+    table th{
+        background:#1976d2;
+        color:#fff;
+        padding:12px;
+        position:sticky;
+        top:0;
+    }
+
+    table td{
+        padding:12px;
+        border-bottom:1px solid #ddd;
+    }
+
+    table tr:hover{
+        background:#f5f5f5;
+    }
+
+    /* Status Badges */
+    .badge{
+        padding:5px 12px;
+        border-radius:20px;
+        color:#fff;
+        font-size:12px;
+        font-weight:600;
+    }
+
+    .submitted{background:#0d6efd;}
+    .shortlisted{background:#198754;}
+    .rejected{background:#dc3545;}
+    .hired{background:#6f42c1;}
+    .pending{background:#ffc107;color:#000;}
+    .approved{background:#198754;}
+
+    /* ========================= */
+    /* DARK MODE */
+    /* ========================= */
+
+    body.dark-mode .modal{
+        background:rgba(0,0,0,.8);
+    }
+
+    body.dark-mode .modal-content{
+        background:#1b1f27;
+        color:#f1f1f1;
+        border:1px solid #333;
+    }
+
+    body.dark-mode h2{
+        color:#fff;
+    }
+
+    body.dark-mode .close{
+        color:#bbb;
+    }
+
+    body.dark-mode .close:hover{
+        color:#fff;
+    }
+
+    body.dark-mode table{
+        color:#fff;
+    }
+
+    body.dark-mode table th{
+        background:#2d8cff;
+    }
+
+    body.dark-mode table td{
+        border-bottom:1px solid #404040;
+    }
+
+    body.dark-mode table tr{
+        background:#1b1f27;
+    }
+
+    body.dark-mode table tr:hover{
+        background:#2a303c;
+    }
+
+    body.dark-mode input,
+    body.dark-mode select{
+        background:#2a303c;
+        color:#fff;
+        border:1px solid #555;
+    }
+
+    body.dark-mode .table-container::-webkit-scrollbar{
+        width:8px;
+    }
+
+    body.dark-mode .table-container::-webkit-scrollbar-track{
+        background:#222;
+    }
+
+    body.dark-mode .table-container::-webkit-scrollbar-thumb{
+        background:#666;
+        border-radius:5px;
+    }
+
+    /* Animation */
+
+    @keyframes fadeIn{
+
+        from{
+            opacity:0;
+            transform:translateY(-20px);
+        }
+
+        to{
+            opacity:1;
+            transform:translateY(0);
+        }
+
+    }
     </style>
 
 </head>
@@ -2038,7 +2205,7 @@ if (!empty($_SESSION['message'])) {
                                         </div>
                                         <div class="notification-time">
                                             <?php echo date('M d, H:i', strtotime($notification['created_at'])); ?>
-<div style="display:flex; align-items:center; gap:8px; justify-content:flex-end;">
+                                            <div style="display:flex; align-items:center; gap:8px; justify-content:flex-end;">
                                             <button class="delete-notification-btn" data-id="<?php echo $notification['notification_id']; ?>" title="Delete notification" aria-label="Delete notification">
                                                 <i class='bx bx-trash'></i>
                                             </button>
@@ -2208,50 +2375,81 @@ if (!empty($_SESSION['message'])) {
             </div>
 
             <ul class="insights">
-                <li class="card-internal-jobs">
-                    <i class='bx bx-calendar-check'></i>
-                    <span class="info">
-                        <h3><?php echo $total_jobs;?></h3>
-                        <p>Internal Jobs</p>
-                    </span>
-                </li>
-                <li class="card-external-jobs">
-                    <i class='bx bx-cloud-download'></i>
-                    <span class="info">
-                        <h3><?php echo $total_external_jobs;?></h3>
-                        <p>External Jobs</p>
-                    </span>
-                </li>
-                <li class="card-applications">
-                    <i class='bx bx-bell'></i>
-                    <span class="info">
-                        <h3><?php echo $total_apps;?></h3>
-                        <p>Job Applications</p>
-                    </span>
-                </li>
-                <li class="card-shortlisted">
-                    <i class='bx bx-list-check'></i>
-                    <span class="info">
-                        <h3><?php echo $shortlisted_count; ?></h3>
-                        <p>Shortlisted</p>
-                    </span>
-                </li>
-                <li class="card-rejected">
-                    <i class='bx bx-x-circle'></i>
-                    <span class="info">
-                        <h3><?php echo $rejected_count; ?></h3>
-                        <p>Rejected</p>
-                    </span>
-                </li>
-                <li class="card-leave-requests">
-                    <i class='bx bx-calendar-minus'></i>
-                    <span class="info">
-                        <h3><?php echo $total_leave_requests; ?></h3>
-                        <p>Leave Requests</p>
-                    </span>
-                </li>
+
+            <li class="card-internal-jobs"
+                onclick="openDashboardModal('internal')">
+                <i class='bx bx-calendar-check'></i>
+                <span class="info">
+                    <h3><?= $total_jobs ?></h3>
+                    <p>Internal Jobs</p>
+                </span>
+            </li>
+
+            <li class="card-external-jobs"
+                onclick="openDashboardModal('external')">
+                <i class='bx bx-cloud-download'></i>
+                <span class="info">
+                    <h3><?= $total_external_jobs ?></h3>
+                    <p>External Jobs</p>
+                </span>
+            </li>
+
+            <li class="card-applications"
+                onclick="openDashboardModal('applications')">
+                <i class='bx bx-bell'></i>
+                <span class="info">
+                    <h3><?= $total_apps ?></h3>
+                    <p>Job Applications</p>
+                </span>
+            </li>
+
+            <li class="card-shortlisted"
+                onclick="openDashboardModal('shortlisted')">
+                <i class='bx bx-list-check'></i>
+                <span class="info">
+                    <h3><?= $shortlisted_count ?></h3>
+                    <p>Shortlisted</p>
+                </span>
+            </li>
+
+            <li class="card-rejected"
+                onclick="openDashboardModal('rejected')">
+                <i class='bx bx-x-circle'></i>
+                <span class="info">
+                    <h3><?= $rejected_count ?></h3>
+                    <p>Rejected</p>
+                </span>
+            </li>
+
+            <li class="card-leave-requests"
+                onclick="openDashboardModal('leave')">
+                <i class='bx bx-calendar-minus'></i>
+                <span class="info">
+                    <h3><?= $total_leave_requests ?></h3>
+                    <p>Leave Requests</p>
+                </span>
+            </li>
+
             </ul>
             
+            <div id="dashboardModal" class="modal">
+
+                <div class="modal-content">
+
+                    <span class="close" onclick="closeDashboardModal()">&times;</span>
+
+                    <h2 id="modalTitle"></h2>
+
+                    <div id="modalBody">
+
+                        Loading...
+
+                    </div>
+
+                </div>
+
+            </div>
+
             <!-- Charts Row -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
                 <!-- Application Trends Chart -->
@@ -3115,7 +3313,50 @@ if (!empty($_SESSION['message'])) {
 
 
         });
-    </script>
+
+        //Open ashboard modal for clickable cards
+        function openDashboardModal(type){
+
+            const titles = {
+
+                internal:'Internal Jobs',
+
+                external:'External Jobs',
+
+                applications:'Job Applications',
+
+                shortlisted:'Shortlisted Applicants',
+
+                rejected:'Rejected Applicants',
+
+                leave:'Leave Requests'
+
+            };
+
+            document.getElementById("modalTitle").innerHTML=titles[type];
+
+            document.getElementById("modalBody").innerHTML="Loading...";
+
+            document.getElementById("dashboardModal").style.display="block";
+
+            fetch("dashboard_details.php?type="+type)
+
+            .then(res=>res.text())
+
+            .then(data=>{
+
+                document.getElementById("modalBody").innerHTML=data;
+
+            });
+
+        }
+
+        function closeDashboardModal(){
+
+            document.getElementById("dashboardModal").style.display="none";
+
+        }
+            </script>
 </body>
 </html>
 

@@ -2962,7 +2962,25 @@ function markAllAsRead() {
                     <i class='bx bx-sun'></i>
                 </label>
             </div>
-            
+             <!--   <button onclick="openNotificationsModal()">
+                    🔔
+                    <span id="notificationBadge"></span>
+                </button>
+           <!--Added notification to work with modal -->
+           <!-- <div id="notificationsModal" class="modal">
+
+
+                <div class="modal-content">
+                    <span class="close" onclick="closeNotificationsModal()">
+                        &times;
+                    </span>
+
+                    <div id="notificationsModalContent">
+                        Loading...
+                    </div>
+                </div>
+            </div>    -->        
+
             <!-- Notification Bell -->
             <div id="notification-container" class="notification-container">
                 <i class="bx bx-bell" style="cursor: pointer;" onclick="toggleNotificationDropdown(event)"></i>
@@ -2976,7 +2994,7 @@ function markAllAsRead() {
                         <!-- Notifications will be loaded here -->
                     </div>
                 </div>
-            </div>
+            </div> 
         </div>
 
         <div class="right-section">
@@ -3290,12 +3308,59 @@ function markAllAsRead() {
 </body>
 
 <script>
+
+let currentModalPage = 1;
+
+function openNotificationsModal() {
+    document.getElementById('notificationsModal').style.display = 'block';
+    loadModalPage(1);
+}
+
+function closeNotificationsModal() {
+    document.getElementById('notificationsModal').style.display = 'none';
+}
+
+function loadModalPage(page = 1) {
+
+    currentModalPage = page;
+
+    fetch('notifications_modal.php?page=' + page)
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById(
+                'notificationsModalContent'
+            ).innerHTML = data;
+        });
+}
+
     document.getElementById('summary-form').addEventListener('submit', function(e) {
         const confirmed = confirm("Are you sure you want to update your profile?");
         if (!confirmed) {
             e.preventDefault(); // Cancel form submission if user declines
         }
     });
+
+    function loadNotificationCount() {
+
+    fetch('notification_count.php')
+        .then(response => response.text())
+        .then(count => {
+
+            const badge =
+                document.getElementById('notificationBadge');
+
+            if (count > 0) {
+                badge.style.display = 'flex';
+                badge.innerText = count;
+            } else {
+                badge.style.display = 'none';
+            }
+        });
+}
+
+loadNotificationCount();
+
+setInterval(loadNotificationCount, 30000);
 </script>
 
 <script>
