@@ -209,18 +209,30 @@ if (!empty($_SESSION['message'])) {
         /* ===========================
            SIDEBAR STYLES
         ============================ */
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, var(--primary), var(--secondary));
-            color: var(--white);
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 100;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
+        .sidebar{
+            position:fixed;
+            top:0;
+            left:0;
+
+            width:280px;
+            height:100vh;
+
+            display:flex;
+            flex-direction:column;
+
+            background:linear-gradient(180deg,var(--primary),var(--secondary));
+
+            overflow:hidden;
+
+            z-index:100;
+
+            transition:.3s;
+        }
+
+        .bottom-menu{
+
+            border-top:1px solid rgba(255,255,255,.15);
+
         }
 
         /* --- FORCE DARK MODE BACKGROUND --- */
@@ -257,11 +269,25 @@ if (!empty($_SESSION['message'])) {
             display: none;
         }
 
-        .side-menu {
-            list-style: none;
-            padding: 0 15px;
-            flex: 1;
-            overflow-y: auto;
+        .side-menu{
+            list-style:none;
+            margin:0;
+            padding:0 15px;
+        }
+
+        /* Main menu fills remaining space */
+        .main-menu{
+            flex:1;
+            overflow-y:auto;
+            overflow-x:hidden;
+            min-height:0;
+        }
+
+        /* Logout stays at bottom */
+        .bottom-menu{
+            margin-top:auto;
+            flex:0;
+            padding:15px;
         }
 
         .side-menu li {
@@ -306,16 +332,47 @@ if (!empty($_SESSION['message'])) {
             display: none;
         }
 
-        .logout {
-            margin-top: auto;
-            padding: 16px !important;
-            background: rgba(0, 0, 0, 0.2);
+        .logout{
+            display:flex;
+            align-items:center;
+            gap:14px;
+            padding:16px !important;
+            background:rgba(0,0,0,.18);
+            border-radius:10px;
+            transition:.3s;
         }
 
-        @media (min-width: 769px) {
-            .logout {
-                display: none;
-            }
+        .logout:hover{
+            background:#d32f2f !important;
+            color:#fff;
+        }
+        .main-menu::-webkit-scrollbar{
+            width:7px;
+        }
+
+        .main-menu::-webkit-scrollbar-thumb{
+            background:rgba(255,255,255,.35);
+            border-radius:20px;
+        }
+
+        .main-menu::-webkit-scrollbar-thumb:hover{
+            background:rgba(255,255,255,.55);
+        }
+
+        .main-menu::-webkit-scrollbar-track{
+            background:transparent;
+        }
+    
+        body.dark-mode .bottom-menu{
+            border-top:1px solid #3b3b3b;
+        }
+
+        body.dark-mode .logout{
+            background:#2d2d2d;
+        }
+
+        body.dark-mode .logout:hover{
+            background:#c62828 !important;
         }
 
         /* ===========================
@@ -1041,26 +1098,6 @@ if (!empty($_SESSION['message'])) {
             text-align: center;
         }
 
-        .message-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #17a2b8;
-            color: #fff;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        .message-bell.has-new-messages i {
-            animation: bellBounce 2s infinite;
-        }
-
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
@@ -1132,7 +1169,7 @@ if (!empty($_SESSION['message'])) {
 
         .insights li.card-leave-requests {
             background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            color: #333;
+            color: brown;
         }
 
         body.dark-mode .insights li {
@@ -1187,129 +1224,6 @@ if (!empty($_SESSION['message'])) {
             gap: 24px;
         }
 
-        .analytics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
-            margin-bottom: 24px;
-        }
-
-        .analytics-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(248,250,255,0.95));
-            border: 1px solid rgba(102, 126, 234, 0.12);
-            border-radius: 22px;
-            overflow: hidden;
-            box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08);
-            position: relative;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-
-        .analytics-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 42px rgba(15, 23, 42, 0.14);
-        }
-
-        .analytics-card::before {
-            content: '';
-            position: absolute;
-            inset: 0 0 auto 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-        }
-
-        body.dark-mode .analytics-card {
-            background: linear-gradient(145deg, #2a2b2d, #232527);
-            border-color: rgba(255,255,255,0.06);
-            box-shadow: 0 12px 36px rgba(0,0,0,0.25);
-        }
-
-        .analytics-card .header {
-            padding: 20px 22px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid rgba(102, 126, 234, 0.08);
-        }
-
-        .analytics-card .header i {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(102, 126, 234, 0.12);
-            color: var(--primary);
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        .analytics-title-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            min-width: 0;
-        }
-
-        .analytics-title-group h3 {
-            font-size: 18px;
-            font-weight: 700;
-            margin: 0;
-            color: var(--dark);
-        }
-
-        body.dark-mode .analytics-title-group h3 {
-            color: #e4e6eb;
-        }
-
-        .analytics-subtitle {
-            font-size: 13px;
-            color: #64748b;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        body.dark-mode .analytics-subtitle {
-            color: #94a3b8;
-        }
-
-        .analytics-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 7px 12px;
-            border-radius: 999px;
-            background: rgba(102,126,234,0.09);
-            color: var(--primary);
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
-            border: 1px solid rgba(102,126,234,0.12);
-        }
-
-        .analytics-chart-shell {
-            padding: 18px 20px 22px;
-            height: 385px;
-            background: linear-gradient(180deg, rgba(102,126,234,0.03), rgba(255,255,255,0.4));
-        }
-
-        .analytics-chart-shell canvas {
-            filter: drop-shadow(0 6px 18px rgba(102, 126, 234, 0.08));
-        }
-
-        body.dark-mode .analytics-chart-shell {
-            background: linear-gradient(180deg, rgba(102,126,234,0.1), rgba(255,255,255,0.02));
-        }
-
-        .analytics-summary-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            padding: 0 22px 16px;
-        }
-
         .orders.full-width {
             grid-column: 1 / -1;
         }
@@ -1348,22 +1262,6 @@ if (!empty($_SESSION['message'])) {
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
-        }
-
-        #applicationsSection .btn-outline-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: #ffffff;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 8px 18px rgba(102, 126, 234, 0.18);
-            font-weight: 700;
-            padding: 8px 14px;
-            border-radius: 999px;
-        }
-
-        #applicationsSection .btn-outline-primary:hover {
-            color: #ffffff;
-            transform: translateY(-1px);
-            box-shadow: 0 10px 22px rgba(102, 126, 234, 0.24);
         }
 
         .orders .header select {
@@ -2125,156 +2023,156 @@ if (!empty($_SESSION['message'])) {
     background:rgba(0,0,0,.6);
 }
 
-    /* Light Mode */
-    .modal-content{
-        background:#ffffff;
-        color:#222;
-        width:80%;
-        max-width:1100px;
-        margin:40px auto;
-        border-radius:12px;
-        padding:20px;
-        box-shadow:0 10px 35px rgba(0,0,0,.25);
-        animation:fadeIn .3s;
+/* Light Mode */
+.modal-content{
+    background:#ffffff;
+    color:#222;
+    width:80%;
+    max-width:1100px;
+    margin:40px auto;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 10px 35px rgba(0,0,0,.25);
+    animation:fadeIn .3s;
+}
+
+.close{
+    float:right;
+    font-size:28px;
+    cursor:pointer;
+    color:#555;
+    transition:.3s;
+}
+
+.close:hover{
+    color:#ff4d4d;
+}
+
+/* Table */
+.table-container{
+    max-height:500px;
+    overflow-y:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th{
+    background:#1976d2;
+    color:#fff;
+    padding:12px;
+    position:sticky;
+    top:0;
+}
+
+table td{
+    padding:12px;
+    border-bottom:1px solid #ddd;
+}
+
+table tr:hover{
+    background:#f5f5f5;
+}
+
+/* Status Badges */
+.badge{
+    padding:5px 12px;
+    border-radius:20px;
+    color:#fff;
+    font-size:12px;
+    font-weight:600;
+}
+
+.submitted{background:#0d6efd;}
+.shortlisted{background:#198754;}
+.rejected{background:#dc3545;}
+.hired{background:#6f42c1;}
+.pending{background:#ffc107;color:#000;}
+.approved{background:#198754;}
+
+/* ========================= */
+/* DARK MODE */
+/* ========================= */
+
+body.dark-mode .modal{
+    background:rgba(0,0,0,.8);
+}
+
+body.dark-mode .modal-content{
+    background:#1b1f27;
+    color:#f1f1f1;
+    border:1px solid #333;
+}
+
+body.dark-mode h2{
+    color:#fff;
+}
+
+body.dark-mode .close{
+    color:#bbb;
+}
+
+body.dark-mode .close:hover{
+    color:#fff;
+}
+
+body.dark-mode table{
+    color:#fff;
+}
+
+body.dark-mode table th{
+    background:#2d8cff;
+}
+
+body.dark-mode table td{
+    border-bottom:1px solid #404040;
+}
+
+body.dark-mode table tr{
+    background:#1b1f27;
+}
+
+body.dark-mode table tr:hover{
+    background:#2a303c;
+}
+
+body.dark-mode input,
+body.dark-mode select{
+    background:#2a303c;
+    color:#fff;
+    border:1px solid #555;
+}
+
+body.dark-mode .table-container::-webkit-scrollbar{
+    width:8px;
+}
+
+body.dark-mode .table-container::-webkit-scrollbar-track{
+    background:#222;
+}
+
+body.dark-mode .table-container::-webkit-scrollbar-thumb{
+    background:#666;
+    border-radius:5px;
+}
+
+/* Animation */
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translateY(-20px);
     }
 
-    .close{
-        float:right;
-        font-size:28px;
-        cursor:pointer;
-        color:#555;
-        transition:.3s;
+    to{
+        opacity:1;
+        transform:translateY(0);
     }
 
-    .close:hover{
-        color:#ff4d4d;
-    }
-
-    /* Table */
-    .table-container{
-        max-height:500px;
-        overflow-y:auto;
-    }
-
-    table{
-        width:100%;
-        border-collapse:collapse;
-    }
-
-    table th{
-        background:#1976d2;
-        color:#fff;
-        padding:12px;
-        position:sticky;
-        top:0;
-    }
-
-    table td{
-        padding:12px;
-        border-bottom:1px solid #ddd;
-    }
-
-    table tr:hover{
-        background:#f5f5f5;
-    }
-
-    /* Status Badges */
-    .badge{
-        padding:5px 12px;
-        border-radius:20px;
-        color:#fff;
-        font-size:12px;
-        font-weight:600;
-    }
-
-    .submitted{background:#0d6efd;}
-    .shortlisted{background:#198754;}
-    .rejected{background:#dc3545;}
-    .hired{background:#6f42c1;}
-    .pending{background:#ffc107;color:#000;}
-    .approved{background:#198754;}
-
-    /* ========================= */
-    /* DARK MODE */
-    /* ========================= */
-
-    body.dark-mode .modal{
-        background:rgba(0,0,0,.8);
-    }
-
-    body.dark-mode .modal-content{
-        background:#1b1f27;
-        color:#f1f1f1;
-        border:1px solid #333;
-    }
-
-    body.dark-mode h2{
-        color:#fff;
-    }
-
-    body.dark-mode .close{
-        color:#bbb;
-    }
-
-    body.dark-mode .close:hover{
-        color:#fff;
-    }
-
-    body.dark-mode table{
-        color:#fff;
-    }
-
-    body.dark-mode table th{
-        background:#2d8cff;
-    }
-
-    body.dark-mode table td{
-        border-bottom:1px solid #404040;
-    }
-
-    body.dark-mode table tr{
-        background:#1b1f27;
-    }
-
-    body.dark-mode table tr:hover{
-        background:#2a303c;
-    }
-
-    body.dark-mode input,
-    body.dark-mode select{
-        background:#2a303c;
-        color:#fff;
-        border:1px solid #555;
-    }
-
-    body.dark-mode .table-container::-webkit-scrollbar{
-        width:8px;
-    }
-
-    body.dark-mode .table-container::-webkit-scrollbar-track{
-        background:#222;
-    }
-
-    body.dark-mode .table-container::-webkit-scrollbar-thumb{
-        background:#666;
-        border-radius:5px;
-    }
-
-    /* Animation */
-
-    @keyframes fadeIn{
-
-        from{
-            opacity:0;
-            transform:translateY(-20px);
-        }
-
-        to{
-            opacity:1;
-            transform:translateY(0);
-        }
-
-    }
+}
     </style>
 
 </head>
@@ -2289,14 +2187,12 @@ if (!empty($_SESSION['message'])) {
         })();
     </script>
 
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; display: none;"></div>
-    
     <div class="sidebar" id="sidebar">
         <a href="#" class="logo">
             <i class='bx bx-user-circle'></i>
             <div class="logo-name"><span>Admin</span></div>
         </a>
-        <ul class="side-menu">
+        <ul class="side-menu main-menu">
             <li class="active"><a href="admin_dashboard.php"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a></li>
             <li class="section-header"><span>Candidates</span></li>
             <li><a href="manage_jobs.php"><i class='bx bx-spreadsheet'></i><span>Jobs</span></a></li>
@@ -2311,10 +2207,11 @@ if (!empty($_SESSION['message'])) {
             <li><a href="admin_invoices.php"><i class='bx bx-receipt'></i><span>Invoices</span></a></li>
             <li><a href="admin_chat.php"><i class='bx bx-chat'></i><span>Chats</span></a></li>
             <li><a href="admin_settings.php"><i class='bx bx-cog'></i><span>Settings</span></a></li>
+            <li><a href="admin_contact_messages.php"><i class='bx bx-message-dots'></i><span>Contact Messages</span></a></li>
         </ul>
 
 
-        <ul class="side-menu">
+        <ul class="side-menu bottom-menu">
             <li>
                 <a href="logout.php" class="logout" onclick="return confirmLogout();">
                     <i class='bx bx-log-out-circle'></i>
@@ -2323,6 +2220,10 @@ if (!empty($_SESSION['message'])) {
             </li>
         </ul>
     </div>
+
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; display: none;"></div>
+    
+
     <div class="content">
         <nav>
             <button class="mobile-menu-btn" id="mobileMenuBtn"><i class='bx bx-menu'></i></button>
@@ -2336,7 +2237,6 @@ if (!empty($_SESSION['message'])) {
             </div>
             <div class="nav-icons-group">
                 <div class="notification-bell" id="notificationBell">
-
                     <i class='bx bx-bell'></i>
                     <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
                     <div class="notification-dropdown" id="notificationDropdown">
@@ -2400,10 +2300,6 @@ if (!empty($_SESSION['message'])) {
 
                     </div>
                 </div>
-<a href="admin_contact_messages.php" class="notification-bell" style="text-decoration:none;" aria-label="Contact Messages" id="messageBellLink">
-                    <i class='bx bx-message-dots'></i>
-                    <span class="message-badge" id="messageBadge" style="display:none;">0</span>
-                </a>
                 <div class="calendar-bell" id="calendarBell">
                     <i class='bx bx-calendar'></i>
                     <div class="calendar-dropdown" id="calendarDropdown">
@@ -2418,8 +2314,6 @@ if (!empty($_SESSION['message'])) {
                                     <div id="todayEvents">
                                         <?php
                                         $hasEvents = false;
-
-                                        // Interviews today
                                         if ($interviews_today_result->num_rows > 0) {
                                             $hasEvents = true;
                                             while ($row = $interviews_today_result->fetch_assoc()): ?>
@@ -2429,8 +2323,6 @@ if (!empty($_SESSION['message'])) {
                                                 </div>
                                             <?php endwhile;
                                         }
-
-                                        // Leaves today
                                         if ($leaves_today_result->num_rows > 0) {
                                             $hasEvents = true;
                                             while ($row = $leaves_today_result->fetch_assoc()): ?>
@@ -2440,29 +2332,6 @@ if (!empty($_SESSION['message'])) {
                                                 </div>
                                             <?php endwhile;
                                         }
-
-                                        // Calendar events (created via calendar.php) that fall on today
-                                        // Note: we don't rely on fetch_events.php; we query directly for correct date filtering.
-                                        $custom_events_sql = "
-                                            SELECT event_id, title, description, event_type, event_date, start_time, end_time
-                                            FROM calendar_events
-                                            WHERE event_date = CURDATE()
-                                            ORDER BY start_time ASC, event_id ASC
-                                        ";
-                                        $custom_events_result = $conn->query($custom_events_sql);
-                                        if ($custom_events_result && $custom_events_result->num_rows > 0) {
-                                            $hasEvents = true;
-                                            while ($row = $custom_events_result->fetch_assoc()):
-                                                $startTimeLabel = !empty($row['start_time']) ? date('H:i', strtotime($row['start_time'])) : 'All day';
-                                                $typeLabel = htmlspecialchars($row['event_type'] ?: 'Other');
-                                            ?>
-                                                <div class="calendar-item event-<?php echo strtolower(htmlspecialchars($row['event_type'] ?: 'other')); ?>">
-                                                    <div class="calendar-item-title"><?php echo htmlspecialchars($row['title']); ?></div>
-                                                    <div class="calendar-item-time"><?php echo $startTimeLabel; ?> (<?php echo $typeLabel; ?>)</div>
-                                                </div>
-                                            <?php endwhile;
-                                        }
-
                                         if (!$hasEvents): ?>
                                             <div class="calendar-item-empty">No events today</div>
                                         <?php endif; ?>
@@ -2641,31 +2510,25 @@ if (!empty($_SESSION['message'])) {
             </div>
 
             <!-- Charts Row -->
-            <div class="analytics-grid">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
                 <!-- Application Trends Chart -->
-                <div class="orders analytics-card">
+                <div class="orders">
                     <div class="header">
-                        <div class="analytics-title-group">
-                            <h3>Application Trends (Last 30 Days)</h3>
-                            <div class="analytics-subtitle"><i class='bx bx-trending-up'></i> Daily intake overview</div>
-                        </div>
-                        <span class="analytics-pill"><i class='bx bx-line-chart'></i> Live trend</span>
+                        <i class='bx bx-line-chart'></i>
+                        <h3>Application Trends (Last 30 Days)</h3>
                     </div>
-                    <div class="analytics-chart-shell">
+                    <div style="padding: 20px; height: 400px;">
                         <canvas id="applicationTrendsChart"></canvas>
                     </div>
                 </div>
 
                 <!-- Application Status Distribution Pie Chart -->
-                <div class="orders analytics-card">
+                <div class="orders">
                     <div class="header">
-                        <div class="analytics-title-group">
-                            <h3>Application Status Distribution</h3>
-                            <div class="analytics-subtitle"><i class='bx bx-pie-chart-alt-2'></i> Snapshot of pipeline health</div>
-                        </div>
-                        <span class="analytics-pill"><i class='bx bx-pie-chart-alt-2'></i> Status mix</span>
+                        <i class='bx bx-pie-chart-alt-2'></i>
+                        <h3>Application Status Distribution</h3>
                     </div>
-                    <div class="analytics-chart-shell">
+                    <div style="padding: 20px; height: 400px;">
                         <canvas id="applicationStatusChart"></canvas>
                     </div>
                 </div>
@@ -2782,20 +2645,11 @@ if (!empty($_SESSION['message'])) {
                     </div>
                 </div>
 
-                <div class="orders analytics-card" id="applicationsSection">
+                <div class="orders" id="applicationsSection">
                     <div class="header">
-                        <div class="analytics-title-group">
-                            <h3>Applications</h3>
-                            <div class="analytics-subtitle"><i class='bx bx-receipt'></i> Latest applicant activity</div>
-                        </div>
-                        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                            <span class="analytics-pill"><i class='bx bx-file'></i> <?php echo (int)$total_apps; ?> total</span>
-                            <a href="manage_applications.php" class="btn btn-sm btn-outline-primary">View all</a>
-                        </div>
-                    </div>
-                    <div class="analytics-summary-row">
-                        <span class="analytics-pill"><i class='bx bx-list-check'></i> Shortlisted: <?php echo (int)$shortlisted_count; ?></span>
-                        <span class="analytics-pill"><i class='bx bx-x-circle'></i> Rejected: <?php echo (int)$rejected_count; ?></span>
+                        <i class='bx bx-receipt'></i>
+                        <h3>Applications</h3>
+                        <a href="manage_applications.php">view all ></a>
                     </div>
                     <div class="table-responsive">
                         <?php
@@ -3018,9 +2872,7 @@ if (!empty($_SESSION['message'])) {
                 info: '#06b6d4',
                 purple: '#8b5cf6',
                 pink: '#ec4899',
-                danger: '#dc3545',
-                teal: '#14b8a6',
-                indigo: '#6366f1'
+                danger: '#dc3545'
             };
 
             // Create vibrant gradient background
@@ -3073,10 +2925,6 @@ if (!empty($_SESSION['message'])) {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    animation: {
-                        duration: 1400,
-                        easing: 'easeOutQuart'
-                    },
                     plugins: {
                         legend: {
                             display: false
@@ -3132,54 +2980,33 @@ if (!empty($_SESSION['message'])) {
                     datasets: [{
                         data: pieData,
                         backgroundColor: [
-                            'rgba(16, 185, 129, 0.9)',
-                            'rgba(239, 68, 68, 0.9)',
-                            'rgba(99, 102, 241, 0.9)',
-                            'rgba(245, 158, 11, 0.9)'
+                            colors.success,    // Shortlisted - green
+                            colors.danger,     // Rejected - red
+                            colors.primary,    // Hired - blue/purple
+                            colors.info        // Submitted - cyan
                         ],
-                        hoverBackgroundColor: [
-                            'rgba(5, 150, 105, 0.95)',
-                            'rgba(220, 38, 38, 0.95)',
-                            'rgba(79, 70, 229, 0.95)',
-                            'rgba(217, 119, 6, 0.95)'
-                        ],
-                        borderColor: 'rgba(255,255,255,0.95)',
-                        borderWidth: 2,
-                        hoverOffset: 8
+                        borderColor: '#ffffff',
+                        borderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    animation: {
-                        duration: 1400,
-                        easing: 'easeOutQuart'
-                    },
-                    layout: {
-                        padding: 8
-                    },
                     plugins: {
                         legend: {
                             position: 'bottom',
                             labels: {
                                 color: textColor,
-                                padding: 16,
-                                usePointStyle: true,
-                                pointStyle: 'circle',
-                                font: {
-                                    family: 'Inter, Segoe UI, sans-serif',
-                                    size: 12,
-                                    weight: '600'
-                                }
+                                padding: 20,
+                                usePointStyle: true
                             }
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.92)',
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
                             titleColor: '#fff',
                             bodyColor: '#fff',
                             padding: 12,
-                            cornerRadius: 10,
-                            displayColors: true,
+                            cornerRadius: 8,
                             callbacks: {
                                 label: function(context) {
                                     const total = context.dataset.data.reduce((a, b) => a + b, 0);
@@ -3195,38 +3022,6 @@ if (!empty($_SESSION['message'])) {
 
         // Notification bell functionality
         document.addEventListener('DOMContentLoaded', function() {
-            // Contact message badge (unreplied messages)
-            const messageBadge = document.getElementById('messageBadge');
-            const messageBellLink = document.getElementById('messageBellLink');
-            
-            async function refreshMessageBadge() {
-                try {
-                    if (!messageBadge || !messageBellLink) return;
-                    const res = await fetch('get_contact_messages_kpis.php');
-                    const json = await res.json();
-                    const unread = Number(json?.unread ?? 0);
-                    const hasNew = unread > 0;
-
-                    // If server has already marked replies as read, still show badge for any NEW inbound message.
-                    // (For this app, backend treats "unread" as not yet replied.)
-                    messageBadge.textContent = unread;
-                    messageBadge.style.display = hasNew ? 'flex' : 'none';
-
-                    if (hasNew) {
-                        messageBellLink.classList.add('has-new-messages');
-                        messageBellLink.setAttribute('aria-live', 'polite');
-                    } else {
-                        messageBellLink.classList.remove('has-new-messages');
-                        messageBellLink.removeAttribute('aria-live');
-                    }
-                } catch (e) {
-                    // silent fail
-                }
-            }
-
-            refreshMessageBadge();
-            setInterval(refreshMessageBadge, 30000);
-
             const notificationBell = document.getElementById('notificationBell');
             const notificationDropdown = document.getElementById('notificationDropdown');
             const notificationBadge = document.getElementById('notificationBadge');

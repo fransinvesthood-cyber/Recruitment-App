@@ -128,8 +128,12 @@ if (!empty($_SESSION['message'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/dataTables.tailwindcss.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="includes/admin-layout.css">
+
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    
     <script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/dataTables.tailwindcss.min.js"></script>
     <title>Admin - View Timesheets</title>
 
@@ -177,116 +181,6 @@ if (!empty($_SESSION['message'])) {
             color: #e4e6eb;
         }
 
-        /* ===========================
-           SIDEBAR STYLES
-        ============================ */
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, var(--primary), var(--secondary));
-            color: var(--white);
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 100;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-        }
-
-        body.dark-mode .sidebar {
-            background-color: var(--dark) !important;
-            background-image: none !important;
-        }
-
-        .sidebar.collapsed {
-            width: 80px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 24px 20px;
-            text-decoration: none;
-            color: var(--white);
-            font-size: 22px;
-            font-weight: 700;
-        }
-
-        .logo i {
-            font-size: 32px;
-        }
-
-        .logo-name span {
-            white-space: nowrap;
-            transition: var(--transition);
-        }
-
-        .sidebar.collapsed .logo-name span {
-            display: none;
-        }
-
-        .side-menu {
-            list-style: none;
-            padding: 0 15px;
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .side-menu li {
-            margin: 8px 0;
-        }
-
-        .side-menu li a {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 16px;
-            color: var(--white);
-            text-decoration: none;
-            border-radius: 8px;
-            transition: var(--transition);
-            font-size: 16px;
-        }
-
-        .side-menu li a:hover,
-        .side-menu li.active a {
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        .side-menu li a i {
-            font-size: 22px;
-            min-width: 24px;
-            text-align: center;
-        }
-
-        .side-menu li.section-header {
-            padding: 8px 16px;
-            font-weight: 600;
-            color: var(--white);
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            opacity: 0.8;
-            margin-top: 12px;
-        }
-
-        .sidebar.collapsed .side-menu li.section-header span {
-            display: none;
-        }
-
-        .logout {
-            margin-top: auto;
-            padding: 16px !important;
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        @media (min-width: 769px) {
-            .logout {
-                display: none;
-            }
-        }
 
         /* ===========================
            MAIN CONTENT STYLES
@@ -1185,14 +1079,12 @@ if (!empty($_SESSION['message'])) {
         })();
     </script>
 
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999;"></div>
-
     <div class="sidebar" id="sidebar">
         <a href="#" class="logo">
             <i class='bx bx-user-circle'></i>
             <div class="logo-name"><span>Admin</span></div>
         </a>
-        <ul class="side-menu">
+        <ul class="side-menu main-menu">
             <li><a href="admin_dashboard.php"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a></li>
             <li class="section-header"><span>Candidates</span></li>
             <li><a href="manage_jobs.php"><i class='bx bx-spreadsheet'></i><span>Jobs</span></a></li>
@@ -1209,7 +1101,7 @@ if (!empty($_SESSION['message'])) {
             <li><a href="admin_settings.php"><i class='bx bx-cog'></i><span>Settings</span></a></li>
         </ul>
 
-        <ul class="side-menu">
+        <ul class="side-menu bottom-menu">
             <li>
                 <a href="logout.php" class="logout" onclick="return confirmLogout();">
                     <i class='bx bx-log-out-circle'></i>
@@ -1218,6 +1110,9 @@ if (!empty($_SESSION['message'])) {
             </li>
         </ul>
     </div>
+
+
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999;"></div>
 
     <div class="content">
         <main>

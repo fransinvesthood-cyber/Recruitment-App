@@ -217,16 +217,17 @@
     </style>
 </head>
 <body>
+    <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <a href="#" class="logo">
             <i class='bx bx-user-circle'></i>
             <div class="logo-name"><span>Admin</span></div>
         </a>
-        <ul class="side-menu">
+        <ul class="side-menu main-menu">
             <li><a href="admin_dashboard.php"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a></li>
             <li class="section-header"><span>Candidates</span></li>
             <li><a href="manage_jobs.php"><i class='bx bx-spreadsheet'></i><span>Jobs</span></a></li>
-            <li><a href="manage_applications.php"><i class='bx bx-file'></i><span>Applications</span></a></li>
+            <li class="active"><a href="manage_applications.php"><i class='bx bx-file'></i><span>Applications</span></a></li>
             <li><a href="admin_user_management.php"><i class='bx bx-user'></i><span>Users</span></a></li>
             <li><a href="schedule_interview.php"><i class='bx bx-group'></i><span>Interviews</span></a></li>
             <li><a href="calendar.php"><i class='bx bx-calendar'></i><span>Calendar</span></a></li>
@@ -236,9 +237,9 @@
             <li><a href="admin_view_leaves.php"><i class='bx bx-calendar-minus'></i><span>Leaves</span></a></li>
             <li><a href="admin_invoices.php"><i class='bx bx-receipt'></i><span>Invoices</span></a></li>
             <li><a href="admin_chat.php"><i class='bx bx-chat'></i><span>Chats</span></a></li>
-            <li class="active"><a href="admin_settings.php"><i class='bx bx-cog'></i><span>Settings</span></a></li>
+            <li><a href="admin_settings.php"><i class='bx bx-cog'></i><span>Settings</span></a></li>
         </ul>
-        <ul class="side-menu">
+        <ul class="side-menu bottom-menu">
             <li>
                 <a href="logout.php" class="logout" onclick="return confirmLogout();">
                     <i class='bx bx-log-out-circle'></i>

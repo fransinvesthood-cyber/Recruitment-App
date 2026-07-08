@@ -718,12 +718,69 @@ try {
 }
 
 ?>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Admin</title>
 
-<?php
-// Centralized UI header/shell
-include('includes/admin_user_management_header.php');
-?>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+     
+    <link rel="stylesheet" href="includes/admin-layout.css">
+    </head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <a href="#" class="logo">
+            <i class='bx bx-user-circle'></i>
+            <div class="logo-name"><span>Admin</span></div>
+        </a>
+        <ul class="side-menu main-menu">
+            <li><a href="admin_dashboard.php"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a></li>
+            <li class="section-header"><span>Candidates</span></li>
+            <li><a href="manage_jobs.php"><i class='bx bx-spreadsheet'></i><span>Jobs</span></a></li>
+            <li><a href="manage_applications.php"><i class='bx bx-file'></i><span>Applications</span></a></li>
+            <li class="active"><a href="admin_user_management.php"><i class='bx bx-user'></i><span>Users</span></a></li>
+            <li><a href="schedule_interview.php"><i class='bx bx-group'></i><span>Interviews</span></a></li>
+            <li><a href="calendar.php"><i class='bx bx-calendar'></i><span>Calendar</span></a></li>
+            <li class="section-header"><span>Consultants</span></li>
+            <li><a href="admin_view_timesheets.php"><i class='bx bx-time-five'></i><span>Timesheets</span></a></li>
+            <li><a href="admin_view_tasklogs.php"><i class='bx bx-file'></i><span>Tasklogs</span></a></li>
+            <li><a href="admin_view_leaves.php"><i class='bx bx-calendar-minus'></i><span>Leaves</span></a></li>
+            <li><a href="admin_invoices.php"><i class='bx bx-receipt'></i><span>Invoices</span></a></li>
+            <li><a href="admin_chat.php"><i class='bx bx-chat'></i><span>Chats</span></a></li>
+            <li><a href="admin_settings.php"><i class='bx bx-cog'></i><span>Settings</span></a></li>
+        </ul>
+        <ul class="side-menu bottom-menu">
+            <li>
+                <a href="logout.php" class="logout" onclick="return confirmLogout();">
+                    <i class='bx bx-log-out-circle'></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="container py-4">
+            <div class="welcome-section">
+                <div class="welcome-content">
+                    <h1>User Management</h1>
+                    <p>Manage user accounts, monitor user activity, update roles and permissions, and maintain secure access across the system.</p>
+                </div>
+            </div>
+
+            <?php if (!empty($message)): ?>
+                <div class="alert <?php echo ($messageClass ?? '') === 'success' ? 'alert-success' : 'alert-danger'; ?> alert-dismissible fade show" role="alert">
+                    <?php echo htmlspecialchars($message); ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
 
             <div class="row g-3 mb-4">
                 <div class="col-12 col-md-6 col-lg-4">

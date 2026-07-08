@@ -68,6 +68,8 @@ if (!$selected_consultant && !empty($consultants)) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
 
+    <link rel="stylesheet" type="text/css" href="includes/admin-layout.css">
+
     <style>
         /* ===========================
            GLOBAL RESET & VARIABLES (from consultant_chat.php)
@@ -109,84 +111,6 @@ if (!$selected_consultant && !empty($consultants)) {
             color: #e4e6eb;
         }
 
-        /* ===========================
-           SIDEBAR (copied from consultant_chat.php)
-        ============================ */
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, var(--primary), var(--secondary));
-            color: var(--white);
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 100;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-        }
-        body.dark-mode .sidebar {
-            background: #242526;
-        }
-        .sidebar.collapsed {
-            width: 80px;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 24px 20px;
-            text-decoration: none;
-            color: var(--white);
-            font-size: 22px;
-            font-weight: 700;
-        }
-        .logo i {
-            font-size: 32px;
-        }
-        .logo-name span {
-            white-space: nowrap;
-            transition: var(--transition);
-        }
-        .sidebar.collapsed .logo-name span {
-            display: none;
-        }
-        .side-menu {
-            list-style: none;
-            padding: 0 15px;
-            flex: 1;
-            overflow-y: auto;
-        }
-        .side-menu li {
-            margin: 8px 0;
-        }
-        .side-menu li a {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 16px;
-            color: var(--white);
-            text-decoration: none;
-            border-radius: 8px;
-            transition: var(--transition);
-            font-size: 16px;
-        }
-        .side-menu li.active a {
-            background: rgba(255, 255, 255, 0.15);
-        }
-        .side-menu li a:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .side-menu li a i {
-            font-size: 22px;
-            min-width: 24px;
-            text-align: center;
-        }
-        .logout {
-            margin-top: auto;
-            padding: 16px !important;
-            background: rgba(0, 0, 0, 0.2);
-        }
 
         /* ===========================
            WELCOME SECTION
@@ -913,16 +837,13 @@ if (!$selected_consultant && !empty($consultants)) {
         })();
     </script>
 
-    <!-- Mobile Menu Overlay -->
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
-
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <a href="#" class="logo">
             <i class='bx bx-user-circle'></i>
             <div class="logo-name"><span>Admin</span></div>
         </a>
-        <ul class="side-menu">
+        <ul class="side-menu main-menu">
             <li><a href="admin_dashboard.php"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a></li>
             <li class="section-header"><span>Candidates</span></li>
             <li><a href="manage_jobs.php"><i class='bx bx-spreadsheet'></i><span>Jobs</span></a></li>
@@ -938,7 +859,7 @@ if (!$selected_consultant && !empty($consultants)) {
             <li class="active"><a href="admin_chat.php"><i class='bx bx-chat'></i><span>Chats</span></a></li>
             <li><a href="admin_settings.php"><i class='bx bx-cog'></i><span>Settings</span></a></li>
         </ul>
-        <ul class="side-menu">
+        <ul class="side-menu bottom-menu">
             <li>
                 <a href="logout.php" class="logout" onclick="return confirmLogout();">
                     <i class='bx bx-log-out-circle'></i>
@@ -947,6 +868,10 @@ if (!$selected_consultant && !empty($consultants)) {
             </li>
         </ul>
     </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
 
     <!-- Main Content -->
     <div class="content">

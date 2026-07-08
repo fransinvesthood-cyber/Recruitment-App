@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule Interview - Modern</title>
+    <link rel="stylesheet" href="includes/admin-layout.css">
+
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
@@ -12,42 +14,7 @@
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
         body{background:#f5f7fb;color:#333;display:flex;min-height:100vh;overflow-x:hidden;}
         body.dark-mode{background:var(--dark);color:#e4e6eb;}
-        .sidebar{width:280px;background:linear-gradient(180deg,var(--primary),var(--secondary));color:var(--white);height:100vh;position:fixed;top:0;left:0;z-index:100;display:flex;flex-direction:column;}
-        .sidebar.collapsed{width:80px;}
-        .logo{display:flex;align-items:center;gap:12px;padding:24px 20px;text-decoration:none;color:var(--white);font-size:22px;font-weight:700;}
-        .logo i{font-size:32px;}
-        .logo-name span{white-space:nowrap;transition:var(--transition);}
-        .sidebar.collapsed .logo-name span{display:none;}
-        .side-menu{list-style:none;padding:0 15px;flex:1;overflow-y:auto;}
-        .side-menu li{margin:6px 0;}
-        .side-menu li a{display:flex;align-items:center;gap:14px;padding:12px 16px;color:var(--white);text-decoration:none;border-radius:8px;transition:var(--transition);font-size:15px;}
-        .side-menu li a:hover,.side-menu li.active a{background:rgba(255,255,255,0.15);}
-        .side-menu li a i{font-size:20px;min-width:24px;text-align:center;}
-        .logout{margin-top:auto;padding:16px!important;background:rgba(0,0,0,0.2);}
-        .section-title{font-weight:700;font-size:12px;text-transform:uppercase;color:rgba(255,255,255,0.7);padding:8px 16px;margin:12px 0 6px 0;letter-spacing:0.5px;border-bottom:1px solid rgba(255,255,255,0.1);}
-        .sidebar.collapsed .section-title{display:none;}
-        .content{flex:1;margin-left:280px;transition:var(--transition);}
-        .sidebar.collapsed~.content{margin-left:80px;}
-        nav{display:flex;justify-content:space-between;align-items:center;padding:16px 30px;background:var(--white);box-shadow:0 2px 10px rgba(0,0,0,0.1);position:sticky;top:0;z-index:99;}
-        body.dark-mode nav{background:#242526;}
-        body.dark-mode .sidebar {
-            background: var(--darker) !important;
-            background-image: none !important;
-        }
-        body.dark-mode .sidebar * {
-            color: #e4e6eb !important;
-        }
-        body.dark-mode .sidebar a:hover,
-        body.dark-mode .sidebar li.active a {
-            background: rgba(255,255,255,0.1) !important;
-        }
-        body.dark-mode .section-title {
-            color: rgba(228,230,235,0.8) !important;
-            border-bottom-color: rgba(228,230,235,0.2) !important;
-        }
-        body.dark-mode .logout {
-            background: rgba(255,255,255,0.1) !important;
-        }
+      
         .mobile-menu-btn{display:none;background:none;border:none;font-size:28px;color:var(--gray);cursor:pointer;}
         .theme-toggle-label{display:flex;align-items:center;gap:8px;cursor:pointer;}
         #theme-toggle{display:none;}
@@ -56,8 +23,23 @@
         .theme-toggle::before{content:'';width:20px;height:20px;background:var(--white);border-radius:50%;transition:var(--transition);}
         #theme-toggle:checked+.theme-toggle::before{transform:translateX(26px);background:var(--primary);}
         main{padding:20px;}
-        .welcome-section{background:linear-gradient(135deg,var(--primary) 0%,var(--secondary) 100%);color:var(--white);padding:20px;border-radius:var(--border-radius);margin-bottom:20px;box-shadow:var(--box-shadow);}
-        body.dark-mode .welcome-section{background:linear-gradient(135deg,#1f2937 0%,#111827 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,0.06),0 10px 24px rgba(0,0,0,0.28);}
+
+        .welcome-section{
+            background:linear-gradient(135deg,var(--primary) 0%,var(--secondary) 100%);
+            color:#fff;
+            padding:20px;
+            border-radius:var(--border-radius);
+            margin-bottom:20px;
+            box-shadow:var(--box-shadow);
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+        }
+        .welcome-content{
+            width:100%;
+        }
         .welcome-section h1{font-size:24px;margin-bottom:6px;}
         .welcome-section p{opacity:0.9;font-size:16px;}
         .header-section{display:flex;justify-content:flex-end;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
@@ -181,20 +163,18 @@
 </head>
 <body>
     <script>(function(){const t=localStorage.getItem('theme');if(t==='dark')document.body.classList.add('dark-mode');})();</script>
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
-
-    <!-- Sidebar -->
+     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <a href="#" class="logo"><i class='bx bx-user-circle'></i><div class="logo-name"><span>Admin</span></div></a>
-        <ul class="side-menu">
+        <ul class="side-menu main-menu">
             <li><a href="admin_dashboard.php"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a></li>
-            <li class="section-title"><span>Candidates</span></li>
+            <li class="section-header"><span>Candidates</span></li>
             <li><a href="manage_jobs.php"><i class='bx bx-spreadsheet'></i><span>Jobs</span></a></li>
             <li><a href="manage_applications.php"><i class='bx bx-file'></i><span>Applications</span></a></li>
             <li><a href="admin_user_management.php"><i class='bx bx-user'></i><span>Users</span></a></li>
             <li class="active"><a href="schedule_interview.php"><i class='bx bx-group'></i><span>Interviews</span></a></li>
             <li><a href="calendar.php"><i class='bx bx-calendar'></i><span>Calendar</span></a></li>
-            <li class="section-title"><span>Consultants</span></li>
+            <li class="section-header"><span>Consultants</span></li>
             <li><a href="admin_view_timesheets.php"><i class='bx bx-time-five'></i><span>Timesheets</span></a></li>
             <li><a href="admin_view_tasklogs.php"><i class='bx bx-file'></i><span>Tasklogs</span></a></li>
             <li><a href="admin_view_leaves.php"><i class='bx bx-calendar-minus'></i><span>Leaves</span></a></li>
@@ -202,10 +182,14 @@
             <li><a href="admin_chat.php"><i class='bx bx-chat'></i><span>Chats</span></a></li>
             <li><a href="admin_settings.php"><i class='bx bx-cog'></i><span>Settings</span></a></li>
         </ul>
-        <ul class="side-menu">
+        <ul class="side-menu bottom-menu">
             <li><a href="logout.php" class="logout" onclick="return confirmLogout();"><i class='bx bx-log-out-circle'></i><span>Logout</span></a></li>
         </ul>
     </div>
+    
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+   
 
     <!-- Main Content -->
     <div class="content">

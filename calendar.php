@@ -105,7 +105,7 @@ $custom_events_sql = "
     FROM calendar_events
     ORDER BY event_date ASC, start_time ASC, event_id ASC
 ";
-$custom_events_result = $conn->query($custom_events_sql);
+/*$custom_events_result = $conn->query($custom_events_sql);
 if ($custom_events_result) {
     while ($row = $custom_events_result->fetch_assoc()) {
         $start = $row['event_date'];
@@ -138,7 +138,7 @@ if ($custom_events_result) {
             ]
         ];
     }
-}
+}*/
 ?>
 
 <!DOCTYPE html>
@@ -147,6 +147,7 @@ if ($custom_events_result) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="includes/admin-layout.css">
     <title>Calendar - Admin Dashboard</title>
     <style>
         /* ===========================
@@ -189,90 +190,6 @@ if ($custom_events_result) {
             color: #e4e6eb;
         }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, var(--primary), var(--secondary));
-            color: var(--white);
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 100;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-        }
-        .sidebar.collapsed {
-            width: 80px;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 24px 20px;
-            text-decoration: none;
-            color: var(--white);
-            font-size: 22px;
-            font-weight: 700;
-        }
-        .logo i {
-            font-size: 32px;
-        }
-        .logo-name span {
-            white-space: nowrap;
-            transition: var(--transition);
-        }
-        .sidebar.collapsed .logo-name span {
-            display: none;
-        }
-        .side-menu {
-            list-style: none;
-            padding: 0 15px;
-            flex: 1;
-            overflow-y: auto;
-        }
-        .side-menu li {
-            margin: 8px 0;
-        }
-        .side-menu li a {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 16px;
-            color: var(--white);
-            text-decoration: none;
-            border-radius: 8px;
-            transition: var(--transition);
-            font-size: 16px;
-        }
-        .side-menu li a:hover,
-        .side-menu li.active a {
-            background: rgba(255, 255, 255, 0.15);
-        }
-        .side-menu li a i {
-            font-size: 22px;
-            min-width: 24px;
-            text-align: center;
-        }
-        .logout {
-            margin-top: auto;
-            padding: 16px !important;
-            background: rgba(0, 0, 0, 0.2);
-        }
-        .section-title {
-            font-weight: 700;
-            font-size: 14px;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.7);
-            padding: 8px 16px;
-            margin: 16px 0 8px 0;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .sidebar.collapsed .section-title {
-            display: none;
-        }
 
         /* MAIN CONTENT */
         .content {
@@ -756,17 +673,13 @@ if ($custom_events_result) {
             }
         })();
     </script>
-
-    <!-- Mobile Overlay -->
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
-
-    <!-- Sidebar -->
+   <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <a href="#" class="logo">
             <i class='bx bx-user-circle'></i>
             <div class="logo-name"><span>Admin</span></div>
         </a>
-        <ul class="side-menu">
+        <ul class="side-menu main-menu">
             <li><a href="admin_dashboard.php"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a></li>
             <li class="section-header"><span>Candidates</span></li>
             <li><a href="manage_jobs.php"><i class='bx bx-spreadsheet'></i><span>Jobs</span></a></li>
@@ -782,7 +695,7 @@ if ($custom_events_result) {
             <li><a href="admin_chat.php"><i class='bx bx-chat'></i><span>Chats</span></a></li>
             <li><a href="admin_settings.php"><i class='bx bx-cog'></i><span>Settings</span></a></li>
         </ul>
-        <ul class="side-menu">
+        <ul class="side-menu bottom-menu">
             <li>
                 <a href="logout.php" class="logout" onclick="return confirmLogout();">
                     <i class='bx bx-log-out-circle'></i>
@@ -791,6 +704,9 @@ if ($custom_events_result) {
             </li>
         </ul>
     </div>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 
     <!-- Main Content -->
     <div class="content">

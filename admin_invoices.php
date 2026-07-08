@@ -108,6 +108,9 @@ if (!empty($_SESSION['message'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice Management</title>
+    
+    <link rel="stylesheet" type="text/css" href="includes/admin-layout.css">
+    
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
@@ -153,94 +156,6 @@ if (!empty($_SESSION['message'])) {
             color: #e4e6eb;
         }
 
-        /* ===========================
-           SIDEBAR (copied from dashboard)
-        ============================ */
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, var(--primary), var(--secondary));
-            color: var(--white);
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 100;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-        }
-        .sidebar.collapsed {
-            width: 80px;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 24px 20px;
-            text-decoration: none;
-            color: var(--white);
-            font-size: 22px;
-            font-weight: 700;
-        }
-        .logo i {
-            font-size: 32px;
-        }
-        .logo-name span {
-            white-space: nowrap;
-            transition: var(--transition);
-        }
-        .sidebar.collapsed .logo-name span {
-            display: none;
-        }
-        .side-menu {
-            list-style: none;
-            padding: 0 15px;
-            flex: 1;
-            overflow-y: auto;
-        }
-        .side-menu li {
-            margin: 8px 0;
-        }
-        .side-menu li a {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 16px;
-            color: var(--white);
-            text-decoration: none;
-            border-radius: 8px;
-            transition: var(--transition);
-            font-size: 16px;
-        }
-        .side-menu li.active a {
-            background: rgba(255, 255, 255, 0.15);
-        }
-        .side-menu li a:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .section-title {
-            font-weight: 700;
-            font-size: 14px;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.7);
-            padding: 8px 16px;
-            margin: 16px 0 8px 0;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .sidebar.collapsed .section-title {
-            display: none;
-        }
-        .side-menu li a i {
-            font-size: 22px;
-            min-width: 24px;
-            text-align: center;
-        }
-        .logout {
-            margin-top: auto;
-            padding: 16px !important;
-            background: rgba(0, 0, 0, 0.2);
-        }
 
         /* ===========================
            MAIN CONTENT & NAVBAR
@@ -662,7 +577,7 @@ if (!empty($_SESSION['message'])) {
             <i class='bx bx-user-circle'></i>
             <div class="logo-name"><span>Admin</span></div>
         </a>
-        <ul class="side-menu">
+        <ul class="side-menu main-menu">
             <li><a href="admin_dashboard.php"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a></li>
             <li class="section-header"><span>Candidates</span></li>
             <li><a href="manage_jobs.php"><i class='bx bx-spreadsheet'></i><span>Jobs</span></a></li>
@@ -678,7 +593,7 @@ if (!empty($_SESSION['message'])) {
             <li><a href="admin_chat.php"><i class='bx bx-chat'></i><span>Chats</span></a></li>
             <li><a href="admin_settings.php"><i class='bx bx-cog'></i><span>Settings</span></a></li>
         </ul>
-        <ul class="side-menu">
+        <ul class="side-menu bottom-menu">
             <li>
                 <a href="logout.php" class="logout">
                     <i class='bx bx-log-out-circle'></i>
