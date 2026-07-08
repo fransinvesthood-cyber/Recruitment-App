@@ -24,13 +24,31 @@
             --secondary: #c9a9eaff;
             --border-radius: 12px;
             --transition: all 0.3s ease;
+            --surface: #ffffff;
+            --surface-alt: #f8f9fc;
+            --surface-muted: #f5f7fb;
+            --text: #1f2937;
+            --text-muted: #64748b;
+            --border: rgba(15, 23, 42, 0.1);
+            --shadow: 0 4px 16px rgba(0,0,0,0.06);
         }
         body {
-            background-color: #f5f7fb;
-            color: #333;
+            background-color: var(--surface-muted);
+            color: var(--text);
             display: flex;
             min-height: 100vh;
             overflow-x: hidden;
+        }
+        body.dark-mode {
+            --surface: #242526;
+            --surface-alt: #2f3133;
+            --surface-muted: #18191a;
+            --text: #e4e6eb;
+            --text-muted: #b0b3b8;
+            --border: rgba(255,255,255,0.08);
+            --shadow: 0 8px 24px rgba(0,0,0,0.28);
+            background-color: var(--surface-muted);
+            color: var(--text);
         }
         .sidebar {
             width: 280px;
@@ -44,6 +62,10 @@
             transition: var(--transition);
             display: flex;
             flex-direction: column;
+        }
+        body.dark-mode .sidebar {
+            background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
         }
         .sidebar.collapsed { width: 80px; }
         .content {
@@ -98,6 +120,16 @@
             opacity: 0.9;
         }
         .logout { margin-top: auto; padding: 16px !important; background: rgba(0,0,0,0.2); }
+        body.dark-mode .sidebar .logo,
+        body.dark-mode .sidebar .side-menu li a,
+        body.dark-mode .sidebar .section-header,
+        body.dark-mode .sidebar .logout {
+            color: #f3f4f6;
+        }
+        body.dark-mode .sidebar .side-menu li a:hover,
+        body.dark-mode .sidebar .side-menu li.active a {
+            background: rgba(255,255,255,0.12);
+        }
         @media (max-width: 992px) {
             .sidebar { width: 80px; }
             .content { margin-left: 80px; }
@@ -110,7 +142,13 @@
             .sidebar.active { transform: translateX(0); }
             .content { margin-left: 0; }
         }
-        .page-shell { background: #fff; border-radius: 16px; padding: 18px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+        .page-shell {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
         .welcome-section {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: #fff;
@@ -124,6 +162,10 @@
             flex-wrap: wrap;
             gap: 20px;
         }
+        body.dark-mode .welcome-section {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 24px rgba(0,0,0,0.28);
+        }
         .welcome-content { flex: 1; min-width: 250px; }
 .welcome-content h1 { font-size: 28px; margin-bottom: 8px; font-weight: 800; }
 
@@ -131,8 +173,47 @@
         .welcome-section { text-align: center; }
         .welcome-content { margin: 0 auto; }
 
-        .table thead th { position: sticky; top: 0; background: #0d6efd10; backdrop-filter: blur(6px); }
+        .table thead th { position: sticky; top: 0; background: rgba(102,126,234,0.1); backdrop-filter: blur(6px); }
         .card-metric { border: 1px solid rgba(13,110,253,0.15); background: linear-gradient(135deg, rgba(13,110,253,0.06), rgba(13,110,253,0.01)); }
+        body.dark-mode .card-metric {
+            background: linear-gradient(135deg, rgba(102,126,234,0.16), rgba(255,255,255,0.03));
+            border-color: rgba(255,255,255,0.08);
+        }
+        body.dark-mode .table-responsive {
+            background: transparent;
+        }
+        body.dark-mode .table,
+        body.dark-mode .table thead th,
+        body.dark-mode .table td {
+            color: var(--text);
+            border-color: var(--border);
+            background-color: transparent;
+        }
+        body.dark-mode .table-hover > tbody > tr:hover > * {
+            background-color: rgba(102,126,234,0.12);
+            color: var(--text);
+        }
+        body.dark-mode .form-control,
+        body.dark-mode .form-select,
+        body.dark-mode .modal-content {
+            background-color: var(--surface-alt);
+            color: var(--text);
+            border-color: var(--border);
+        }
+        body.dark-mode .form-control::placeholder,
+        body.dark-mode .form-select option {
+            color: var(--text-muted);
+        }
+        body.dark-mode .alert-danger,
+        body.dark-mode .alert-success {
+            color: var(--text);
+        }
+        body.dark-mode .badge {
+            color: #fff;
+        }
+        body.dark-mode .text-muted {
+            color: var(--text-muted) !important;
+        }
     </style>
 </head>
 <body>

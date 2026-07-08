@@ -656,7 +656,7 @@
   }
 
   // API endpoint
-  const API_URL = "http://localhost/recruitment-project-phps/prepare_interview.php";
+  const API_URL = new URL("prepare_interview.php", window.location.href).toString();
 
   // Prepare button handler
   async function prepare(){
@@ -682,11 +682,21 @@
         body: JSON.stringify(payload)
       });
 
-      const json = await res.json();
+      const text = await res.text();
+      let json = null;
 
-      if(!json.ok){
-        let msg = "Error: " + (json.error || "Unknown error");
-        if(json.raw) msg += "\n\nRaw Gemini output:\n" + json.raw;
+      try {
+        json = text ? JSON.parse(text) : null;
+      } catch (parseErr) {
+        const preview = text ? text.slice(0, 500) : "<empty response>";
+        const msg = "Server returned an invalid response.\n\n" + preview;
+        showDebug(msg);
+        throw new Error(msg);
+      }
+
+      if(!json || !json.ok){
+        let msg = "Error: " + (json && json.error ? json.error : "Unknown error");
+        if(json && json.raw) msg += "\n\nRaw Gemini output:\n" + json.raw;
         showDebug(msg);
         throw new Error(msg);
       }

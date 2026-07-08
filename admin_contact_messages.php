@@ -335,8 +335,18 @@ include('config.php');
             display: flex;
             justify-content: flex-end;
             gap: 10px;
+            flex-wrap: wrap;
         }
         body.dark-mode .modal-footer { border-top: 1px solid rgba(255,255,255,0.08); }
+        #messageModalReplyBtn,
+        #replySendBtn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 150px;
+            visibility: visible;
+            opacity: 1;
+        }
 
         .btn-secondary { background: #e9ecef; color: #212529; border: 1px solid #d8dfe6; }
         .btn-secondary:hover { background: #dde2e8; }
@@ -421,9 +431,7 @@ include('config.php');
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" id="messageModalOkBtn">Close</button>
-                    <button class="btn btn-view" type="button" id="messageModalReplyBtn" data-id="" onclick="openReplyModal(this)">Reply</button>
-
-
+                <button class="btn btn-view" type="button" id="messageModalReplyBtn" data-id="" onclick="openReplyModal(this)">Send Feedback</button>
             </div>
         </div>
     </div>
@@ -459,7 +467,7 @@ include('config.php');
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" id="replyModalOkBtn">Cancel</button>
-                <button class="btn" type="button" id="replySendBtn" onclick="sendReply()">Send Email</button>
+                <button class="btn" type="button" id="replySendBtn" onclick="sendReply()">Send Feedback</button>
             </div>
         </div>
     </div>
@@ -545,6 +553,7 @@ include('config.php');
 
     <script>
         let data = [];
+        let currentMessageId = '';
 
         function escapeHtml(str){
             return (str ?? '').toString()
@@ -592,9 +601,11 @@ include('config.php');
 
         function openMessageModal(btn){
             const id = btn?.getAttribute('data-id') || '';
+            currentMessageId = id;
             const row = (data || []).find(x => String(x.contact_message_id ?? '') === String(id));
 
             const backdrop = document.getElementById('messageModalBackdrop');
+            const replyBtn = document.getElementById('messageModalReplyBtn');
             const closeBtn = document.getElementById('messageModalCloseBtn');
             const okBtn = document.getElementById('messageModalOkBtn');
 
@@ -625,6 +636,8 @@ include('config.php');
                 if (meta) meta.textContent = id ? `ID: ${id}` : '';
             }
 
+            if (replyBtn) replyBtn.setAttribute('data-id', id || '');
+
             if (backdrop) backdrop.classList.add('show');
 
             if (closeBtn) closeBtn.onclick = closeMessageModal;
@@ -651,7 +664,7 @@ include('config.php');
 
         function openReplyModal(btn){
             const replyBtn = btn || document.getElementById('messageModalReplyBtn');
-            const id = (replyBtn?.getAttribute('data-id') ?? '');
+            const id = (replyBtn?.getAttribute('data-id') ?? currentMessageId ?? '').toString();
 
             const row = (data || []).find(x => String(x.contact_message_id ?? '') === String(id));
 
@@ -709,10 +722,10 @@ include('config.php');
 
 
 
-            // Fallback: derive id from currently displayed preview if button attribute isn't set.
+            // Fallback: derive id from the currently displayed preview if button attribute isn't set.
             if (!contact_message_id) {
                 const replyBtn = document.getElementById('messageModalReplyBtn');
-                contact_message_id = (replyBtn?.getAttribute('data-id') ?? '');
+                contact_message_id = (replyBtn?.getAttribute('data-id') ?? currentMessageId ?? '').toString();
             }
 
 
@@ -753,7 +766,9 @@ include('config.php');
 
                 const json = await res.json();
                 if (!json || !json.success) {
-                    alert(json?.error || 'Failed to send email.');
+                    const msg = json?.error || 'Failed to send email.';
+                    const dbg = json?.debug ? `\n\nDebug: ${JSON.stringify(json.debug)}` : '';
+                    alert(msg + dbg);
                     return;
                 }
 

@@ -912,6 +912,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
             font-size: 18px;
         }
 
+        .password-toggle {
+            cursor: pointer;
+            color: var(--primary);
+        }
+
         .input-box input {
             flex: 1;
             border: none;
@@ -1144,12 +1149,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
                     <div class="input-box" data-password-eye>
                         <i class="fa fa-lock"></i>
                         <input type="password" id="current_password" name="current_password" placeholder="Current Password" required>
-                        <i class="fa fa-eye password-toggle" aria-hidden="true" title="Show password"></i>
+                        <i class="fa fa-eye password-toggle" aria-hidden="true" title="Show password" onclick="togglePasswordVisibility('current_password', this)"></i>
                     </div>
                     <div class="input-box" id="passwordBox" data-password-eye>
                         <i class="fa fa-lock"></i>
                         <input type="password" name="new_password" id="new_password" placeholder="Enter new password" required>
-                        <i class="fa fa-eye password-toggle" aria-hidden="true" title="Show password"></i>
+                        <i class="fa fa-eye password-toggle" aria-hidden="true" title="Show password" onclick="togglePasswordVisibility('new_password', this)"></i>
                     </div>
                     <div class="validation-feedback" id="passwordFeedback"></div>
 
@@ -1184,7 +1189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
                     <div class="input-box" id="confirmBox" data-password-eye>
                         <i class="fa fa-lock"></i>
                         <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm password" required>
-                        <i class="fa fa-eye password-toggle" aria-hidden="true" title="Show password"></i>
+                        <i class="fa fa-eye password-toggle" aria-hidden="true" title="Show password" onclick="togglePasswordVisibility('confirm_password', this)"></i>
                         <div class="match-indicator" id="matchIndicator">
                             <i class="fa fa-check"></i>
                         </div>
@@ -1436,7 +1441,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
         const passwordFeedback = document.getElementById('passwordFeedback');
         const confirmFeedback = document.getElementById('confirmFeedback');
         const submitBtn = document.getElementById('submitBtn');
-        const showPasswordCheckbox = document.getElementById('show_password');
+
+        // NOTE: there is NO #show_password checkbox in the modal markup.
+        // Visibility toggling is handled only via the .password-toggle icons.
+
         const matchIndicator = document.getElementById('matchIndicator');
         const strengthBar = document.getElementById('strengthBar');
         const strengthText = document.getElementById('strengthText');
@@ -1616,55 +1624,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
             }
         }
 
-        function setPasswordVisibility(isVisible) {
-            const type = isVisible ? 'text' : 'password';
-            newPassword.type = type;
-            confirmPassword.type = type;
-            document.getElementById('current_password').type = type;
+        function togglePasswordVisibility(inputId, iconElement) {
+            const inputElement = document.getElementById(inputId);
+            if (!inputElement) return;
 
-            // Sync checkbox UI
-            showPasswordCheckbox.checked = isVisible;
-
-            // Sync eye icons
-            document.querySelectorAll('#passwordModal .password-toggle').forEach(icon => {
-                icon.classList.toggle('fa-eye', isVisible);
-                icon.classList.toggle('fa-eye-slash', !isVisible);
-            });
+            const isVisible = inputElement.type === 'text';
+            inputElement.type = isVisible ? 'password' : 'text';
+            iconElement.classList.toggle('fa-eye', isVisible);
+            iconElement.classList.toggle('fa-eye-slash', !isVisible);
+            iconElement.setAttribute('title', isVisible ? 'Show password' : 'Hide password');
         }
-
-        function togglePassword() {
-            // Checkbox indicates visibility: checked => show passwords
-            setPasswordVisibility(showPasswordCheckbox.checked);
-        }
-
-        // Ensure eye icon clicks set visibility correctly
-        // (fa-eye => show, fa-eye-slash => hide)
-        document.querySelectorAll('#passwordModal .password-toggle').forEach(icon => {
-            icon.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                const isCurrentlyEye = icon.classList.contains('fa-eye');
-                // If it currently shows 'eye', clicking should reveal => isVisible=true
-                // If it currently shows 'eye-slash', clicking should hide => isVisible=false
-                setPasswordVisibility(isCurrentlyEye);
-            });
-        });
-
-
-
-        // Attach handlers for eye icons (current/new/confirm)
-        // (Use capturing + stopImmediatePropagation to prevent other listeners from interfering)
-        document.querySelectorAll('#passwordModal .password-toggle').forEach(icon => {
-            icon.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-
-                const isCurrentlyVisible = icon.classList.contains('fa-eye');
-                // If currently showing (fa-eye), clicking should hide; otherwise show
-                setPasswordVisibility(!isCurrentlyVisible);
-            }, true);
-        });
 
 
 
@@ -1673,7 +1642,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
         newPassword.addEventListener('focus', validatePassword);
         confirmPassword.addEventListener('input', validateConfirmPassword);
         confirmPassword.addEventListener('focus', validateConfirmPassword);
-        showPasswordCheckbox.addEventListener('change', togglePassword);
+
 
         // Form submission validation
         document.getElementById('passwordForm').addEventListener('submit', function(e) {

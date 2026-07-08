@@ -213,6 +213,10 @@ if (!empty($_SESSION['message'])) {
         .sidebar.collapsed {
             width: 80px;
         }
+        body.dark-mode .sidebar {
+            background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+        }
         .logo {
             display: flex;
             align-items: center;
@@ -258,6 +262,20 @@ if (!empty($_SESSION['message'])) {
         }
         .side-menu li a:hover {
             background: rgba(255, 255, 255, 0.1);
+        }
+        body.dark-mode .side-menu li a {
+            color: #f3f4f6;
+        }
+        body.dark-mode .side-menu li.active a,
+        body.dark-mode .side-menu li a:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+        body.dark-mode .section-title {
+            color: rgba(255, 255, 255, 0.75);
+            border-bottom-color: rgba(255, 255, 255, 0.12);
+        }
+        body.dark-mode .logout {
+            background: rgba(255, 255, 255, 0.08);
         }
         .side-menu li a i {
             font-size: 22px;
@@ -400,6 +418,10 @@ if (!empty($_SESSION['message'])) {
             margin-bottom: 24px;
             box-shadow: var(--box-shadow);
             text-align: center;
+        }
+        body.dark-mode .welcome-section {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 24px rgba(0,0,0,0.28);
         }
         .welcome-section h1 {
             font-size: 28px;

@@ -50,15 +50,14 @@ $body = [
     "contents" => [[ "parts" => [[ "text" => $prompt ]] ]]
 ];
 
-// Try multiple Gemini models (some may not be available for the current API key/project)
+// Try supported Gemini models for the current API key/project
 $modelCandidates = [
     "gemini-2.0-flash",
-    "gemini-1.5-flash"
+    "gemini-2.0-flash-lite"
 ];
 
 $lastError = null;
-$res = null;
-$json = null;
+$geminiResponse = null;
 
 foreach ($modelCandidates as $model) {
     $endpoint = "https://generativelanguage.googleapis.com/v1/models/{$model}:generateContent?key=" . $apiKey;
@@ -69,10 +68,12 @@ foreach ($modelCandidates as $model) {
         CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
         CURLOPT_POSTFIELDS     => json_encode($body),
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT        => 30
+        CURLOPT_TIMEOUT        => 30,
+        CURLOPT_SSL_VERIFYPEER => true
     ]);
 
     $res = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
     if (curl_errno($ch)) {
         $lastError = curl_error($ch);
@@ -81,51 +82,37 @@ foreach ($modelCandidates as $model) {
     }
 
     curl_close($ch);
-    $json = json_decode($res, true);
 
-    // If Gemini responded with an error, try next model
-    if (isset($json['error'])) {
-        $lastError = $json['error']['message'] ?? 'Gemini API error';
+    if ($httpCode !== 200) {
+        $decoded = json_decode($res, true);
+        $lastError = $decoded['error']['message'] ?? "HTTP {$httpCode}";
         continue;
     }
 
-    // Success
+    $decoded = json_decode($res, true);
+    if (!is_array($decoded) || isset($decoded['error'])) {
+        $lastError = $decoded['error']['message'] ?? 'Invalid response from Gemini API';
+        continue;
+    }
+
+    $content = trim($decoded['candidates'][0]['content']['parts'][0]['text'] ?? '');
+    if ($content === '') {
+        $lastError = 'Gemini returned an empty response';
+        continue;
+    }
+
+    $geminiResponse = $decoded;
     break;
 }
 
-if ($json === null) {
+if ($geminiResponse === null) {
     http_response_code(502);
-    echo json_encode(["ok" => false, "error" => $lastError ?: "Gemini API failed" , "models_tried" => $modelCandidates]);
-    exit;
-}
-curl_setopt_array($ch, [
-    CURLOPT_POST           => true,
-    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
-    CURLOPT_POSTFIELDS     => json_encode($body),
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_TIMEOUT        => 30
-]);
-
-$res = curl_exec($ch);
-if (curl_errno($ch)) {
-    http_response_code(502);
-    echo json_encode(["ok" => false, "error" => "Curl error: " . curl_error($ch)]);
-    curl_close($ch);
-    exit;
-}
-curl_close($ch);
-
-$json = json_decode($res, true);
-
-// ---- Handle Gemini API errors ----
-if (isset($json['error'])) {
-    http_response_code(502);
-    echo json_encode(["ok" => false, "error" => $json['error']['message'] ?? 'Gemini API error']);
+    echo json_encode(["ok" => false, "error" => $lastError ?: "Gemini API failed", "models_tried" => $modelCandidates]);
     exit;
 }
 
 // ---- Extract candidate content ----
-$content = trim($json['candidates'][0]['content']['parts'][0]['text'] ?? '');
+$content = trim($geminiResponse['candidates'][0]['content']['parts'][0]['text'] ?? '');
 
 // ---- Clean up model fences if present ----
 $content = preg_replace('/^```[a-z]*\s*/mi', '', $content);

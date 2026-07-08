@@ -1,7 +1,15 @@
-- [x] Update `reset_password.php` visual styling to match `index.php` (grid background + glow + purple theme).
-- [x] Keep reset logic and JS validation behavior unchanged.
-- [x] Manually test `reset_password.php` in browser with a token to confirm UI renders correctly.
-
-
-
+- [ ] Gather repo patterns for AJAX JSON handlers and modal usage (search/read examples)
+- [ ] Implement event endpoints:
+  - [ ] Create save_event.php (insert/update with prepared statements)
+  - [ ] Create fetch_events.php (return events JSON for FullCalendar)
+  - [ ] Create delete_event.php (delete with prepared statements)
+- [ ] Update calendar.php:
+  - [ ] Add Bootstrap 5 Modal markup for create/edit
+  - [ ] Add event click handler to open details + edit/delete
+  - [ ] Add day click handler to open create modal with prefilled date
+  - [ ] Add client-side validation
+  - [ ] Use AJAX to save/delete and then refresh calendar events dynamically
+- [ ] Ensure FullCalendar uses retrieved calendar_events in addition to existing interviews/leaves/deadlines
+- [ ] Add minimal Bootstrap 5 styling consistent with current page
+- [ ] Quick test steps: create/edit/delete + verify event renders and modal closes without reload
 

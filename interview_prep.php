@@ -757,10 +757,10 @@
           Interview Tips
         </button>
         
-        <button class="prep-button mock-interview" id="mockInterviewBtn">
+        <!-- <button class="prep-button mock-interview" id="mockInterviewBtn">
           <i class='bx bx-microphone'></i>
           Mock Interview
-        </button>
+        </button> -->
       </div>
 
       <div class="features-section">

@@ -436,6 +436,10 @@ if (!empty($_SESSION['message'])) {
             box-shadow: var(--box-shadow);
             text-align: center;
         }
+        body.dark-mode .welcome-section {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 24px rgba(0,0,0,0.28);
+        }
 
         .welcome-content h1 {
             font-size: 28px;

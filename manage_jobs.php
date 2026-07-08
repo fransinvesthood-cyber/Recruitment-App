@@ -136,8 +136,12 @@ if (!empty($_SESSION['message'])) {
             overflow-x: hidden;
         }
         body.dark-mode {
-            background-color: var(--dark);
+            background-color: #16181b;
             color: #e4e6eb;
+        }
+        body.dark-mode .content,
+        body.dark-mode main {
+            background-color: #16181b;
         }
 
         /* SIDEBAR */
@@ -369,6 +373,10 @@ if (!empty($_SESSION['message'])) {
             margin-bottom: 24px;
             box-shadow: var(--box-shadow);
             text-align: center;
+        }
+        body.dark-mode .welcome-section {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 24px rgba(0,0,0,0.28);
         }
         .welcome-section h1 {
             font-size: 28px;
