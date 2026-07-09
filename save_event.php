@@ -23,6 +23,11 @@ $startTime = isset($_POST['start_time']) ? trim((string)$_POST['start_time']) : 
 $endTime = isset($_POST['end_time']) ? trim((string)$_POST['end_time']) : '';
 $eventType = isset($_POST['event_type']) ? (string)$_POST['event_type'] : 'Other';
 
+// Prevent any PHP notices/warnings from corrupting JSON response
+ini_set('display_errors', '0');
+error_reporting(E_ALL);
+
+
 $allowedTypes = ['Interview', 'Training', 'Meeting', 'Reminder', 'Other'];
 if (!in_array($eventType, $allowedTypes, true)) {
     $eventType = 'Other';
@@ -113,4 +118,6 @@ if (!$stmt->execute()) {
 
 $newId = (int)$stmt->insert_id;
 echo json_encode(['success' => true, 'mode' => 'insert', 'event_id' => $newId]);
+exit();
+
 

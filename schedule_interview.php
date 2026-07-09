@@ -214,7 +214,7 @@
         </nav>
         <main>
             <div class="welcome-section">
-                <h1><i class='bx bx-group'></i> Schedule Interview</h1>
+                <h1><i></i> Schedule Interview</h1>
                 <p>Create and organize interview appointments. Select a shortlisted candidate, review their profile, and schedule with smart conflict detection.</p>
             </div>
 

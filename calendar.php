@@ -100,45 +100,54 @@ if ($deadline_result) {
 }
 
 // Add created calendar events (from calendar_events table)
-$custom_events_sql = "
-    SELECT event_id, title, description, event_type, event_date, start_time, end_time
-    FROM calendar_events
-    ORDER BY event_date ASC, start_time ASC, event_id ASC
-";
-/*$custom_events_result = $conn->query($custom_events_sql);
-if ($custom_events_result) {
-    while ($row = $custom_events_result->fetch_assoc()) {
-        $start = $row['event_date'];
-        $end = $row['event_date'];
-        $allDay = empty($row['start_time']);
+// NOTE: some setups may not have this table yet.
+if (isset($conn)) {
+    // Check table existence to prevent Fatal error when calendar_events doesn't exist
+    $checkTableSql = "SHOW TABLES LIKE 'calendar_events'";
+    $check = $conn->query($checkTableSql);
 
-        if (!empty($row['start_time'])) {
-            $start = $row['event_date'] . 'T' . $row['start_time'];
-        }
-        if (!empty($row['end_time'])) {
-            $end = $row['event_date'] . 'T' . $row['end_time'];
-        } else {
-            $end = null;
-        }
+    if ($check && $check->num_rows > 0) {
+        $custom_events_sql = "
+            SELECT event_id, title, description, event_type, event_date, start_time, end_time
+            FROM calendar_events
+            ORDER BY event_date ASC, start_time ASC, event_id ASC
+        ";
 
-        // Use extendedProps to show description on click if needed
-        $events[] = [
-            'id' => (int)$row['event_id'],
-            'title' => $row['title'],
-            'start' => $start,
-            'end' => $end,
-            'allDay' => $allDay,
-            'className' => 'event-' . strtolower($row['event_type']),
-            'extendedProps' => [
-                'description' => $row['description'],
-                'event_type' => $row['event_type'],
-                'event_date' => $row['event_date'],
-                'start_time' => $row['start_time'],
-                'end_time' => $row['end_time']
-            ]
-        ];
+        $custom_events_result = $conn->query($custom_events_sql);
+        if ($custom_events_result) {
+            while ($row = $custom_events_result->fetch_assoc()) {
+                $start = $row['event_date'];
+                $end = $row['event_date'];
+                $allDay = empty($row['start_time']);
+
+                if (!empty($row['start_time'])) {
+                    $start = $row['event_date'] . 'T' . $row['start_time'];
+                }
+                if (!empty($row['end_time'])) {
+                    $end = $row['event_date'] . 'T' . $row['end_time'];
+                } else {
+                    $end = null;
+                }
+
+                $events[] = [
+                    'id' => (int)$row['event_id'],
+                    'title' => $row['title'],
+                    'start' => $start,
+                    'end' => $end,
+                    'allDay' => $allDay,
+                    'className' => 'event-' . strtolower($row['event_type']),
+                    'extendedProps' => [
+                        'description' => $row['description'],
+                        'event_type' => $row['event_type'],
+                        'event_date' => $row['event_date'],
+                        'start_time' => $row['start_time'],
+                        'end_time' => $row['end_time']
+                    ]
+                ];
+            }
+        }
     }
-}*/
+}
 ?>
 
 <!DOCTYPE html>
@@ -297,9 +306,11 @@ if ($custom_events_result) {
             background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 24px rgba(0,0,0,0.28);
         }
-        .welcome-section h1 {
+.welcome-section h1 {
             font-size: 28px;
             margin-bottom: 8px;
+            text-align: center;
+            width: 100%;
         }
         .welcome-section p {
             opacity: 0.9;
@@ -726,7 +737,7 @@ if ($custom_events_result) {
         <main>
             <!-- Welcome Section -->
             <div class="welcome-section">
-                <h1> Calendar</h1>
+                <h1>Calendar</h1>
                 <p>View and manage scheduled interviews, meetings, deadlines, and important recruitment events in one place.</p>
             </div>
 

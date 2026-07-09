@@ -2236,6 +2236,10 @@ body.dark-mode .table-container::-webkit-scrollbar-thumb{
                 </div>
             </div>
             <div class="nav-icons-group">
+<a class="notification-bell" href="admin_contact_messages.php" id="adminMessagesLink" style="text-decoration:none; color:inherit;" aria-label="Contact Messages">
+                    <i class='bx bx-message-dots'></i>
+                </a>
+
                 <div class="notification-bell" id="notificationBell">
                     <i class='bx bx-bell'></i>
                     <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
