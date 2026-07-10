@@ -293,7 +293,12 @@ include('config.php');
             border-radius: var(--border-radius);
             box-shadow: 0 20px 60px rgba(0,0,0,0.25);
             overflow: hidden;
+            /* Ensures the modal remains centered and capped in height */
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
         }
+
         body.dark-mode .modal { background: #242526; }
         .modal-header {
             padding: 16px 20px;
@@ -316,7 +321,14 @@ include('config.php');
             cursor: pointer;
             color: var(--gray);
         }
-        .modal-body { padding: 18px 20px; }
+        /* Body scroll container: header/footer stay visible */
+        .modal-body {
+            padding: 18px 20px;
+            overflow-y: auto;
+            /* Let max-height on .modal apply; header/footer remain fixed within modal */
+            flex: 1 1 auto;
+        }
+
         .kv { display: grid; grid-template-columns: 120px 1fr; gap: 10px 12px; }
         .kv .k { color: var(--gray); font-weight: 700; }
         .kv .v { word-break: break-word; }
@@ -336,7 +348,9 @@ include('config.php');
             justify-content: flex-end;
             gap: 10px;
             flex-wrap: wrap;
+            flex: 0 0 auto;
         }
+
         body.dark-mode .modal-footer { border-top: 1px solid rgba(255,255,255,0.08); }
         #messageModalReplyBtn,
         #replySendBtn {

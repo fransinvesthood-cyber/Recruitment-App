@@ -57,42 +57,21 @@ $subject = str_replace(["\r", "\n"], '', $subject);
 $body = str_replace(["\r\n", "\r"], "\n", $body);
 
 // Admin "from" address
-$from_email = 'admin@investhoodit.co.za';
+$from_email = 'delanideco69@gmail.com';
 $from_name = 'Admin';
 
-$headers = [];
-$headers[] = 'MIME-Version: 1.0';
-$headers[] = 'Content-type: text/plain; charset=UTF-8';
-$headers[] = 'From: ' . $from_name . ' <' . $from_email . '>';
-
 try {
-    // Attempt to send email using PHP mail().
-    // If your server doesn't have mail configured, configure it in php.ini / SMTP layer.
-    $ok = @mail($to_email, $subject, $body, implode("\r\n", $headers));
+    // Send email using PHPMailer.
+    // Requirement: Do NOT use PHP's mail() anywhere.
+    require_once __DIR__ . '/email/EmailService.php';
 
-    if (!$ok) {
-        http_response_code(500);
-        $response['error'] = 'Failed to send email (mail() returned false)';
-        $response['debug'] = [
-            'to_email' => $to_email,
-            'from_email' => $from_email,
-            'subject' => $subject,
-            'sendmail_path' => function_exists('ini_get') ? ini_get('sendmail_path') : null,
-            'php_last_error' => function_exists('error_get_last') ? error_get_last() : null,
-            'headers' => $headers,
-        ];
+    // Keep reply functionality unchanged:
+    // - This endpoint sends the admin reply email.
+    // - It intentionally does NOT update contact message rows.
+    // - Frontend badges/state should continue to be driven by existing logic.
 
-        ob_clean();
-        echo json_encode($response);
-        exit;
-    }
-
-            // IMPORTANT: Do NOT mark as replied automatically.
-            // Reply emails are sent by the admin explicitly; your dashboard badge logic
-            // should reflect the actual reply/unread state.
-            //
-            // If you want 'replied' to change, it should be done only by an explicit
-            // action after the user confirms the reply in UI.
+    $toName = '';
+    \Email\EmailService::sendText($to_email, $toName, $subject, $body, $from_email, $from_name);
 
     $response['success'] = true;
     ob_clean();
@@ -100,9 +79,12 @@ try {
 } catch (Throwable $e) {
     http_response_code(500);
     $response['error'] = 'Server error while sending reply';
+
+    // Requirement: If email sending fails, return the PHPMailer exception message.
     $response['debug'] = [
         'exception_message' => $e->getMessage(),
     ];
+
     ob_clean();
     echo json_encode($response);
 }
