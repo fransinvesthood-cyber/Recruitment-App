@@ -144,30 +144,30 @@
     }
 
     .btn-exit {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #f3f4f6;
-            color: #4f46e5;
-            border: none;
-            width: 45px;
-            height: 45px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            backdrop-filter: blur(10px);
-        }
-        .btn-exit:hover {
-            background: #e0e7ff;
-            color: #3730a3;
-            transform: scale(1.05);
-        }
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #f3f4f6;
+      color: #4f46e5;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+    .btn-exit:hover {
+      background: #e0e7ff;
+      color: #3730a3;
+      transform: scale(1.05);
+    }
 
     button, .btn {
       padding: 12px 24px;
@@ -297,165 +297,233 @@
 
     /* --- Theme Switcher (Standardized) --- */
     .theme-switch-wrapper {
-        position: absolute;
-        top: 25px;
-        right: 25px;
-        z-index: 100;
-        display: flex;
-        align-items: center;
-        margin-right: 50px;
+      position: absolute;
+      top: 25px;
+      right: 25px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      margin-right: 50px;
     }
 
     .theme-switch {
-        display: inline-block;
-        height: 30px;
-        position: relative;
-        width: 64px;
+      display: inline-block;
+      height: 30px;
+      position: relative;
+      width: 64px;
     }
 
     .theme-switch input {
-        display: none;
+      display: none;
     }
 
     .slider {
-        background-color: #cbd5e1; /* Light gray base */
-        bottom: 0;
-        cursor: pointer;
-        left: 0;
-        position: absolute;
-        right: 0;
-        top: 0;
-        transition: .4s;
-        border-radius: 34px;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 6px;
+      background-color: #cbd5e1;
+      bottom: 0;
+      cursor: pointer;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: .4s;
+      border-radius: 34px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px;
     }
 
     .slider:before {
-        background-color: #fff;
-        bottom: 3px;
-        content: "";
-        height: 24px;
-        left: 3px;
-        position: absolute;
-        transition: .4s;
-        width: 24px;
-        border-radius: 50%;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        z-index: 2;
+      background-color: #fff;
+      bottom: 3px;
+      content: "";
+      height: 24px;
+      left: 3px;
+      position: absolute;
+      transition: .4s;
+      width: 24px;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      z-index: 2;
     }
 
-    /* Icons inside the toggle */
     .slider .bx {
-        font-size: 16px;
-        z-index: 1;
-        transition: 0.4s;
+      font-size: 16px;
+      z-index: 1;
+      transition: 0.4s;
     }
 
     .slider .bx-sun {
-        color: #f59e0b; /* Orange/Yellow Sun */
+      color: #f59e0b;
     }
 
     .slider .bx-moon {
-        color: #fff;
-        opacity: 0.5;
+      color: #fff;
+      opacity: 0.5;
     }
 
-    /* Checked State (Dark Mode Active) */
     input:checked + .slider {
-        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-purple) 100%); /* Purple Gradient */
+      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-purple) 100%);
     }
 
     input:checked + .slider:before {
-        transform: translateX(34px); /* Moves circle right */
+      transform: translateX(34px);
     }
 
     input:checked + .slider .bx-moon {
-        opacity: 1;
+      opacity: 1;
     }
 
     input:checked + .slider .bx-sun {
-        opacity: 0.5;
-        color: #fff;
+      opacity: 0.5;
+      color: #fff;
     }
 
     /* --- Dark Mode Styles --- */
     body.dark-mode {
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        color: #e2e8f0;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #e2e8f0;
     }
 
     body.dark-mode .container {
-        background-color: #1f2937;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+      background-color: #1f2937;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
     }
 
     body.dark-mode .page-header {
-        background-color: #1f2937 !important;
-        border-bottom-color: #374151;
+      background-color: #1f2937 !important;
+      border-bottom-color: #374151;
     }
 
     body.dark-mode .page-title,
     body.dark-mode .page-subtitle,
     body.dark-mode label {
-        color: #e2e8f0 !important;
+      color: #e2e8f0 !important;
     }
 
-    /* Fix white backgrounds on forms and panels */
     body.dark-mode .form-container,
     body.dark-mode .result-panel {
-        background-color: #1f2937 !important;
-        border-color: #374151 !important;
-        color: #e2e8f0 !important;
+      background-color: #1f2937 !important;
+      border-color: #374151 !important;
+      color: #e2e8f0 !important;
     }
 
-    body.dark-mode input, 
+    body.dark-mode input,
     body.dark-mode select {
-        background-color: #374151 !important;
-        border-color: #4b5563 !important;
-        color: #e2e8f0 !important;
+      background-color: #374151 !important;
+      border-color: #4b5563 !important;
+      color: #e2e8f0 !important;
     }
 
     body.dark-mode .result-panel li {
-        background-color: #2d3748 !important;
-        color: #e2e8f0 !important;
-        border-left-color: #667eea;
+      background-color: #2d3748 !important;
+      color: #e2e8f0 !important;
+      border-left-color: #667eea;
     }
 
     body.dark-mode .tab-button {
-        background-color: #374151;
-        color: #e2e8f0;
-        border-color: #4b5563;
+      background-color: #374151;
+      color: #e2e8f0;
+      border-color: #4b5563;
     }
 
     body.dark-mode .tab-button.active {
-        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-purple) 100%);
-        color: white;
-        border-color: var(--primary-blue);
+      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-purple) 100%);
+      color: white;
+      border-color: var(--primary-blue);
     }
 
     body.dark-mode button.secondary {
-        background-color: #374151;
-        color: #e2e8f0;
-        border-color: #4b5563;
+      background-color: #374151;
+      color: #e2e8f0;
+      border-color: #4b5563;
     }
     
     body.dark-mode button.secondary:hover {
-        background-color: #4b5563;
+      background-color: #4b5563;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 2000;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 560px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    body.dark-mode .modal {
+      background: #1f2937;
+      color: #e2e8f0;
+      border-color: #374151;
+    }
+
+    .modal-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    body.dark-mode .modal-header {
+      border-bottom-color: #374151;
+    }
+
+    .modal-header i {
+      color: var(--primary-blue);
+      font-size: 22px;
+      margin-top: 1px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin: 0;
+    }
+
+    .modal-body {
+      padding: 14px 18px 18px 18px;
+      color: var(--text-secondary);
+      white-space: pre-line;
+    }
+
+    body.dark-mode .modal-body {
+      color: #e2e8f0;
+    }
+
+    .modal-actions {
+      padding: 0 18px 18px 18px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .modal-actions button {
+      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-purple) 100%);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 10px;
     }
 
     @media (max-width: 768px) {
-        .theme-switch {
-            top: 20px;
-            right: 20px;
-        }
-        .page-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
+      .theme-switch { top: 20px; right: 20px; }
+      .page-header { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -629,202 +697,253 @@
     </div>
   </div>
 
+  <!-- Friendly error modal -->
+  <div class="modal-overlay" id="friendlyErrorOverlay" role="dialog" aria-modal="true" aria-labelledby="friendlyErrorTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <i class='bx bx-error-circle'></i>
+        <div>
+          <h3 class="modal-title" id="friendlyErrorTitle">Interview Tips Unavailable</h3>
+        </div>
+      </div>
+      <div class="modal-body" id="friendlyErrorMessage">Please try again in a few minutes.</div>
+      <div class="modal-actions">
+        <button type="button" id="friendlyErrorOkBtn">Got it</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     document.getElementById("exitPage").addEventListener("click", function() {
         window.history.back();
     });
 
-  // Helper functions
-  function byId(id){ return document.getElementById(id); }
-  function setStatus(msg){ byId('status').textContent = msg || ''; }
-  function showDebug(message){
-    byId('debugContent').textContent = message;
-    byId('debugPanel').style.display = 'block';
-  }
-  function bulletList(el, arr){
-    el.innerHTML = (arr||[]).map(x => `<li>${escapeHtml(x)}</li>`).join('');
-  }
-  function escapeHtml(str){
-    str = (str === null || str === undefined) ? '' : String(str);
-    return str.replace(/[&<>"']/g, s => ({
-        '&':'&amp;',
-        '<':'&lt;',
-        '>':'&gt;',
-        '"':'&quot;',
-        "'":'&#39;'
-    }[s]));
-  }
-
-  // API endpoint
-  const API_URL = new URL("prepare_interview.php", window.location.href).toString();
-
-  // Prepare button handler
-  async function prepare(){
-    const payload = {
-      position: byId('position').value.trim(),
-      department: byId('department').value.trim(),
-      company_name: byId('company_name').value.trim(),
-      experience: byId('experience').value.trim(),
-    };
-
-    if(!payload.position || !payload.department){
-      alert("Please fill Position and Department.");
-      return;
+    // Helper functions
+    function byId(id){ return document.getElementById(id); }
+    function setStatus(msg){ byId('status').textContent = msg || ''; }
+    function showDebug(message){
+      byId('debugContent').textContent = message;
+      byId('debugPanel').style.display = 'block';
+    }
+    function bulletList(el, arr){
+      el.innerHTML = (arr||[]).map(x => `<li>${escapeHtml(x)}</li>`).join('');
+    }
+    function escapeHtml(str){
+      str = (str === null || str === undefined) ? '' : String(str);
+      return str.replace(/[&<>"']/g, s => ({
+          '&':'&amp;',
+          '<':'<',
+          '>':'>',
+          '"':'"',
+          "'":'&#39;'
+      }[s]));
     }
 
-    setStatus("Generating…");
-    byId('prepareBtn').disabled = true;
+    // Modal helpers
+    function showFriendlyError(title, message){
+      const overlay = byId('friendlyErrorOverlay');
+      byId('friendlyErrorTitle').textContent = title || 'Interview Tips Unavailable';
+      byId('friendlyErrorMessage').textContent = message || 'Please try again in a few minutes.';
+      overlay.style.display = 'flex';
+    }
+    function hideFriendlyError(){
+      byId('friendlyErrorOverlay').style.display = 'none';
+    }
 
-    try {
-      const res = await fetch(API_URL, {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json' },
-        body: JSON.stringify(payload)
-      });
+    byId('friendlyErrorOkBtn').addEventListener('click', hideFriendlyError);
+    byId('friendlyErrorOverlay').addEventListener('click', (e) => {
+      if(e.target && e.target.id === 'friendlyErrorOverlay') hideFriendlyError();
+    });
 
-      const text = await res.text();
-      let json = null;
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape') hideFriendlyError();
+    });
+
+    // API endpoint
+    const API_URL = new URL("prepare_interview.php", window.location.href).toString();
+
+    // Prepare button handler
+    async function prepare(){
+      const payload = {
+        position: byId('position').value.trim(),
+        department: byId('department').value.trim(),
+        company_name: byId('company_name').value.trim(),
+        experience: byId('experience').value.trim(),
+      };
+
+      if(!payload.position || !payload.department){
+        alert("Please fill Position and Department.");
+        return;
+      }
+
+      setStatus("Generating…");
+      byId('prepareBtn').disabled = true;
 
       try {
-        json = text ? JSON.parse(text) : null;
-      } catch (parseErr) {
-        const preview = text ? text.slice(0, 500) : "<empty response>";
-        const msg = "Server returned an invalid response.\n\n" + preview;
-        showDebug(msg);
-        throw new Error(msg);
-      }
+        const res = await fetch(API_URL, {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify(payload)
+        });
 
-      if(!json || !json.ok){
-        let msg = "Error: " + (json && json.error ? json.error : "Unknown error");
-        if(json && json.raw) msg += "\n\nRaw Gemini output:\n" + json.raw;
-        showDebug(msg);
-        throw new Error(msg);
-      }
+        const text = await res.text();
+        let json = null;
 
-      const data = json.data;
-      byId('result').style.display = 'grid';
-      bulletList(byId('custom_tips'), data.custom_tips);
-      bulletList(byId('common_questions'), data.common_questions);
-      bulletList(byId('dos'), data.dos);
-      bulletList(byId('donts'), data.donts);
-      setStatus("Done");
-
-    } catch(e){
-      console.error(e);
-      alert("Error: " + e.message);
-      setStatus("Error");
-    } finally {
-      byId('prepareBtn').disabled = false;
-    }
-  }
-
-  // Copy all button
-  async function copyAll(){
-    const blocks = Array.from(document.querySelectorAll('#result .panel'))
-      .map(p => p.querySelector('h3').textContent + "\n" +
-        Array.from(p.querySelectorAll('li')).map(li => "- " + li.textContent).join("\n"))
-      .join("\n\n");
-    await navigator.clipboard.writeText(blocks);
-    setStatus("Copied");
-    setTimeout(()=>setStatus(""),1500);
-  }
-
-  // PDF generation
-  async function toPdf(){
-    setStatus("Building PDF…");
-    if(!window.jspdf){
-      await new Promise((resolve, reject)=>{
-        const s=document.createElement('script');
-        s.src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js";
-        s.onload=resolve; s.onerror=reject;
-        document.head.appendChild(s);
-      });
-    }
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit:'pt', format:'a4' });
-    let y=40, left=40, width=515;
-
-    doc.setFont('helvetica','bold'); doc.setFontSize(16);
-    doc.text("Interview Preparation Tips", left, y); y+=20;
-    doc.setFont('helvetica','normal'); doc.setFontSize(10);
-
-    const meta = [
-      "Position: " + byId('position').value,
-      "Department: " + byId('department').value,
-      "Company: " + byId('company_name').value,
-      "Experience: " + byId('experience').value,
-      "Generated: " + new Date().toLocaleString()
-    ].join(" | ");
-    doc.text(meta, left, y, { maxWidth: width }); y+=20;
-
-    doc.setFontSize(12);
-    const sections = Array.from(document.querySelectorAll('#result .panel'));
-    for(const sec of sections){
-      doc.setFont('helvetica','bold'); 
-      doc.text(sec.querySelector('h3').textContent, left, y); y+=14;
-      doc.setFont('helvetica','normal');
-      const lines = Array.from(sec.querySelectorAll('li')).map(li=>"• "+li.textContent);
-      for(const line of lines){
-        const wrapped = doc.splitTextToSize(line, width);
-        for(const l of wrapped){
-          if(y>780){ doc.addPage(); y=40; }
-          doc.text(l, left, y); y+=14;
+        try {
+          json = text ? JSON.parse(text) : null;
+        } catch (parseErr) {
+          // Keep it friendly.
+          showDebug("Server returned an invalid response. (Technical details logged server-side)");
+          throw new Error('Invalid response');
         }
+
+        if(!json || !json.ok){
+          // Show only the friendly message (never raw provider errors).
+          const title = (json && json.title) ? String(json.title) : "Interview Tips Temporarily Unavailable";
+          const message = (json && json.error) ? String(json.error) : "Please try again in a few minutes.";
+          // Optional generic debug indicator without exposing internals.
+          showDebug('The AI service was unable to generate tips at this time.');
+          throw new Error(JSON.stringify({ title, message }));
+        }
+
+        const data = json.data;
+        byId('result').style.display = 'grid';
+        bulletList(byId('custom_tips'), data.custom_tips);
+        bulletList(byId('common_questions'), data.common_questions);
+        bulletList(byId('dos'), data.dos);
+        bulletList(byId('donts'), data.donts);
+        setStatus("Done");
+
+      } catch(e){
+        console.error(e);
+
+        // If we threw a JSON string with {title, message}, parse it.
+        let friendly = null;
+        try {
+          friendly = JSON.parse(e && e.message ? String(e.message) : '');
+        } catch(_){ /* ignore */ }
+
+        const title = friendly && friendly.title ? friendly.title : "Interview Tips Unavailable";
+        const message = friendly && friendly.message
+          ? friendly.message
+          : "We’re currently unable to generate interview tips because the AI service is temporarily unavailable or has reached its usage limit.\n\nPlease try again in a few minutes. If the problem persists, contact the system administrator.";
+
+        showFriendlyError(title, message);
+        setStatus("Error");
+
+      } finally {
+        byId('prepareBtn').disabled = false;
       }
-      y+=10;
     }
-    doc.save("interview-prep.pdf");
-    setStatus("PDF ready");
-    setTimeout(()=>setStatus(""),1500);
-  }
 
-  // Event listeners
-  byId('prepareBtn').addEventListener('click', prepare);
-  byId('copyBtn').addEventListener('click', copyAll);
-  byId('pdfBtn').addEventListener('click', toPdf);
-  
-  function switchTab(tabName) {
-    document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
-    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-    byId(tabName + 'Tab').style.display = 'block';
-    document.querySelector(`.tab-button[onclick="switchTab('${tabName}')"]`).classList.add('active');
-  }
+    // Copy all button
+    async function copyAll(){
+      const blocks = Array.from(document.querySelectorAll('#result .panel'))
+        .map(p => p.querySelector('h3').textContent + "\n" +
+          Array.from(p.querySelectorAll('li')).map(li => "- " + li.textContent).join("\n"))
+        .join("\n\n");
+      await navigator.clipboard.writeText(blocks);
+      setStatus("Copied");
+      setTimeout(()=>setStatus(""),1500);
+    }
 
-  // --- Dark Mode Logic (Synced) ---
-  document.addEventListener('DOMContentLoaded', () => {
+    // PDF generation
+    async function toPdf(){
+      setStatus("Building PDF…");
+      if(!window.jspdf){
+        await new Promise((resolve, reject)=>{
+          const s=document.createElement('script');
+          s.src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js";
+          s.onload=resolve; s.onerror=reject;
+          document.head.appendChild(s);
+        });
+      }
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit:'pt', format:'a4' });
+      let y=40, left=40, width=515;
+
+      doc.setFont('helvetica','bold'); doc.setFontSize(16);
+      doc.text("Interview Preparation Tips", left, y); y+=20;
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+
+      const meta = [
+        "Position: " + byId('position').value,
+        "Department: " + byId('department').value,
+        "Company: " + byId('company_name').value,
+        "Experience: " + byId('experience').value,
+        "Generated: " + new Date().toLocaleString()
+      ].join(" | ");
+      doc.text(meta, left, y, { maxWidth: width }); y+=20;
+
+      doc.setFontSize(12);
+      const sections = Array.from(document.querySelectorAll('#result .panel'));
+      for(const sec of sections){
+        doc.setFont('helvetica','bold'); 
+        doc.text(sec.querySelector('h3').textContent, left, y); y+=14;
+        doc.setFont('helvetica','normal');
+        const lines = Array.from(sec.querySelectorAll('li')).map(li => "• " + li.textContent);
+        for(const line of lines){
+          const wrapped = doc.splitTextToSize(line, width);
+          for(const l of wrapped){
+            if(y>780){ doc.addPage(); y=40; }
+            doc.text(l, left, y); y+=14;
+          }
+        }
+        y+=10;
+      }
+      doc.save("interview-prep.pdf");
+      setStatus("PDF ready");
+      setTimeout(()=>setStatus(""),1500);
+    }
+
+    // Event listeners
+    byId('prepareBtn').addEventListener('click', prepare);
+    byId('copyBtn').addEventListener('click', copyAll);
+    byId('pdfBtn').addEventListener('click', toPdf);
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+      byId(tabName + 'Tab').style.display = 'block';
+      document.querySelector(`.tab-button[onclick="switchTab('${tabName}')"]`).classList.add('active');
+    }
+
+    // --- Dark Mode Logic (Synced) ---
+    document.addEventListener('DOMContentLoaded', () => {
       const toggle = byId('dark-mode-toggle');
       const body = document.body;
 
+      // Some pages may not include the toggle; guard it.
+      if(!toggle) return;
+
       function applyTheme(isEnabled) {
-          if (isEnabled) {
-              body.classList.add('dark-mode');
-              toggle.checked = true;
-          } else {
-              body.classList.remove('dark-mode');
-              toggle.checked = false;
-          }
+        if (isEnabled) {
+          body.classList.add('dark-mode');
+          toggle.checked = true;
+        } else {
+          body.classList.remove('dark-mode');
+          toggle.checked = false;
+        }
       }
 
-      // Check LocalStorage
       const savedSetting = localStorage.getItem('darkMode');
       if (savedSetting === 'enabled') {
-          applyTheme(true);
+        applyTheme(true);
       } else {
-          applyTheme(false);
+        applyTheme(false);
       }
 
-      // Listen for Toggle
       toggle.addEventListener('change', () => {
-          if (toggle.checked) {
-              localStorage.setItem('darkMode', 'enabled');
-              applyTheme(true);
-          } else {
-              localStorage.setItem('darkMode', 'disabled');
-              applyTheme(false);
-          }
+        if (toggle.checked) {
+          localStorage.setItem('darkMode', 'enabled');
+          applyTheme(true);
+        } else {
+          localStorage.setItem('darkMode', 'disabled');
+          applyTheme(false);
+        }
       });
-  });
-
+    });
   </script>
 </body>
 </html>
+

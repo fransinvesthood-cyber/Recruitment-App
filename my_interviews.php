@@ -658,8 +658,7 @@ $result = $stmt->get_result();
                             <?php endif; ?>
 
                             <!-- Actions -->
-                            <?php if (strtolower($row['availability_status']) !== 'accepted' && strtolower($row['availability_status']) !== 'declined'): ?>
-                                <div class="detail-section">
+<div class="detail-section">
                                     <h3><i class='bx bx-cog'></i> Actions</h3>
                                     <div class="action-buttons">
                                         <form action="confirm_availability.php" method="POST" style="display:inline;">
@@ -678,7 +677,6 @@ $result = $stmt->get_result();
                                         </form>
                                     </div>
                                 </div>
-                            <?php endif; ?>
 
                             <!-- Additional Information -->
                             <?php if (!empty($row['reschedule_reason']) || !empty($row['cancellation_reason'])): ?>

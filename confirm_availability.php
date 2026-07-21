@@ -14,13 +14,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $conn->prepare($sql);
     if ($stmt) {
         $stmt->bind_param("si", $availability_status, $interview_id);
-        $stmt->execute();
         
-        if ($stmt->affected_rows > 0) {
-            // Redirect back to the interviews page or display a success message
+        if ($stmt->execute()) {
+            // Redirect back to the interviews page with a success message
             header("Location: my_interviews.php?status=updated");
+            exit();
         } else {
-            echo "Error updating availability status.";
+            echo "Error updating availability status: " . $stmt->error;
         }
     } else {
         echo "Error preparing the query: " . $conn->error;
