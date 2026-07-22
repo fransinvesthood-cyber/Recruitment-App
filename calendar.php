@@ -438,6 +438,182 @@ if (isset($conn)) {
         .event-leave     { background: linear-gradient(135deg, #ec4899, #be185d) !important; color: white !important; }
         .event-deadline  { background: linear-gradient(135deg, #ef4444, #dc2626) !important; color: white !important; }
 
+        /* ===========================
+           SUCCESS MODAL (SweetAlert2-style)
+        ============================ */
+        .success-modal {
+            width: 100%;
+            max-width: 400px;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px 32px 28px;
+            text-align: center;
+            animation: successModalIn 0.3s ease-out;
+        }
+        body.dark-mode .success-modal {
+            background: #242526;
+        }
+        @keyframes successModalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.7);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .success-modal-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #28a745;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: successIconPulse 1.5s ease-in-out infinite;
+        }
+        .success-modal-icon i {
+            font-size: 48px;
+            color: #fff;
+            font-weight: 700;
+        }
+        @keyframes successIconPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        .success-modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+        body.dark-mode .success-modal-title {
+            color: #e4e6eb;
+        }
+        .success-modal-message {
+            font-size: 16px;
+            color: #6c757d;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+        body.dark-mode .success-modal-message {
+            color: #adb5bd;
+        }
+        .success-modal-btn {
+            display: inline-block;
+            padding: 12px 48px;
+            background: #2980b9;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+            min-width: 120px;
+        }
+        .success-modal-btn:hover {
+            background: #2471a3;
+        }
+        .success-modal-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* ===========================
+           CONFIRM MODAL (SweetAlert2-style)
+        ============================ */
+        .confirm-modal {
+            width: 100%;
+            max-width: 400px;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px 32px 28px;
+            text-align: center;
+            animation: successModalIn 0.3s ease-out;
+        }
+        body.dark-mode .confirm-modal {
+            background: #242526;
+        }
+        .confirm-modal-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #dc3545;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: successIconPulse 1.5s ease-in-out infinite;
+        }
+        .confirm-modal-icon i {
+            font-size: 42px;
+            color: #fff;
+        }
+        .confirm-modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+        body.dark-mode .confirm-modal-title {
+            color: #e4e6eb;
+        }
+        .confirm-modal-message {
+            font-size: 16px;
+            color: #6c757d;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+        body.dark-mode .confirm-modal-message {
+            color: #adb5bd;
+        }
+        .confirm-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .confirm-modal-btn {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+            min-width: 100px;
+        }
+        .confirm-modal-btn:active {
+            transform: scale(0.96);
+        }
+        .confirm-modal-btn-cancel {
+            background: #e9ecef;
+            color: #495057;
+        }
+        .confirm-modal-btn-cancel:hover {
+            background: #dee2e6;
+        }
+        body.dark-mode .confirm-modal-btn-cancel {
+            background: #3a3b3c;
+            color: #e4e6eb;
+        }
+        body.dark-mode .confirm-modal-btn-cancel:hover {
+            background: #4a4b4c;
+        }
+        .confirm-modal-btn-delete {
+            background: #dc3545;
+            color: #fff;
+        }
+        .confirm-modal-btn-delete:hover {
+            background: #c82333;
+        }
+
         /* MOBILE MENU OVERLAY */
         .mobile-menu-overlay {
             display: none;
@@ -845,6 +1021,44 @@ if (isset($conn)) {
         </div>
     </div>
 
+    <!-- Success Modal (SweetAlert2-style) -->
+    <div class="modal-overlay" id="successModalOverlay" aria-hidden="true" style="display:none;">
+        <div class="success-modal" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
+            <div class="success-modal-icon">
+                <i class='bx bx-check'></i>
+            </div>
+            <div class="success-modal-title" id="successModalTitle">Event created Successfully!</div>
+            <div class="success-modal-message">The event has been created successfully.</div>
+            <button type="button" class="success-modal-btn" id="successModalOkBtn">OK</button>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteConfirmOverlay" aria-hidden="true" style="display:none;">
+        <div class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="deleteConfirmTitle">
+            <div class="confirm-modal-icon">
+                <i class='bx bx-trash'></i>
+            </div>
+            <div class="confirm-modal-title" id="deleteConfirmTitle">Delete Event?</div>
+            <div class="confirm-modal-message">Are you sure you want to delete this event? This action cannot be undone.</div>
+            <div class="confirm-modal-actions">
+                <button type="button" class="confirm-modal-btn confirm-modal-btn-cancel" id="deleteConfirmCancelBtn">Cancel</button>
+                <button type="button" class="confirm-modal-btn confirm-modal-btn-delete" id="deleteConfirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Success Modal -->
+    <div class="modal-overlay" id="deleteSuccessOverlay" aria-hidden="true" style="display:none;">
+        <div class="success-modal" role="dialog" aria-modal="true">
+            <div class="success-modal-icon">
+                <i class='bx bx-check'></i>
+            </div>
+            <div class="success-modal-title">Deleted Successfully!</div>
+            <div class="success-modal-message">The event has been deleted successfully.</div>
+            <button type="button" class="success-modal-btn" id="deleteSuccessOkBtn">OK</button>
+        </div>
+    </div>
 
     <!-- FullCalendar JS -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
@@ -939,31 +1153,12 @@ if (isset($conn)) {
                         eventClick: function(info) {
                             const isCustomEvent = info.event.extendedProps && info.event.extendedProps.event_type;
                             if (isCustomEvent) {
-                                const confirmed = confirm('Delete this event?');
-                                if (!confirmed) {
-                                    return false;
-                                }
-
-                                const formData = new FormData();
-                                formData.append('event_id', info.event.id);
-
-                                fetch('delete_event.php', {
-                                    method: 'POST',
-                                    body: formData
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data && data.success) {
-                                        info.event.remove();
-                                        alert('Event deleted successfully.');
-                                    } else {
-                                        alert((data && data.error) ? data.error : 'Failed to delete event.');
-                                    }
-                                })
-                                .catch(() => {
-                                    alert('Failed to delete event.');
-                                });
-
+                                // Store event info for deletion and show custom confirm modal
+                                window._pendingDeleteEvent = {
+                                    id: info.event.id,
+                                    info: info
+                                };
+                                showDeleteConfirmModal();
                                 return false;
                             }
 
@@ -1081,6 +1276,92 @@ if (isset($conn)) {
             overlay.classList.remove('active');
         }
 
+        // ----------------------------
+        // Success Modal
+        // ----------------------------
+        function showSuccessModal() {
+            const overlay = document.getElementById('successModalOverlay');
+            if (overlay) {
+                overlay.style.display = 'flex';
+            }
+        }
+
+        function closeSuccessModal() {
+            const overlay = document.getElementById('successModalOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+            // Reload after success modal is dismissed so calendar refreshes
+            window.location.reload();
+        }
+
+        // ----------------------------
+        // Delete Confirmation Modal
+        // ----------------------------
+        function showDeleteConfirmModal() {
+            const overlay = document.getElementById('deleteConfirmOverlay');
+            if (overlay) {
+                overlay.style.display = 'flex';
+            }
+        }
+
+        function closeDeleteConfirmModal() {
+            const overlay = document.getElementById('deleteConfirmOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+            window._pendingDeleteEvent = null;
+        }
+
+function executeDeleteEvent() {
+            const pending = window._pendingDeleteEvent;
+            if (!pending) return;
+
+            const formData = new FormData();
+            formData.append('event_id', pending.id);
+
+            fetch('delete_event.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.success) {
+                    pending.info.event.remove();
+                    closeDeleteConfirmModal();
+                    showDeleteSuccessModal();
+                } else {
+                    closeDeleteConfirmModal();
+                    showDeleteErrorAlert((data && data.error) ? data.error : 'Failed to delete event.');
+                }
+            })
+            .catch(() => {
+                closeDeleteConfirmModal();
+                showDeleteErrorAlert('Failed to delete event. Please try again.');
+            });
+        }
+
+        // ----------------------------
+        // Delete Success Modal
+        // ----------------------------
+        function showDeleteSuccessModal() {
+            const overlay = document.getElementById('deleteSuccessOverlay');
+            if (overlay) {
+                overlay.style.display = 'flex';
+            }
+        }
+
+        function closeDeleteSuccessModal() {
+            const overlay = document.getElementById('deleteSuccessOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
+
+        function showDeleteErrorAlert(msg) {
+            alert(msg);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const createBtn = document.getElementById('createEventBtn');
             if (createBtn) {
@@ -1106,6 +1387,49 @@ if (isset($conn)) {
                 cancelBtn.addEventListener('click', closeCreateEventModal);
             }
 
+            // Success modal events
+            const successOverlay = document.getElementById('successModalOverlay');
+            if (successOverlay) {
+                successOverlay.addEventListener('click', function(e) {
+                    if (e.target === successOverlay) closeSuccessModal();
+                });
+            }
+
+            const okBtn = document.getElementById('successModalOkBtn');
+            if (okBtn) {
+                okBtn.addEventListener('click', closeSuccessModal);
+            }
+
+            // Delete confirmation modal events
+            const deleteOverlay = document.getElementById('deleteConfirmOverlay');
+            if (deleteOverlay) {
+                deleteOverlay.addEventListener('click', function(e) {
+                    if (e.target === deleteOverlay) closeDeleteConfirmModal();
+                });
+            }
+
+            const deleteCancelBtn = document.getElementById('deleteConfirmCancelBtn');
+            if (deleteCancelBtn) {
+                deleteCancelBtn.addEventListener('click', closeDeleteConfirmModal);
+            }
+
+            const deleteBtn = document.getElementById('deleteConfirmDeleteBtn');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', executeDeleteEvent);
+            }
+
+            // Delete success modal events
+            const deleteSuccessOverlay = document.getElementById('deleteSuccessOverlay');
+            if (deleteSuccessOverlay) {
+                deleteSuccessOverlay.addEventListener('click', function(e) {
+                    if (e.target === deleteSuccessOverlay) closeDeleteSuccessModal();
+                });
+            }
+
+            const deleteSuccessOkBtn = document.getElementById('deleteSuccessOkBtn');
+            if (deleteSuccessOkBtn) {
+                deleteSuccessOkBtn.addEventListener('click', closeDeleteSuccessModal);
+            }
 
             const form = document.getElementById('createEventForm');
             if (form) {
@@ -1138,8 +1462,8 @@ if (isset($conn)) {
                         }
 
                         closeCreateEventModal();
-                        // hard refresh so PHP-generated events + calendar render are in sync
-                        window.location.reload();
+                        // Show success modal instead of immediate reload
+                        showSuccessModal();
                     } catch (err) {
                         const msg = err && err.message ? err.message : 'Network error';
                         if (errorDiv) {

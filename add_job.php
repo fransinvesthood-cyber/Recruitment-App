@@ -113,25 +113,30 @@ if (empty($criteria_skills) && empty($criteria_qualifications) && $criteria_min_
         $notification_stmt = $conn->prepare("INSERT INTO notifications (user_id, message, type, reference_id, is_read, created_at) VALUES (?, ?, 'job', NULL, 0, NOW())");
         $notification_stmt->bind_param("is", $admin_id, $notification_message);
         $notification_stmt->execute();
-        $notification_stmt->close();
+$notification_stmt->close();
 
         // Insert job qualifications if provided
         if (!empty($criteria_qualifications)) {
-            $qual_arr = array_filter(array_map('trim', explode(',', $criteria_qualifications)));
-            $qual_stmt = $conn->prepare("INSERT INTO job_qualifications (job_id, qualification) VALUES (?, ?)");
-            foreach ($qual_arr as $qual) {
-                if (!empty($qual)) {
-                    $qual_stmt->bind_param("is", $job_id, $qual);
-                    $qual_stmt->execute();
-                }
-            }
-            $qual_stmt->close();
-        }
-
-        echo "<script>
-            alert('✅ New job listing created successfully with qualifications!');
-            window.location.href='manage_jobs.php';
-        </script>";
+            $qual_arr = array_filter(array_map('trim
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
+</head>
+<body>
+    <script>
+        Swal.fire({
+            icon: "success",
+            title: "Job Posting Created Successfully!",
+            text: "The job posting has been created successfully!",
+            confirmButtonColor: "#2980b9",
+            confirmButtonText: "OK"
+        }).then(() => {
+            window.location.href = "manage_jobs.php";
+        });
+    </script>
+</body>
+</html>';
         exit();
     } else {
         echo "<script>alert('❌ Error: " . addslashes($stmt->error) . "');</script>";
@@ -149,6 +154,8 @@ if (empty($criteria_skills) && empty($criteria_qualifications) && $criteria_min_
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Job Listing | Admin Portal</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
     <style>
         /* ===========================
            GLOBAL RESET & VARIABLES

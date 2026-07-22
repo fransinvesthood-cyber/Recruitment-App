@@ -34,6 +34,8 @@ $result = $conn->query($sql);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scheduled Interviews</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
     <style>
         * {
             margin: 0;
@@ -472,6 +474,105 @@ $result = $conn->query($sql);
         }
         window.addEventListener('resize', handleTabletView);
         handleTabletView();
+
+        // =============================================
+        // SUCCESS POPUP MODAL (SweetAlert2)
+        // =============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const success = urlParams.get('success');
+
+            const successModals = {
+                'interview_scheduled': {
+                    title: 'Interview scheduled successfully!',
+                    text: 'The interview has been scheduled successfully.'
+                },
+                'interview_rescheduled': {
+                    title: 'Interview rescheduled successfully!',
+                    text: 'The interview has been rescheduled and the candidate has been notified.'
+                },
+                'interview_cancelled': {
+                    title: 'Interview cancelled successfully!',
+                    text: 'The interview has been cancelled and the candidate has been notified.'
+                },
+                'interview_completed': {
+                    title: 'Interview completed successfully!',
+                    text: 'The interview has been marked as completed and a confirmation has been sent.'
+                },
+                'status_updated': {
+                    title: 'Status updated successfully!',
+                    text: 'The interview status has been updated.'
+                }
+            };
+
+            if (success && successModals[success]) {
+                Swal.fire({
+                    icon: 'success',
+                    title: successModals[success].title,
+                    text: successModals[success].text,
+                    confirmButtonColor: '#667eea',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        popup: 'swal-popup-custom',
+                        icon: 'swal-icon-custom',
+                        title: 'swal-title-custom',
+                        confirmButton: 'swal-confirm-custom'
+                    },
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    }
+                }).then(() => {
+                    // Clean the URL - remove the success parameter without refreshing
+                    const url = new URL(window.location);
+                    url.searchParams.delete('success');
+                    window.history.replaceState({}, '', url);
+                });
+            }
+        });
     </script>
+
+    <style>
+        /* SweetAlert2 Custom Styles - Matches Application Submitted Popup Styling */
+        .swal-popup-custom {
+            border-radius: 16px !important;
+            padding: 2rem 2rem 1.5rem !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+        }
+        .swal-icon-custom {
+            font-size: 28px !important;
+        }
+        .swal-title-custom {
+            font-size: 22px !important;
+            font-weight: 700 !important;
+            color: #2d3748 !important;
+        }
+        .swal-confirm-custom {
+            background: linear-gradient(135deg, #667eea, #5a67d8) !important;
+            border-radius: 10px !important;
+            padding: 10px 30px !important;
+            font-weight: 600 !important;
+            font-size: 16px !important;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+            border: none !important;
+            transition: all 0.3s ease !important;
+        }
+        .swal-confirm-custom:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+        }
+        /* Dark mode support */
+        body.dark-mode .swal-popup-custom {
+            background: #242526 !important;
+        }
+        body.dark-mode .swal-title-custom {
+            color: #e4e6eb !important;
+        }
+        body.dark-mode .swal-icon-custom {
+            color: #4ade80 !important;
+        }
+    </style>
 </body>
 </html>

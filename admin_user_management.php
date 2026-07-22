@@ -458,7 +458,7 @@ if ($up->execute()) {
                 $user_id
             );
 
-            $message = 'Account status updated.';
+            $message = $new_status === 'Active' ? 'Account activated successfully.' : 'Account deactivated successfully.';
             $messageClass = 'success';
         } else {
 
@@ -487,6 +487,8 @@ if ($action === 'delete_user') {
             $st->fetch();
             $st->close();
 
+            // Delete related notifications first to avoid foreign key constraint failure
+            $conn->query("DELETE FROM notifications WHERE user_id = " . (int)$user_id . " OR reference_id = " . (int)$user_id);
             $conn->query("DELETE FROM user_audit_log WHERE target_user_id = " . (int)$user_id);
 
             $del = $conn->prepare("DELETE FROM users WHERE user_id = ?");
@@ -730,6 +732,8 @@ try {
 
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
      
     <link rel="stylesheet" href="includes/admin-layout.css">
     </head>
@@ -775,11 +779,24 @@ try {
                 </div>
             </div>
 
-            <?php if (!empty($message)): ?>
-                <div class="alert <?php echo ($messageClass ?? '') === 'success' ? 'alert-success' : 'alert-danger'; ?> alert-dismissible fade show" role="alert">
+            <?php if (!empty($message) && ($messageClass ?? '') !== 'success'): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <?php echo htmlspecialchars($message); ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+            <?php endif; ?>
+<?php if (!empty($message) && ($messageClass ?? '') === 'success'): ?>
+                <div id="successMessage" data-message="<?php echo htmlspecialchars($message); ?>" data-title="<?php
+                    // Map the message to an appropriate title
+                    $title = 'Operation successful!';
+                    if (strpos($message, 'created') !== false) $title = 'User created successfully!';
+                    elseif (strpos($message, 'updated') !== false) $title = 'User updated successfully!';
+                    elseif (strpos($message, 'deleted') !== false) $title = 'User deleted successfully!';
+                    elseif (strpos($message, 'Account status updated') !== false) $title = 'Account status updated!';
+                    elseif (strpos($message, 'deactivated') !== false) $title = 'Account deactivated!';
+                    elseif (strpos($message, 'activated') !== false) $title = 'Account activated!';
+                    echo htmlspecialchars($title);
+                ?>" style="display:none;"></div>
             <?php endif; ?>
 
             <div class="row g-3 mb-4">
@@ -890,14 +907,14 @@ try {
                                             <div class="d-flex flex-wrap gap-2">
                                                 <?php $st = $u['account_status'] ?? 'Active'; ?>
                                                 <?php if ($st === 'Active'): ?>
-                                                    <form method="post" class="m-0" onsubmit="return confirm('Deactivate this account?')">
+                                                    <form method="post" class="m-0 form-confirm" data-confirm-title="Deactivate Account?" data-confirm-text="Are you sure you want to deactivate this account?" data-confirm-icon="warning" data-confirm-btn="Yes, deactivate it!" data-confirm-btn-color="#dc3545">
                                                         <input type="hidden" name="action" value="set_activation">
                                                         <input type="hidden" name="user_id" value="<?php echo (int)$u['user_id']; ?>">
                                                         <input type="hidden" name="account_status" value="Inactive">
                                                         <button type="submit" class="btn btn-sm btn-warning">Deactivate</button>
                                                     </form>
                                                 <?php else: ?>
-                                                    <form method="post" class="m-0" onsubmit="return confirm('Activate this account?')">
+                                                    <form method="post" class="m-0 form-confirm" data-confirm-title="Activate Account?" data-confirm-text="Are you sure you want to activate this account?" data-confirm-icon="question" data-confirm-btn="Yes, activate it!" data-confirm-btn-color="#28a745">
                                                         <input type="hidden" name="action" value="set_activation">
                                                         <input type="hidden" name="user_id" value="<?php echo (int)$u['user_id']; ?>">
                                                         <input type="hidden" name="account_status" value="Active">
@@ -905,7 +922,7 @@ try {
                                                     </form>
                                                 <?php endif; ?>
 
-                                                <form method="post" class="m-0" onsubmit="return confirm('Delete this user? This cannot be undone.')">
+                                                <form method="post" class="m-0 form-confirm" data-confirm-title="Delete User?" data-confirm-text="Are you sure you want to delete this user? This action cannot be undone!" data-confirm-icon="error" data-confirm-btn="Yes, delete it!" data-confirm-btn-color="#dc3545">
                                                     <input type="hidden" name="action" value="delete_user">
                                                     <input type="hidden" name="user_id" value="<?php echo (int)$u['user_id']; ?>">
                                                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
@@ -1061,6 +1078,7 @@ try {
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // --- Theme Sync ---
             const applyTheme = (theme) => {
                 document.body.classList.toggle('dark-mode', theme === 'dark');
             };
@@ -1074,6 +1092,53 @@ try {
             window.addEventListener('storage', syncTheme);
             window.addEventListener('focus', syncTheme);
             window.addEventListener('pageshow', syncTheme);
+
+            // --- SweetAlert2 Confirmation for Action Forms ---
+            document.querySelectorAll('form.form-confirm').forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    var title = form.getAttribute('data-confirm-title') || 'Are you sure?';
+                    var text = form.getAttribute('data-confirm-text') || '';
+                    var icon = form.getAttribute('data-confirm-icon') || 'warning';
+                    var confirmBtn = form.getAttribute('data-confirm-btn') || 'Yes';
+                    var confirmColor = form.getAttribute('data-confirm-btn-color') || '#3085d6';
+
+                    Swal.fire({
+                        title: title,
+                        text: text,
+                        icon: icon,
+                        showCancelButton: true,
+                        confirmButtonColor: confirmColor,
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: confirmBtn,
+                        cancelButtonText: 'Cancel',
+                        reverseButtons: true,
+                        backdrop: 'rgba(0,0,0,0.5)'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Submit the form natively (submit event will POST via regular form submission)
+                            form.submit();
+                        }
+                    });
+                });
+            });
+
+            // --- SweetAlert2 Success Popup ---
+            var successEl = document.getElementById('successMessage');
+            if (successEl) {
+                var title = successEl.getAttribute('data-title') || 'Operation successful!';
+                var message = successEl.getAttribute('data-message') || '';
+                Swal.fire({
+                    icon: 'success',
+                    title: title,
+                    text: message,
+                    confirmButtonColor: '#2980b9',
+                    confirmButtonText: 'OK',
+                    backdrop: 'rgba(0,0,0,0.5)',
+                    timer: 5000,
+                    timerProgressBar: true
+                });
+            }
         });
     </script>
 </body>

@@ -1842,6 +1842,65 @@ $overall_completion = calculate_completion(array_merge($personal_info_fields, $e
                 transform: scale(1.05);
             }
 
+            /* Status Badges - Show always */
+            .status-badge {
+                display: inline-block;
+                padding: 4px 10px;
+                border-radius: 12px;
+                font-size: 12px;
+                font-weight: 600;
+                margin-bottom: 8px;
+            }
+            .status-accepted {
+                background-color: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+            .status-declined {
+                background-color: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+            }
+            .status-pending {
+                background-color: #fff3cd;
+                color: #856404;
+                border: 1px solid #ffeeba;
+            }
+            /* Buttons always visible */
+            .availability-status .btn-accept,
+            .availability-status .btn-decline {
+                padding: 6px 14px;
+                font-size: 12px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                margin: 3px;
+                font-weight: 600;
+                transition: all 0.2s ease;
+            }
+            .availability-status .btn-accept {
+                background-color: #28a745;
+                color: white;
+            }
+            .availability-status .btn-accept:hover {
+                background-color: #218838;
+                transform: scale(1.05);
+            }
+            .availability-status .btn-decline {
+                background-color: #dc3545;
+                color: white;
+            }
+            .availability-status .btn-decline:hover {
+                background-color: #c82333;
+                transform: scale(1.05);
+            }
+            .availability-status .btn-accept:disabled,
+            .availability-status .btn-decline:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+            }
+
             /* Responsive adjustments */
             @media (max-width: 600px) {
                 .wrapper {
@@ -2749,6 +2808,142 @@ body.dark-mode .items-list .progress-bar {
 body.dark-mode .items-list .progress {
   background: linear-gradient(90deg, #667eea, #764ba2) !important;
 }
+
+/* =======================
+   🔓 Logout Confirmation Modal
+   ======================= */
+.logout-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.25s ease-out;
+}
+
+.logout-overlay.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.logout-modal {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px 35px 30px;
+    width: 400px;
+    max-width: 90vw;
+    text-align: center;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+    animation: scaleUp 0.3s ease-out;
+    position: relative;
+}
+
+.logout-modal .logout-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+    font-size: 34px;
+}
+
+.logout-modal h3 {
+    color: #1e293b;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.logout-modal p {
+    color: #64748b;
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 28px;
+}
+
+.logout-modal .logout-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.logout-modal .logout-actions button {
+    padding: 12px 32px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 120px;
+}
+
+.logout-modal .btn-cancel-logout {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+.logout-modal .btn-cancel-logout:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+.logout-modal .btn-confirm-logout {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.35);
+}
+
+.logout-modal .btn-confirm-logout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(220, 38, 38, 0.45);
+}
+
+/* Dark Mode for Logout Modal */
+body.dark-mode .logout-modal {
+    background: #1e293b;
+}
+
+body.dark-mode .logout-modal .logout-icon {
+    background: linear-gradient(135deg, #450a0a, #7f1d1d);
+}
+
+body.dark-mode .logout-modal h3 {
+    color: #f1f5f9;
+}
+
+body.dark-mode .logout-modal p {
+    color: #94a3b8;
+}
+
+body.dark-mode .logout-modal .btn-cancel-logout {
+    background: #334155;
+    color: #e2e8f0;
+    border-color: #475569;
+}
+
+body.dark-mode .logout-modal .btn-cancel-logout:hover {
+    background: #475569;
+}
 </style>
 
 </head>
@@ -2998,18 +3193,18 @@ function markAllAsRead() {
         </div>
 
         <div class="right-section">
-        <div class="profile">
-        <div class="info">
-            <a href="my_profile.php">
-                <img src="display_profile_pic.php" alt="Profile Picture" width="170" height="170"
-                    onerror="this.onerror=null; this.src='img/default_photo.jpg';">
-            </a>
-            <div>
-                <a href="my_profile.php"></a>
+            <div class="profile">
+                <div class="info">
+                    <a href="my_profile.php">
+                        <img src="display_profile_pic.php" alt="Profile Picture" width="170" height="170"
+                            onerror="this.onerror=null; this.src='img/default_photo.jpg';">
+                    </a>
+                    <div>
+                        <a href="my_profile.php"></a>
+                    </div>
+                </div>
             </div>
-        </div>
-        </div>
-                <a href="logout.php" onclick="return confirmLogout();">
+                <a href="logout.php" onclick="showLogoutModal(); return false;">
                     <i class='bx bx-log-out-circle'></i>
                 </a>
             </div>
@@ -3252,6 +3447,20 @@ function markAllAsRead() {
                         // Format the interview date to exclude seconds (e.g., HH:MM)
                         $formatted_interview_date = date("Y-m-d H:i", strtotime($row['interview_date']));
                         
+                        // Determine status display
+                        $status_label = '';
+                        $status_class = '';
+                        if ($availability_status == 'Available') {
+                            $status_label = '✓ Accepted';
+                            $status_class = 'status-accepted';
+                        } elseif ($availability_status == 'Not Available') {
+                            $status_label = '✗ Declined';
+                            $status_class = 'status-declined';
+                        } elseif ($availability_status == 'Pending') {
+                            $status_label = '⏳ Pending';
+                            $status_class = 'status-pending';
+                        }
+                        
                         echo "<div class='item'>
                                 <div>
                                     <div class='event-info'>
@@ -3261,17 +3470,15 @@ function markAllAsRead() {
                                     </div>
                                 </div>
                                 <div class='availability-status'>
-                                    <p></p>";
-
-                        if ($availability_status == 'Pending') {
-                            echo "<form action='confirm_availability.php' method='POST'>
-                                    <input type='hidden' name='interview_id' value='{$row['interview_id']}'>
-                                    <button type='submit' name='availability_status' value='Available'>Accept</button>
-                                    <button type='submit' name='availability_status' value='Not Available'>Decline</button>
-                                </form>";
-                        }
-
-                        echo "</div></div>";
+                                    <span class='status-badge {$status_class}'>{$status_label}</span>
+                                    <form class='availability-form' data-interview-id='{$row['interview_id']}'>
+                                        <input type='hidden' name='interview_id' value='{$row['interview_id']}'>
+                                        <input type='hidden' name='ajax' value='1'>
+                                        <button type='button' class='btn-accept' name='availability_status' value='Available' onclick='submitAvailability(this, \"Available\")'>Accept</button>
+                                        <button type='button' class='btn-decline' name='availability_status' value='Not Available' onclick='submitAvailability(this, \"Not Available\")'>Decline</button>
+                                    </form>
+                                </div>
+                              </div>";
                     }
                 } else {
                     echo "<p>No scheduled interviews at the moment.</p>";
@@ -3301,6 +3508,21 @@ function markAllAsRead() {
                         <button class="btn btn-dark" onclick="copyLink()"><i class="fas fa-copy"></i> Copy Link</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logout-overlay" class="logout-overlay" onclick="if(event.target===this) closeLogoutModal();">
+        <div class="logout-modal">
+            <div class="logout-icon">
+                <i class='bx bx-log-out-circle'></i>
+            </div>
+            <h3>Confirm Logout</h3>
+            <p>Are you sure you want to log out? You will need to sign in again to access your account.</p>
+            <div class="logout-actions">
+                <button class="btn-cancel-logout" onclick="closeLogoutModal()">Cancel</button>
+                <button class="btn-confirm-logout" onclick="proceedLogout()">Yes, Logout</button>
             </div>
         </div>
     </div>
@@ -3456,12 +3678,17 @@ document.getElementById("profile_picture").addEventListener("change", function()
 </script>
 
 <script>
-    function confirmLogout() {
-        // Display a confirmation dialog
-        var result = confirm("Are you sure you want to log out?");
+    function showLogoutModal() {
+        document.getElementById('logout-overlay').classList.add('active');
+        return false;
+    }
 
-        // If user clicks 'OK', they will be logged out, if 'Cancel', it won't do anything
-        return result; // If true, the link will be followed (logout), if false, it will be canceled
+    function closeLogoutModal() {
+        document.getElementById('logout-overlay').classList.remove('active');
+    }
+
+    function proceedLogout() {
+        window.location.href = 'logout.php';
     }
 </script>
     <script>
@@ -4423,6 +4650,47 @@ function copyLink() {
             profileContainer.style.display = 'none';
         }
     }
+</script>
+
+<script>
+// AJAX function to submit availability without page reload
+function submitAvailability(button, status) {
+    const form = button.closest('form');
+    const formData = new FormData(form);
+    formData.set('availability_status', status);
+    formData.append('ajax', '1');
+    
+    // Disable buttons while processing
+    const buttons = form.querySelectorAll('button');
+    buttons.forEach(btn => btn.disabled = true);
+    
+    fetch('confirm_availability.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the status badge
+            const statusBadge = form.closest('.availability-status').querySelector('.status-badge');
+            if (status === 'Available') {
+                statusBadge.className = 'status-badge status-accepted';
+                statusBadge.textContent = '✓ Accepted';
+            } else {
+                statusBadge.className = 'status-badge status-declined';
+                statusBadge.textContent = '✗ Declined';
+            }
+        } else {
+            alert('Error: ' + (data.error || 'Failed to update availability'));
+            buttons.forEach(btn => btn.disabled = false);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Network error. Please try again.');
+        buttons.forEach(btn => btn.disabled = false);
+    });
+}
 </script>
 </body>
 </html>

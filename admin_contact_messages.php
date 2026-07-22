@@ -365,6 +365,20 @@ include('config.php');
         .btn-secondary { background: #e9ecef; color: #212529; border: 1px solid #d8dfe6; }
         .btn-secondary:hover { background: #dde2e8; }
 
+        /* Success notification modal */
+        .success-modal { width: min(440px, calc(100vw - 24px)); text-align: center; }
+        .success-modal .modal-body { padding: 40px 20px 30px; }
+        .success-icon {
+            width: 72px; height: 72px; border-radius: 50%;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: #fff; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 18px; font-size: 36px; box-shadow: 0 8px 24px rgba(40,167,69,0.25);
+        }
+        body.dark-mode .success-icon { box-shadow: 0 8px 24px rgba(40,167,69,0.15); }
+        .success-title { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
+        .success-sub { color: var(--gray); font-size: 15px; line-height: 1.5; }
+        .success-modal .modal-footer { justify-content: center; padding: 16px 20px 24px; border-top: none; padding-top: 0; }
+
 
         .small-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
@@ -446,6 +460,20 @@ include('config.php');
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" id="messageModalOkBtn">Close</button>
                 <button class="btn btn-view" type="button" id="messageModalReplyBtn" data-id="" onclick="openReplyModal(this)">Send Feedback</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- success notification modal -->
+    <div class="modal-backdrop" id="successModalBackdrop" aria-hidden="true">
+        <div class="modal success-modal" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
+            <div class="modal-body">
+                <div class="success-icon"><i class='bx bx-check'></i></div>
+                <div class="success-title" id="successModalTitle">Success</div>
+                <div class="success-sub" id="successModalMessage">Action completed successfully.</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" type="button" id="successModalOkBtn" onclick="closeSuccessModal()">OK</button>
             </div>
         </div>
     </div>
@@ -730,6 +758,24 @@ include('config.php');
         }
 
 
+        function showSuccessModal(message) {
+            const backdrop = document.getElementById('successModalBackdrop');
+            const msgEl = document.getElementById('successModalMessage');
+            if (msgEl) msgEl.textContent = message || 'Action completed successfully.';
+            if (backdrop) backdrop.classList.add('show');
+            // Click on backdrop to close
+            if (backdrop) {
+                backdrop.onclick = function(e) {
+                    if (e.target === backdrop) closeSuccessModal();
+                };
+            }
+        }
+
+        function closeSuccessModal() {
+            const backdrop = document.getElementById('successModalBackdrop');
+            if (backdrop) backdrop.classList.remove('show');
+        }
+
         async function sendReply(){
             const sendBtn = document.getElementById('replySendBtn');
             let contact_message_id = (sendBtn?.getAttribute('data-contact-message-id') ?? '').toString();
@@ -786,7 +832,7 @@ include('config.php');
                     return;
                 }
 
-                alert('Reply email sent successfully.');
+                showSuccessModal('Reply email sent successfully.');
                 closeReplyModal();
             } catch (e) {
                 console.error(e);

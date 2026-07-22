@@ -330,5 +330,49 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
     <script src="js/schedule_interview.js"></script>
+    <script>
+        // Error modal handler for redirects from process_interview.php
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            
+            const errorModals = {
+                'already_scheduled': {
+                    title: 'Interview Already Scheduled',
+                    text: 'This applicant already has an active interview scheduled for this position.'
+                }
+            };
+
+            if (error && errorModals[error]) {
+                Swal.fire({
+                    icon: 'error',
+                    title: errorModals[error].title,
+                    text: errorModals[error].text,
+                    confirmButtonColor: '#667eea',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        popup: 'swal-popup-custom',
+                        icon: 'swal-icon-custom',
+                        title: 'swal-title-custom',
+                        confirmButton: 'swal-confirm-custom'
+                    }
+                }).then(() => {
+                    const url = new URL(window.location);
+                    url.searchParams.delete('error');
+                    window.history.replaceState({}, '', url);
+                });
+            }
+        });
+    </script>
+    <style>
+        /* SweetAlert2 Custom Styles - Matches Application Submitted Popup Styling */
+        .swal-popup-custom { border-radius: 16px !important; padding: 2rem 2rem 1.5rem !important; box-shadow: 0 20px 60px rgba(0,0,0,0.15) !important; }
+        .swal-icon-custom { font-size: 28px !important; }
+        .swal-title-custom { font-size: 22px !important; font-weight: 700 !important; color: #2d3748 !important; }
+        .swal-confirm-custom { background: linear-gradient(135deg, #667eea, #5a67d8) !important; border-radius: 10px !important; padding: 10px 30px !important; font-weight: 600 !important; font-size: 16px !important; box-shadow: 0 4px 15px rgba(102,126,234,0.3) !important; border: none !important; transition: all 0.3s ease !important; }
+        .swal-confirm-custom:hover { transform: translateY(-2px) !important; box-shadow: 0 8px 25px rgba(102,126,234,0.4) !important; }
+        body.dark-mode .swal-popup-custom { background: #242526 !important; }
+        body.dark-mode .swal-title-custom { color: #e4e6eb !important; }
+    </style>
 </body>
 </html>

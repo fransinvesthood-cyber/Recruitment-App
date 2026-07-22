@@ -2173,6 +2173,123 @@ body.dark-mode .table-container::-webkit-scrollbar-thumb{
     }
 
 }
+
+/* ========================= */
+/* LOGOUT CONFIRMATION MODAL */
+/* ========================= */
+.logout-modal-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:99999;
+    align-items:center;
+    justify-content:center;
+}
+
+.logout-modal-overlay.active{
+    display:flex;
+}
+
+.logout-modal-card{
+    background:#fff;
+    border-radius:16px;
+    padding:32px 36px;
+    width:92%;
+    max-width:420px;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+    text-align:center;
+    animation:fadeIn .25s ease;
+}
+
+body.dark-mode .logout-modal-card{
+    background:#242526;
+    border:1px solid #3a3b3c;
+}
+
+.logout-modal-icon{
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    background:rgba(220,53,69,.12);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 16px;
+}
+
+.logout-modal-icon i{
+    font-size:32px;
+    color:#dc3545;
+}
+
+.logout-modal-card h3{
+    font-size:20px;
+    margin-bottom:8px;
+    color:#222;
+}
+
+body.dark-mode .logout-modal-card h3{
+    color:#e4e6eb;
+}
+
+.logout-modal-card p{
+    font-size:15px;
+    color:#6c757d;
+    margin-bottom:24px;
+}
+
+body.dark-mode .logout-modal-card p{
+    color:#adb5bd;
+}
+
+.logout-modal-actions{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+}
+
+.logout-modal-actions .btn{
+    padding:10px 28px;
+    font-size:15px;
+    font-weight:600;
+    border-radius:8px;
+    cursor:pointer;
+    border:none;
+    transition:all .2s;
+}
+
+.logout-modal-actions .btn-cancel{
+    background:var(--light-gray);
+    color:#333;
+}
+
+body.dark-mode .logout-modal-actions .btn-cancel{
+    background:#3a3b3c;
+    color:#e4e6eb;
+}
+
+.logout-modal-actions .btn-cancel:hover{
+    background:#d5d8dc;
+}
+
+body.dark-mode .logout-modal-actions .btn-cancel:hover{
+    background:#4a4b4c;
+}
+
+.logout-modal-actions .btn-logout{
+    background:#dc3545;
+    color:#fff;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+}
+
+.logout-modal-actions .btn-logout:hover{
+    background:#b02a37;
+}
+
     </style>
 
 </head>
@@ -2850,7 +2967,16 @@ body.dark-mode .table-container::-webkit-scrollbar-thumb{
         }
 
         function confirmLogout() {
-            return confirm("Are you sure you want to log out?");
+            document.getElementById('logoutModal').classList.add('active');
+            return false;
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('logoutModal').classList.remove('active');
+        }
+
+        function proceedLogout() {
+            window.location.href = 'logout.php';
         }
 
         // Application Trends Chart
@@ -3420,6 +3546,24 @@ body.dark-mode .table-container::-webkit-scrollbar-thumb{
 
         }
             </script>
+
+<!-- Logout Confirmation Modal -->
+<div class="logout-modal-overlay" id="logoutModal" onclick="if(event.target===this)closeLogoutModal();">
+    <div class="logout-modal-card">
+        <div class="logout-modal-icon">
+            <i class='bx bx-log-out-circle'></i>
+        </div>
+        <h3>Confirm Logout</h3>
+        <p>Are you sure you want to log out? You will be redirected to the login page.</p>
+        <div class="logout-modal-actions">
+            <button class="btn btn-cancel" onclick="closeLogoutModal();">Cancel</button>
+            <a href="logout.php" class="btn btn-logout" onclick="proceedLogout();">
+                <i class='bx bx-log-out-circle'></i> Logout
+            </a>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
 

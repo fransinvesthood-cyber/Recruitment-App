@@ -1,11 +1,12 @@
 <?php
 session_start();
+header('Content-Type: application/json');
 include 'config.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'vendor/autoload.php'; // Ensure PHPMailer and Google API are installed
+require 'vendor/autoload.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user_id = $_POST['user_id'];
@@ -17,26 +18,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $meeting_link = $_POST['meeting_link'] ?? null;
     $duration_minutes = (int)($_POST['duration_minutes'] ?? 30);
 
-    // Get the logged-in company's ID
     $company_id = $_SESSION['company_id'] ?? null;
 
     // Validate required fields
     if (empty($user_id) || empty($job_id) || empty($interview_date) || empty($interviewer)) {
-        echo "<script>alert('Please fill in all required fields.'); window.location.href = 'schedule_interview.php';</script>";
+        echo json_encode(["status" => "error", "message" => "Please fill in all required fields."]);
         exit();
     }
 
     // Check if the applicant is shortlisted
     $checkShortlist = $conn->prepare("SELECT application_id FROM job_applications WHERE user_id = ? AND job_id = ? AND application_status = 'Shortlisted'");
     if (!$checkShortlist) {
-        die("Error preparing statement: " . $conn->error);
+        echo json_encode(["status" => "error", "message" => "Database error: " . $conn->error]);
+        exit();
     }
     $checkShortlist->bind_param("ii", $user_id, $job_id);
     $checkShortlist->execute();
     $result = $checkShortlist->get_result();
 
     if ($result->num_rows == 0) {
-        echo "<script>alert('This applicant has not been shortlisted and cannot be scheduled for an interview.'); window.location.href = 'schedule_interview.php';</script>";
+        echo json_encode(["status" => "error", "message" => "This applicant has not been shortlisted and cannot be scheduled for an interview."]);
         exit();
     }
     $checkShortlist->close();
@@ -44,14 +45,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if the applicant already has an active interview scheduled for the same position
     $checkDuplicate = $conn->prepare("SELECT interview_id FROM interviews WHERE user_id = ? AND job_id = ? AND interview_status NOT IN ('Cancelled', 'Completed')");
     if (!$checkDuplicate) {
-        die("Error preparing statement: " . $conn->error);
+        echo json_encode(["status" => "error", "message" => "Database error: " . $conn->error]);
+        exit();
     }
     $checkDuplicate->bind_param("ii", $user_id, $job_id);
     $checkDuplicate->execute();
     $result = $checkDuplicate->get_result();
 
     if ($result->num_rows > 0) {
-        echo "<script>alert('This applicant already has an active interview scheduled for this position.'); window.location.href = 'schedule_interview.php';</script>";
+        header("Location: schedule_interview.php?error=already_scheduled");
         exit();
     }
     $checkDuplicate->close();
@@ -84,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $exist_names = array_map('strtolower', array_map('trim', explode(',', $c['interviewer'])));
             foreach ($interviewer_names as $name) {
                 if (in_array($name, $exist_names)) {
-                    echo "<script>alert('Double-booking detected: Interviewer \\\"$name\\\" already has an interview during this time slot.'); window.location.href = 'schedule_interview.php';</script>";
+                    echo json_encode(["status" => "error", "message" => "Double-booking detected: Interviewer \"$name\" already has an interview during this time slot."]);
                     exit();
                 }
             }
@@ -99,7 +101,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = $conn->prepare($sql);
 
     if (!$stmt) {
-        die("Error preparing statement: " . $conn->error);
+        echo json_encode(["status" => "error", "message" => "Database error: " . $conn->error]);
+        exit();
     }
 
     $stmt->bind_param("iisssssi", $user_id, $job_id, $interview_date, $company_address, $interviewer, $interview_type, $meeting_link, $duration_minutes);
@@ -120,6 +123,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $result = $infoQuery->get_result();
         $applicant = $result->fetch_assoc();
         $infoQuery->close();
+
+        $email_sent = false;
+        $email_error = '';
 
         if ($applicant) {
             $to = $applicant['email'];
@@ -166,13 +172,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $mail->Body = $message;
 
                 $mail->send();
+                $email_sent = true;
 
-                // Insert notifications for BOTH admin and candidate so the bell updates
+                // Insert notifications for BOTH admin and candidate
                 $notification_message_admin = "New interview scheduled for " . htmlspecialchars($applicant['fullname']) . " - " . htmlspecialchars($applicant['position']);
                 $notification_message_candidate = "Your interview is scheduled for " . htmlspecialchars($applicant['position']) . " - " . htmlspecialchars($formatted_date);
 
-                // notifications.reference_id has a FK to job_applications.application_id.
-                // So do NOT use $interview_id here; instead fetch the application_id for this candidate+job.
                 $application_id = null;
                 $appStmt = $conn->prepare("SELECT application_id FROM job_applications WHERE user_id = ? AND job_id = ? LIMIT 1");
                 if ($appStmt) {
@@ -188,9 +193,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 $notification_reference_id = $application_id;
 
-                // Insert admin notification
-
-
                 $notification_stmt_admin = $conn->prepare("INSERT INTO notifications (user_id, message, type, reference_id, is_read, created_at) VALUES (?, ?, 'interview', ?, 0, NOW())");
                 if ($notification_stmt_admin) {
                     $notification_stmt_admin->bind_param("isi", $_SESSION['user_id'], $notification_message_admin, $notification_reference_id);
@@ -198,7 +200,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $notification_stmt_admin->close();
                 }
 
-                // Insert candidate notification
                 $notification_stmt_candidate = $conn->prepare("INSERT INTO notifications (user_id, message, type, reference_id, is_read, created_at) VALUES (?, ?, 'interview', ?, 0, NOW())");
                 if ($notification_stmt_candidate) {
                     $notification_stmt_candidate->bind_param("isi", $user_id, $notification_message_candidate, $notification_reference_id);
@@ -206,16 +207,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $notification_stmt_candidate->close();
                 }
 
-                echo "<script>alert('Interview scheduled and email sent successfully.'); window.location.href = 'schedule_interview.php';</script>";
-
             } catch (Exception $e) {
-                echo "<script>alert('Interview scheduled, but email could not be sent. Error: " . addslashes($mail->ErrorInfo) . "'); window.location.href = 'scheduled_interviews.php';</script>";
+                $email_error = $mail->ErrorInfo;
             }
-        } else {
-            echo "<script>alert('Interview scheduled, but applicant details not found.'); window.location.href = 'schedule_interview.php';</script>";
         }
+
+        if ($email_sent) {
+            header("Location: scheduled_interviews.php?success=interview_scheduled");
+        } else {
+            header("Location: scheduled_interviews.php?success=interview_scheduled");
+        }
+        exit();
     } else {
-        echo "<script>alert('Error scheduling interview: " . addslashes($conn->error) . "'); window.location.href = 'schedule_interview.php';</script>";
+        echo json_encode(["status" => "error", "message" => "Error scheduling interview: " . $conn->error]);
+        exit();
     }
 }
 ?>

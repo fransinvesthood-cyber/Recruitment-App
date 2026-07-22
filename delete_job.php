@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
+</head>
+<body>
 <?php
 include('config.php');
 
@@ -36,7 +43,17 @@ if (isset($_GET['job_id'])) {
                 $stmt->execute();
             }
 
-            echo "<script>alert('Job listing deleted successfully!!'); window.location.href='manage_jobs.php';</script>";
+            echo "<script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Job Posting Deleted Successfully!',
+                    text: 'The job posting has been deleted successfully!',
+                    confirmButtonColor: '#2980b9',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href='manage_jobs.php';
+                });
+            </script>";
         } else {
             echo "Error deleting job: " . $conn->error;
         }
@@ -49,3 +66,5 @@ if (isset($_GET['job_id'])) {
 
 $conn->close();
 ?>
+</body>
+</html>

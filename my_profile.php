@@ -479,6 +479,8 @@ if (!empty($work_experiences)) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@500&display=swap" rel="stylesheet" >
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
     <title>My Profile</title>
 
     <style>
@@ -1434,7 +1436,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         </div>
 
-        <!-- Alert Message -->
+        <!-- Alert Message - Hidden data container for SweetAlert2 success popup -->
         <?php if (!empty($message) || !empty($_SESSION['message'])): ?>
             <?php 
             if (!empty($_SESSION['message'])) {
@@ -1443,9 +1445,30 @@ document.addEventListener("DOMContentLoaded", function () {
                 unset($_SESSION['message'], $_SESSION['messageClass']);
             }
             ?>
-            <div class="alert <?= $messageClass ?>" id="alertBox">
-                <?= htmlspecialchars($message) ?>
-            </div>
+            <?php if ($messageClass === 'success'): ?>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Profile Updated Successfully!',
+                            text: 'Your profile information has been updated successfully.',
+                            confirmButtonColor: '#2980b9',
+                            confirmButtonText: 'OK',
+                            backdrop: 'rgba(0, 0, 0, 0.4)',
+                            showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            }
+                        });
+                    });
+                </script>
+            <?php else: ?>
+                <div class="alert <?= $messageClass ?>" id="alertBox">
+                    <?= htmlspecialchars($message) ?>
+                </div>
+            <?php endif; ?>
         <?php endif; ?>
 
         <!-- Profile Header Section -->

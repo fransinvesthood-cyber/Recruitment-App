@@ -98,6 +98,8 @@ if (!empty($_SESSION['message'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
     <title>Manage Jobs - Admin Dashboard</title>
     <style>
         /* ===========================
@@ -1144,7 +1146,7 @@ if (!empty($_SESSION['message'])) {
                                     <button class="action-btn btn-indeed" onclick="copyToIndeed('indeed-content-<?= $row['job_id'] ?>')"><i class='bx bx-briefcase'></i> Copy for Indeed</button>
                                     <a href="<?= $twitter_url ?>" class="action-btn btn-twitter" target="_blank"><i class='bx bxl-twitter'></i> Twitter</a>
                                     <a href="edit_job.php?job_id=<?= $row['job_id'] ?>" class="action-btn btn-edit"><i class='bx bx-edit'></i> Edit</a>
-                                    <a href="delete_job.php?job_id=<?= $row['job_id'] ?>" class="action-btn btn-delete" onclick="return confirm('Are you sure you want to delete this job posting?')"><i class='bx bx-trash'></i> Delete</a>
+                                    <a href="delete_job.php?job_id=<?= $row['job_id'] ?>" class="action-btn btn-delete" onclick="return confirmDelete(event, this)"><i class='bx bx-trash'></i> Delete</a>
                                     <textarea id="pnet-content-<?= $row['job_id'] ?>" style="position: absolute; left: -9999px;"><?= $pnet_content ?></textarea>
                                     <textarea id="indeed-content-<?= $row['job_id'] ?>" style="position: absolute; left: -9999px;"><?= $indeed_content ?></textarea>
                                 </div>
@@ -1400,6 +1402,26 @@ if (!empty($_SESSION['message'])) {
                 }
             });
         });
+
+        // === SweetAlert2 confirmation for Delete ===
+        function confirmDelete(event, element) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You are about to delete this job posting. This action cannot be undone!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = element.href;
+                }
+            });
+            return false;
+        }
 
         // === Keep your existing copy functions ===
         function copyToPNet(textareaId) {

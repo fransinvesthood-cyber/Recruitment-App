@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->close();
 
         // Redirect back with success message
-        header("Location: scheduled_interviews.php?success=Interview status updated successfully");
+        header("Location: scheduled_interviews.php?success=status_updated");
         exit();
     } else {
         die("Error updating interview status: " . $conn->error);

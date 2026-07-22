@@ -157,7 +157,26 @@ $criteria_max_age = isset($_POST['criteria_max_age']) ? intval($_POST['criteria_
                       $job_description, $duties, $requirements, $skills, $minimum_criteria, $salary, $job_id);
 
     if ($stmt->execute()) {
-        echo "<script>alert('✅ Job listing updated successfully!!'); window.location.href='manage_jobs.php';</script>";
+        echo '<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
+</head>
+<body>
+    <script>
+        Swal.fire({
+            icon: "success",
+            title: "Job Posting Updated Successfully!",
+            text: "The job posting has been updated successfully!",
+            confirmButtonColor: "#2980b9",
+            confirmButtonText: "OK"
+        }).then(() => {
+            window.location.href = "manage_jobs.php";
+        });
+    </script>
+</body>
+</html>';
         exit();
     } else {
         echo "Error: " . $stmt->error;
@@ -175,6 +194,8 @@ $criteria_max_age = isset($_POST['criteria_max_age']) ? intval($_POST['criteria_
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Job Listing | Admin Portal</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css">
     <style>
         /* ===========================
            GLOBAL RESET & VARIABLES

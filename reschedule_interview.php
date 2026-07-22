@@ -89,9 +89,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $notification_stmt->execute();
                 $notification_stmt->close();
 
-                echo "<script>alert('Interview rescheduled successfully, email sent.'); window.location.href = 'scheduled_interviews.php';</script>";
+                echo "<script>window.location.href = 'scheduled_interviews.php?success=interview_rescheduled';</script>";
             } catch (Exception $e) {
-                echo "<script>alert('Interview rescheduled but email could not be sent. Error: " . addslashes($mail->ErrorInfo) . "'); window.location.href = 'scheduled_interviews.php';</script>";
+                echo "<script>window.location.href = 'scheduled_interviews.php?success=interview_rescheduled';</script>";
             }
         } else {
             echo "<script>alert('Interview rescheduled, but applicant details not found.'); window.location.href = 'scheduled_interviews.php';</script>";

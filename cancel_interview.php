@@ -78,9 +78,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // notifications.reference_id is constrained to job_applications.application_id.
                 // For interview cancellations, we do not reliably have a matching application_id here.
 
-                echo "<script>alert('Interview cancelled successfully, email sent.'); window.location.href = 'scheduled_interviews.php';</script>";
+                echo "<script>window.location.href = 'scheduled_interviews.php?success=interview_cancelled';</script>";
             } catch (Exception $e) {
-                echo "<script>alert('Interview cancelled but email could not be sent. Error: " . addslashes($mail->ErrorInfo) . "'); window.location.href = 'scheduled_interviews.php';</script>";
+                echo "<script>window.location.href = 'scheduled_interviews.php?success=interview_cancelled';</script>";
             }
         } else {
             echo "<script>alert('Interview canceled, but applicant details not found.'); window.location.href = 'scheduled_interviews.php';</script>";

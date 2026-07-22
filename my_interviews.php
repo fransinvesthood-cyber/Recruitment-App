@@ -735,6 +735,25 @@ $result = $stmt->get_result();
         });
 
         // Accept/Decline actions are handled by POST forms (confirm_availability.php)
+
+        // --- SweetAlert2 Success Popup on Status Update ---
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+
+            if (status === 'accepted' || status === 'declined') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Status updated successfully!',
+                    text: 'Your availability status has been updated successfully.',
+                    confirmButtonColor: '#2980b9',
+                    confirmButtonText: 'OK'
+                });
+                // Clean URL
+                const cleanUrl = window.location.pathname + window.location.hash;
+                window.history.replaceState({}, document.title, cleanUrl);
+            }
+        })();
     </script>
 
 </body>

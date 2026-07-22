@@ -1199,6 +1199,129 @@ tr {
         .toast.success { background: linear-gradient(90deg,#10b981,#059669); }
         .toast.error { background: linear-gradient(90deg,#ef4444,#b91c1c); }
 
+        /* ========== BATCH EVALUATION SUMMARY MODAL ========== */
+        .batch-summary-container { padding: 8px 0; }
+        .batch-summary-header {
+            text-align: center;
+            padding: 16px 0 20px;
+            border-bottom: 2px solid var(--light-gray);
+            margin-bottom: 20px;
+        }
+        body.dark-mode .batch-summary-header { border-color: #3a3b3c; }
+        .batch-summary-header h2 {
+            font-size: 22px;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .batch-summary-header p { color: var(--gray); font-size: 14px; }
+        .batch-summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .batch-stat-card {
+            background: var(--light-gray);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        body.dark-mode .batch-stat-card { background: #3a3b3c; }
+        .batch-stat-card:hover { transform: translateY(-2px); }
+        .batch-stat-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        .batch-stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .batch-stat-label {
+            font-size: 12px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+        .batch-stat-card.stat-pass .batch-stat-value { color: #10b981; }
+        .batch-stat-card.stat-fail .batch-stat-value { color: #ef4444; }
+        .batch-stat-card.stat-warn .batch-stat-value { color: #f59e0b; }
+        .batch-stat-card.stat-info .batch-stat-value { color: var(--primary); }
+        .batch-progress-bar {
+            height: 10px;
+            background: var(--light-gray);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 16px 0;
+            display: flex;
+        }
+        body.dark-mode .batch-progress-bar { background: #3a3b3c; }
+        .batch-progress-segment {
+            height: 100%;
+            transition: width 0.6s ease;
+        }
+        .batch-progress-segment.shortlisted { background: #10b981; }
+        .batch-progress-segment.rejected { background: #ef4444; }
+        .batch-progress-segment.skipped { background: #f59e0b; }
+        .batch-progress-segment.errored { background: #6b7280; }
+        .batch-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        .batch-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .batch-legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+        .batch-legend-dot.shortlisted { background: #10b981; }
+        .batch-legend-dot.rejected { background: #ef4444; }
+        .batch-legend-dot.skipped { background: #f59e0b; }
+        .batch-legend-dot.errored { background: #6b7280; }
+        .batch-details-section {
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        body.dark-mode .batch-details-section { background: #3a3b3c; }
+        .batch-details-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+        .batch-error-item {
+            padding: 8px 12px;
+            background: #fef2f2;
+            border-left: 3px solid #ef4444;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #991b1b;
+        }
+        body.dark-mode .batch-error-item {
+            background: #3b1c1c;
+            color: #fecaca;
+        }
+        .batch-footer {
+            text-align: center;
+            padding: 16px 0 0;
+            color: var(--gray);
+            font-size: 13px;
+        }
+        .batch-footer i { font-style: normal; }
+
         /* ===========================
            MOBILE NAV LINKS BAR (like dashboard)
         ============================ */
@@ -2290,15 +2413,96 @@ onclick="viewSkills(<?= htmlspecialchars(json_encode([
                         });
                     }
 
-                    // Show summary at bottom
+                    // Store summary text for the inline div
                     const summaryDiv = document.getElementById('evaluationSummary');
                     const summaryText = document.getElementById('summaryText');
                     const summaryContent = `${data.shortlisted || 0} applications shortlisted, ${data.rejected || 0} applications rejected${data.skipped ? ', ' + data.skipped + ' skipped' : ''}${data.errors && data.errors.length ? ', Errors: ' + data.errors.join('; ') : ''}`;
                     summaryText.textContent = summaryContent;
                     summaryDiv.style.display = 'block';
-
-                    // Store in localStorage to persist across page loads
                     localStorage.setItem('evaluationSummary', summaryContent);
+
+                    // Build rich batch summary modal content
+                    const total = data.total || (data.shortlisted || 0) + (data.rejected || 0) + (data.skipped || 0);
+                    const shortlisted = data.shortlisted || 0;
+                    const rejected = data.rejected || 0;
+                    const skipped = data.skipped || 0;
+                    const errorCount = (data.errors && data.errors.length) ? data.errors.length : 0;
+                    const shortPct = total > 0 ? (shortlisted / total * 100).toFixed(0) : 0;
+                    const rejPct = total > 0 ? (rejected / total * 100).toFixed(0) : 0;
+                    const skipPct = total > 0 ? (skipped / total * 100).toFixed(0) : 0;
+                    const errPct = total > 0 ? (errorCount / total * 100).toFixed(0) : 0;
+
+                    let modalHtml = `
+                        <div class="batch-summary-container">
+                            <div class="batch-summary-header">
+                                <h2><i class='bx bxs-badge-check'></i> Batch Evaluation Complete</h2>
+                                <p>${total} application(s) evaluated in this batch — ${new Date().toLocaleString()}</p>
+                            </div>
+
+                            <div class="batch-summary-stats">
+                                <div class="batch-stat-card stat-info">
+                                    <div class="batch-stat-icon">📋</div>
+                                    <div class="batch-stat-value">${total}</div>
+                                    <div class="batch-stat-label">Total Evaluated</div>
+                                </div>
+                                <div class="batch-stat-card stat-pass">
+                                    <div class="batch-stat-icon">✅</div>
+                                    <div class="batch-stat-value">${shortlisted}</div>
+                                    <div class="batch-stat-label">Shortlisted</div>
+                                </div>
+                                <div class="batch-stat-card stat-fail">
+                                    <div class="batch-stat-icon">❌</div>
+                                    <div class="batch-stat-value">${rejected}</div>
+                                    <div class="batch-stat-label">Rejected</div>
+                                </div>
+                                ${skipped > 0 ? `
+                                <div class="batch-stat-card stat-warn">
+                                    <div class="batch-stat-icon">⏭️</div>
+                                    <div class="batch-stat-value">${skipped}</div>
+                                    <div class="batch-stat-label">Skipped</div>
+                                </div>
+                                ` : ''}
+                                ${errorCount > 0 ? `
+                                <div class="batch-stat-card stat-fail">
+                                    <div class="batch-stat-icon">⚠️</div>
+                                    <div class="batch-stat-value">${errorCount}</div>
+                                    <div class="batch-stat-label">Errors</div>
+                                </div>
+                                ` : ''}
+                            </div>
+
+                            <div class="batch-progress-bar">
+                                <div class="batch-progress-segment shortlisted" style="width:${shortPct}%" title="Shortlisted: ${shortlisted} (${shortPct}%)"></div>
+                                <div class="batch-progress-segment rejected" style="width:${rejPct}%" title="Rejected: ${rejected} (${rejPct}%)"></div>
+                                <div class="batch-progress-segment skipped" style="width:${skipPct}%" title="Skipped: ${skipped} (${skipPct}%)"></div>
+                                <div class="batch-progress-segment errored" style="width:${errPct}%" title="Errors: ${errorCount} (${errPct}%)"></div>
+                            </div>
+
+                            <div class="batch-legend">
+                                <div class="batch-legend-item"><span class="batch-legend-dot shortlisted"></span> Shortlisted (${shortPct}%)</div>
+                                <div class="batch-legend-item"><span class="batch-legend-dot rejected"></span> Rejected (${rejPct}%)</div>
+                                ${skipped > 0 ? `<div class="batch-legend-item"><span class="batch-legend-dot skipped"></span> Skipped (${skipPct}%)</div>` : ''}
+                                ${errorCount > 0 ? `<div class="batch-legend-item"><span class="batch-legend-dot errored"></span> Errors (${errPct}%)</div>` : ''}
+                            </div>
+
+                            <div style="text-align:center;">
+                                <span style="background: #d1fae5; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; color: #065f46;">
+                                    <i class='bx bx-envelope'></i> Email notifications sent to evaluated candidates
+                                </span>
+                            </div>
+                            ${data.errors && data.errors.length ? `
+                            <div class="batch-details-section">
+                                <div class="batch-details-title"><i class='bx bx-error-circle'></i> Error Details</div>
+                                ${data.errors.map(e => `<div class="batch-error-item">${e}</div>`).join('')}
+                            </div>
+                            ` : ''}
+                            <div class="batch-footer">
+                                <i class='bx bx-refresh'></i> Refresh the page to see updated statuses reflected in the table below.
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('evalContent').innerHTML = modalHtml;
+                    document.getElementById('evalModal').style.display = 'block';
 
                     // Show toast with summary including email status
                     const parts = [];
