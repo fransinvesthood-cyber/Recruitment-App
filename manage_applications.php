@@ -2267,6 +2267,46 @@ onclick="viewSkills(<?= htmlspecialchars(json_encode([
         </div>
     </div>
 
+    <!-- Auto-Evaluate Batch Confirmation Modal -->
+    <div class="modal" id="confirmEvalModal">
+        <div class="modal-content" style="max-width: 480px;">
+            <span class="close" onclick="closeConfirmModal()">&times;</span>
+            <div style="text-align: center; padding: 16px 0;">
+                <div style="font-size: 56px; margin-bottom: 16px;">⚠️</div>
+                <h2 style="color: var(--primary); margin-bottom: 12px;">Confirm Auto-Evaluation</h2>
+                <p id="confirmEvalMessage" style="font-size: 16px; color: var(--gray); margin-bottom: 24px; line-height: 1.6;"></p>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button class="btn btn-outline" onclick="closeConfirmModal()" style="padding: 12px 28px;">
+                        <i class='bx bx-x'></i> Cancel
+                    </button>
+                    <button class="btn btn-primary" id="confirmEvalBtn" onclick="confirmAutoEvaluate()" style="padding: 12px 28px;">
+                        <i class='bx bx-check-circle'></i> Yes, Evaluate
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Single Evaluation Confirmation Modal -->
+    <div class="modal" id="confirmSingleEvalModal">
+        <div class="modal-content" style="max-width: 440px;">
+            <span class="close" onclick="closeSingleConfirmModal()">&times;</span>
+            <div style="text-align: center; padding: 16px 0;">
+                <div style="font-size: 48px; margin-bottom: 16px;">🔍</div>
+                <h2 style="color: var(--primary); margin-bottom: 12px;">Confirm Single Evaluation</h2>
+                <p id="confirmSingleEvalMessage" style="font-size: 16px; color: var(--gray); margin-bottom: 24px; line-height: 1.6;">Run auto-evaluation for this application?</p>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button class="btn btn-outline" onclick="closeSingleConfirmModal()" style="padding: 12px 28px;">
+                        <i class='bx bx-x'></i> Cancel
+                    </button>
+                    <button class="btn btn-primary" id="confirmSingleEvalBtn" onclick="confirmSingleEvaluate()" style="padding: 12px 28px;">
+                        <i class='bx bx-check-circle'></i> Yes, Evaluate
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="toast" style="display:none;"></div>
 
@@ -2346,13 +2386,36 @@ onclick="viewSkills(<?= htmlspecialchars(json_encode([
             setView(restoredView);
         });
 
+        // Auto-evaluate confirmation modal state
+        let pendingAutoEvalAppIds = null;
+        // Single evaluation confirmation modal state
+        let pendingSingleEvalData = null;
+
         function autoEvaluateAll() {
             const appIds = window.filteredAppIds || [];
             if (appIds.length === 0) {
                 alert('No applications match your current filters.');
                 return;
             }
-            if (!confirm(`⚠️ Auto-evaluate ${appIds.length} filtered application(s)?`)) return;
+            // Show the custom confirmation modal instead of native confirm()
+            pendingAutoEvalAppIds = appIds;
+            document.getElementById('confirmEvalMessage').textContent = 
+                `⚠️ This will auto-evaluate all ${appIds.length} filtered application(s) using AI-based criteria matching. This action cannot be undone. Do you want to proceed?`;
+            document.getElementById('confirmEvalModal').style.display = 'block';
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmEvalModal').style.display = 'none';
+            pendingAutoEvalAppIds = null;
+        }
+
+        function confirmAutoEvaluate() {
+            const appIds = pendingAutoEvalAppIds;
+            if (!appIds || appIds.length === 0) {
+                closeConfirmModal();
+                return;
+            }
+            closeConfirmModal();
             
             const formData = new FormData();
             formData.append('app_ids', JSON.stringify(appIds));
@@ -2669,10 +2732,33 @@ function formatEvaluationResult(result) {
         }
 
         function evaluateApplication(appId, btn) {
-            if (!confirm('Run auto-evaluation for this application?')) return;
             const originalText = btn.innerHTML;
+            pendingSingleEvalData = { appId, btn, originalText };
+            document.getElementById('confirmSingleEvalMessage').textContent = 'Run auto-evaluation for application #' + appId + '? This will analyze the candidate\'s profile against job requirements.';
+            document.getElementById('confirmSingleEvalModal').style.display = 'block';
+        }
+
+        function closeSingleConfirmModal() {
+            if (pendingSingleEvalData && pendingSingleEvalData.btn) {
+                pendingSingleEvalData.btn.disabled = false;
+                pendingSingleEvalData.btn.innerHTML = pendingSingleEvalData.originalText;
+            }
+            document.getElementById('confirmSingleEvalModal').style.display = 'none';
+            pendingSingleEvalData = null;
+        }
+
+        function confirmSingleEvaluate() {
+            const data = pendingSingleEvalData;
+            if (!data) return;
+            
+            const appId = data.appId;
+            const btn = data.btn;
+            const originalText = data.originalText;
+            
             btn.disabled = true;
             btn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Evaluating...';
+            document.getElementById('confirmSingleEvalModal').style.display = 'none';
+            pendingSingleEvalData = null;
 
             const fd = new FormData();
             fd.append('application_id', appId);
