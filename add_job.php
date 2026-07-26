@@ -117,7 +117,17 @@ $notification_stmt->close();
 
         // Insert job qualifications if provided
         if (!empty($criteria_qualifications)) {
-            $qual_arr = array_filter(array_map('trim
+            $qual_arr = array_filter(array_map('trim', explode(',', $criteria_qualifications)));
+            $insert_stmt = $conn->prepare("INSERT INTO job_qualifications (job_id, qualification) VALUES (?, ?)");
+            foreach ($qual_arr as $q) {
+                $insert_stmt->bind_param("is", $job_id, $q);
+                $insert_stmt->execute();
+            }
+            $insert_stmt->close();
+        }
+
+        // Success sweetalert
+        echo '<!DOCTYPE html>
 <html>
 <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>

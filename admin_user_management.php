@@ -183,7 +183,15 @@ function add_notification_safe(mysqli $conn, int $target_user_id, string $messag
 
 
 // ---- Handle actions ----
+// Detect action from Form POST, GET query, or JSON body (for AJAX requests)
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
+if (empty($action) && ($_SERVER['CONTENT_TYPE'] ?? '') === 'application/json') {
+    $json_body = json_decode(file_get_contents('php://input'), true);
+    if ($json_body) {
+        $action = $json_body['action'] ?? '';
+    }
+}
+
 
 if ($action === 'create_user') {
     $full_name = trim($_POST['fullname'] ?? '');
@@ -520,6 +528,155 @@ if ($action === 'delete_user') {
             $del->close();
         }
     }
+}
+
+// ---- Bulk Create Users (AJAX endpoint) ----
+if ($action === 'bulk_create_users') {
+    header('Content-Type: application/json');
+    $input = json_decode(file_get_contents('php://input'), true);
+    $users_data = $input['users'] ?? [];
+
+    if (empty($users_data) || !is_array($users_data)) {
+        echo json_encode(['success_count' => 0, 'failure_count' => 0, 'results' => []]);
+        exit();
+    }
+
+    $results = [];
+    $success_count = 0;
+    $failure_count = 0;
+    $seen_usernames = [];
+    $seen_emails = [];
+
+    foreach ($users_data as $index => $user_entry) {
+        $full_name = trim($user_entry['fullname'] ?? '');
+        $username = trim($user_entry['username'] ?? '');
+        $email = trim($user_entry['email'] ?? '');
+        $role = $user_entry['role'] ?? 'Consultant';
+        $account_status = $user_entry['account_status'] ?? 'Active';
+
+        $errors = [];
+
+        // Validate required fields
+        if ($full_name === '') {
+            $errors[] = 'Full name is required.';
+        }
+        if ($username === '') {
+            $errors[] = 'Username is required.';
+        }
+        if ($email === '') {
+            $errors[] = 'Email is required.';
+        } elseif (!validate_email_format($email)) {
+            $errors[] = 'Invalid email format.';
+        }
+
+        // Validate role
+        $role_norm = normalize_role($role);
+        if ($role_norm === null) {
+            $errors[] = 'Invalid role.';
+        }
+
+        // Validate account status
+        if ($account_status !== 'Active' && $account_status !== 'Inactive') {
+            $errors[] = 'Invalid account status.';
+        }
+
+        // Check intra-batch duplicates
+        if ($username !== '' && in_array(strtolower($username), $seen_usernames)) {
+            $errors[] = 'Duplicate username within this batch.';
+        }
+        if ($email !== '' && in_array(strtolower($email), $seen_emails)) {
+            $errors[] = 'Duplicate email within this batch.';
+        }
+
+        if (!empty($errors)) {
+            $results[] = ['index' => $index, 'status' => 'skipped', 'message' => implode(' ', $errors)];
+            $failure_count++;
+            continue;
+        }
+
+        // Check DB for existing user
+        $dupes = find_user_by_username_or_email($conn, $username, $email, null);
+        if ($dupes['username_taken']) {
+            $results[] = ['index' => $index, 'status' => 'skipped', 'message' => 'Username already taken.'];
+            $failure_count++;
+            continue;
+        }
+        if ($dupes['email_taken']) {
+            $results[] = ['index' => $index, 'status' => 'skipped', 'message' => 'Email already in use.'];
+            $failure_count++;
+            continue;
+        }
+
+        // Create user
+        $temporaryPassword = bin2hex(random_bytes(12));
+        $hashed = password_hash($temporaryPassword, PASSWORD_DEFAULT);
+        $verificationToken = bin2hex(random_bytes(32));
+
+        $insert_sql = "INSERT INTO users (fullname, username, email, password, role, account_status, email_verified, verification_token, failed_attempts, last_failed_login)
+                        VALUES (?, ?, ?, ?, ?, ?, 0, ?, 0, 0)";
+        $stmt = $conn->prepare($insert_sql);
+        if (!$stmt) {
+            $results[] = ['index' => $index, 'status' => 'error', 'message' => 'Database error.'];
+            $failure_count++;
+            continue;
+        }
+
+        $stmt->bind_param("sssssss", $full_name, $username, $email, $hashed, $role_norm, $account_status, $verificationToken);
+        if (!$stmt->execute()) {
+            $results[] = ['index' => $index, 'status' => 'error', 'message' => 'DB insert failed: ' . $conn->error];
+            $failure_count++;
+            $stmt->close();
+            continue;
+        }
+
+        $target_user_id = (int)$stmt->insert_id;
+        $stmt->close();
+
+        // Track batch uniqueness
+        $seen_usernames[] = strtolower($username);
+        $seen_emails[] = strtolower($email);
+
+        // Send verification email (best-effort)
+        try {
+            $verificationLink = "http://localhost/Recruitment-App/verify_email.php?token={$verificationToken}";
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'delanideco69@gmail.com';
+            $mail->Password = 'kyuqrccxdsqkkosb';
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+            $mail->setFrom('delanideco69@gmail.com', 'Recruitment Team');
+            $mail->addAddress($email);
+            $mail->Subject = 'Verify Your Email Address';
+            $mail->Body = "Hello {$full_name},\n\nYour account has been created successfully.\n\nAccount Details:\n- Full Name: {$full_name}\n- Username: {$username}\n- Email: {$email}\n- Role: {$role_norm}\n- Account Status: {$account_status}\n\nPlease click the following link to verify your email address:\n{$verificationLink}\n\nIf you did not create this account, please ignore this email.";
+            $mail->send();
+        } catch (Throwable $e) {}
+
+        // Audit log
+        add_audit_log($conn, $admin_user_id, $admin_username, 'create', $target_user_id, $username, $admin_ip, [
+            'fullname' => $full_name,
+            'role' => $role_norm,
+            'account_status' => $account_status,
+            'email' => $email,
+            'bulk' => true,
+        ]);
+
+        // Notifications (best-effort)
+        add_notification_safe($conn, $admin_user_id, "Bulk created user: {$username}.", 'general', $target_user_id);
+        add_notification_safe($conn, $target_user_id, "Your account has been created by an administrator.", 'general', $target_user_id);
+
+        $results[] = ['index' => $index, 'status' => 'created', 'message' => 'User created successfully.', 'user_id' => $target_user_id];
+        $success_count++;
+    }
+
+    echo json_encode([
+        'success_count' => $success_count,
+        'failure_count' => $failure_count,
+        'results' => $results,
+    ]);
+    exit();
 }
 
 // ---- List users with search/filter/pagination ----
@@ -866,9 +1023,14 @@ try {
                     <div class="text-muted">
                         Showing <?php echo count($users); ?> of <?php echo (int)$total; ?> users
                     </div>
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createUserModal">
-                        <i class='bx bx-plus-circle'></i> Create User
-                    </button>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createUserModal">
+                            <i class='bx bx-plus-circle'></i> Create User
+                        </button>
+                        <button type="button" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#bulkCreateUserModal">
+                            <i class='bx bx-user-plus'></i> Bulk Create Users
+                        </button>
+                    </div>
                 </div>
 
                 <div class="table-responsive">
@@ -1023,6 +1185,42 @@ try {
         </div>
     </div>
 
+    <!-- Bulk Create Users Modal -->
+    <div class="modal fade" id="bulkCreateUserModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class='bx bx-user-plus'></i> Bulk Create Users</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info mb-3">
+                        <i class='bx bx-info-circle'></i> Add multiple users at once. Each user will receive a verification email. Fields marked with <span class="text-danger">*</span> are required.
+                    </div>
+                    <div id="bulkUserRows">
+                        <!-- Row template will be cloned via JS -->
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="button" class="btn btn-outline-primary" id="addUserRowBtn">
+                            <i class='bx bx-plus'></i> Add Another User
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <div>
+                        <span class="text-muted" id="bulkUserCount">0 users added</span>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="submitBulkUsersBtn">
+                            <i class='bx bx-check'></i> Create Users
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Edit User Modal (kept from your original file; actions UI not wired in this simplified re-render) -->
     <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -1122,6 +1320,224 @@ try {
                     });
                 });
             });
+
+            // --- Bulk Create Users Logic ---
+            const bulkUserRowTemplate = `
+                <div class="bulk-user-row card mb-3 p-3 border">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label"><span class="text-danger">*</span> Full Name</label>
+                            <input type="text" class="form-control form-control-sm bulk-fullname" placeholder="Enter full name" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label"><span class="text-danger">*</span> Username</label>
+                            <input type="text" class="form-control form-control-sm bulk-username" placeholder="Username" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"><span class="text-danger">*</span> Email</label>
+                            <input type="email" class="form-control form-control-sm bulk-email" placeholder="email@example.com" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Role</label>
+                            <select class="form-select form-select-sm bulk-role">
+                                <option value="Admin">Admin</option>
+                                <option value="Consultant" selected>Consultant</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label">Status</label>
+                            <select class="form-select form-select-sm bulk-status">
+                                <option value="Active" selected>Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn btn-outline-danger btn-sm remove-user-row" title="Remove this user">
+                                <i class='bx bx-trash'></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const bulkUserRowsContainer = document.getElementById('bulkUserRows');
+            const addUserRowBtn = document.getElementById('addUserRowBtn');
+            const submitBulkUsersBtn = document.getElementById('submitBulkUsersBtn');
+            const bulkUserCount = document.getElementById('bulkUserCount');
+
+            function addBulkUserRow() {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = bulkUserRowTemplate.trim();
+                const row = tempDiv.firstElementChild;
+                const removeBtn = row.querySelector('.remove-user-row');
+                removeBtn.addEventListener('click', function() {
+                    row.remove();
+                    updateBulkUserCount();
+                });
+                bulkUserRowsContainer.appendChild(row);
+                updateBulkUserCount();
+            }
+
+            function updateBulkUserCount() {
+                const count = bulkUserRowsContainer.querySelectorAll('.bulk-user-row').length;
+                bulkUserCount.textContent = count + ' user' + (count !== 1 ? 's' : '') + ' added';
+            }
+
+            if (addUserRowBtn) {
+                addUserRowBtn.addEventListener('click', addBulkUserRow);
+            }
+
+            // Initialize with 3 empty rows when modal opens
+            const bulkModal = document.getElementById('bulkCreateUserModal');
+            if (bulkModal) {
+                bulkModal.addEventListener('show.bs.modal', function() {
+                    bulkUserRowsContainer.innerHTML = '';
+                    for (let i = 0; i < 3; i++) {
+                        addBulkUserRow();
+                    }
+                });
+            }
+
+            // Submit bulk users
+            if (submitBulkUsersBtn) {
+                submitBulkUsersBtn.addEventListener('click', function() {
+                    const rows = bulkUserRowsContainer.querySelectorAll('.bulk-user-row');
+                    const users = [];
+                    let valid = true;
+
+                    rows.forEach(function(row, index) {
+                        const fullname = row.querySelector('.bulk-fullname').value.trim();
+                        const username = row.querySelector('.bulk-username').value.trim();
+                        const email = row.querySelector('.bulk-email').value.trim();
+                        const role = row.querySelector('.bulk-role').value;
+                        const account_status = row.querySelector('.bulk-status').value;
+
+                        // Highlight empty required fields
+                        row.querySelectorAll('.form-control').forEach(function(inp) {
+                            inp.classList.remove('is-invalid');
+                        });
+
+                        let rowValid = true;
+
+                        if (!fullname) {
+                            row.querySelector('.bulk-fullname').classList.add('is-invalid');
+                            rowValid = false;
+                        }
+                        if (!username) {
+                            row.querySelector('.bulk-username').classList.add('is-invalid');
+                            rowValid = false;
+                        }
+                        if (!email) {
+                            row.querySelector('.bulk-email').classList.add('is-invalid');
+                            rowValid = false;
+                        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                            row.querySelector('.bulk-email').classList.add('is-invalid');
+                            rowValid = false;
+                        }
+
+                        if (!rowValid) {
+                            valid = false;
+                        }
+
+                        users.push({
+                            fullname: fullname,
+                            username: username,
+                            email: email,
+                            role: role,
+                            account_status: account_status
+                        });
+                    });
+
+                    if (!valid) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Validation Error',
+                            text: 'Please fill in all required fields correctly. Invalid fields are highlighted.',
+                            confirmButtonColor: '#3085d6'
+                        });
+                        return;
+                    }
+
+                    // Confirm before sending
+                    Swal.fire({
+                        title: 'Create ' + users.length + ' user' + (users.length !== 1 ? 's' : '') + '?',
+                        text: 'This will create user accounts and send verification emails for each.',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Yes, create them!',
+                        cancelButtonText: 'Cancel',
+                        reverseButtons: true,
+                        backdrop: 'rgba(0,0,0,0.5)'
+                    }).then((result) => {
+                        if (!result.isConfirmed) return;
+
+                        // Show loading
+                        Swal.fire({
+                            title: 'Creating users...',
+                            text: 'Please wait while users are being created.',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        // Send AJAX request
+                        fetch('admin_user_management.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                action: 'bulk_create_users',
+                                users: users
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            let successMsg = 'Successfully created: ' + data.success_count + ' user' + (data.success_count !== 1 ? 's' : '');
+                            let failMsg = '';
+                            if (data.failure_count > 0) {
+                                failMsg = '<br>Failed/skipped: ' + data.failure_count;
+                                // Build detailed failure list
+                                let details = '<ul style="text-align:left;margin-top:8px;">';
+                                data.results.forEach(function(r) {
+                                    if (r.status !== 'created') {
+                                        const idx = parseInt(r.index) + 1;
+                                        details += '<li>Row #' + idx + ': ' + r.message + '</li>';
+                                    }
+                                });
+                                details += '</ul>';
+                                failMsg += details;
+                            }
+
+                            Swal.fire({
+                                icon: data.failure_count === 0 ? 'success' : (data.success_count > 0 ? 'warning' : 'error'),
+                                title: data.failure_count === 0 ? 'All Users Created!' : 'Bulk Creation Complete',
+                                html: successMsg + failMsg,
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK',
+                                backdrop: 'rgba(0,0,0,0.5)'
+                            }).then(() => {
+                                // Close modal and reload page to show new users
+                                bootstrap.Modal.getInstance(bulkModal).hide();
+                                location.reload();
+                            });
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Request Failed',
+                                text: 'An error occurred while creating users. Please try again.',
+                                confirmButtonColor: '#3085d6'
+                            });
+                            console.error('Bulk create error:', error);
+                        });
+                    });
+                });
+            }
 
             // --- SweetAlert2 Success Popup ---
             var successEl = document.getElementById('successMessage');
