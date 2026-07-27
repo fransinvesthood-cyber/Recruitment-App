@@ -1,15 +1,32 @@
-- [ ] Gather repo patterns for AJAX JSON handlers and modal usage (search/read examples)
-- [ ] Implement event endpoints:
-  - [ ] Create save_event.php (insert/update with prepared statements)
-  - [ ] Create fetch_events.php (return events JSON for FullCalendar)
-  - [ ] Create delete_event.php (delete with prepared statements)
-- [ ] Update calendar.php:
-  - [ ] Add Bootstrap 5 Modal markup for create/edit
-  - [ ] Add event click handler to open details + edit/delete
-  - [ ] Add day click handler to open create modal with prefilled date
-  - [ ] Add client-side validation
-  - [ ] Use AJAX to save/delete and then refresh calendar events dynamically
-- [ ] Ensure FullCalendar uses retrieved calendar_events in addition to existing interviews/leaves/deadlines
-- [ ] Add minimal Bootstrap 5 styling consistent with current page
-- [ ] Quick test steps: create/edit/delete + verify event renders and modal closes without reload
+# TODO: Applicant Management (Talent Pool) Page
+
+## Step 1: Create `applicant_management.php` - Full Page Implementation
+- [x] Plan approved by user
+- [x] Create `applicant_management.php` with:
+  - [x] PHP backend with RBAC admin check
+  - [x] Dashboard Analytics SQL queries
+  - [x] Professional Title Analytics
+  - [x] Qualification Analytics  
+  - [x] Skills Analytics with filtering
+  - [x] Advanced filter form
+  - [x] Live search functionality
+  - [x] Dynamic applicant listing with pagination
+  - [x] Profile completion percentage calculation
+  - [x] Action buttons (View Profile, Preview CV, Download CV, View Quals, Skills, Work Exp)
+  - [x] Responsive UI with dark mode support
+  - [x] Clickable cards that auto-apply filters
+
+## Step 2: Create `get_applicant_details.php` - AJAX API Endpoint
+- [x] Full profile endpoint
+- [x] Qualifications endpoint
+- [x] Skills endpoint
+- [x] Work experience endpoint
+- [x] Completion details endpoint
+
+## Step 3: Update `admin_dashboard.php` Sidebar
+- [x] Add "Applicant Pool" link under "Talent Pool" section
+
+## Step 4: Fix Missing Column Errors (ap.cv, ap.profile_picture)
+- [x] `applicant_management.php`: Dynamic SELECT clause based on column existence
+- [x] `get_applicant_details.php`: Dynamic SELECT clause for profile queries
 

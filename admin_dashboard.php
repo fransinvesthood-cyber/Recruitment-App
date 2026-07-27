@@ -2311,6 +2311,8 @@ body.dark-mode .logout-modal-actions .btn-cancel:hover{
         </a>
         <ul class="side-menu main-menu">
             <li class="active"><a href="admin_dashboard.php"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a></li>
+            <li class="section-header"><span>Talent Pool</span></li>
+            <li><a href="applicant_management.php"><i class='bx bx-user-pin'></i><span>Applicant Pool</span></a></li>
             <li class="section-header"><span>Candidates</span></li>
             <li><a href="manage_jobs.php"><i class='bx bx-spreadsheet'></i><span>Jobs</span></a></li>
             <li><a href="manage_applications.php"><i class='bx bx-file'></i><span>Applications</span></a></li>
